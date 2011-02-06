@@ -12,9 +12,17 @@ has 'personality' => (
 has 'library' => (
     is => 'ro',
     isa => 'Str|ArrayRef[Str]',
-    default => sub { ['share'] },
+    lazy_build => 1,
     required => 0,
 );
+
+sub _build_library {
+    use File::Basename;
+    my (undef, $directory, undef) = fileparse(
+        $INC{ 'Net/CLI/Interact.pm' }
+    );
+    return ["${directory}Interact/phrasebook"];
+}
 
 has 'add_library' => (
     is => 'ro',
@@ -157,6 +165,7 @@ sub _find_phrasebooks {
     my $root = Path::Class::Dir->new();
     foreach my $part ( $target->dir_list ) {
         $root = $root->subdir($part);
+        next if scalar grep { $root->subsumes($_) } @libs;
         push @phrasebooks,
             sort {$a->basename cmp $b->basename}
             grep { not $_->is_dir } $root->children(no_hidden => 1);
