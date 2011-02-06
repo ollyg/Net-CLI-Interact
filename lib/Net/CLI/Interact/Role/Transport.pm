@@ -70,6 +70,25 @@ has '_harness' => (
     required => 0,
 );
 
+has '_timeout_obj' => (
+    is => 'ro',
+    isa => 'IPC::Run::Timer',
+    lazy_build => 1,
+    required => 0,
+);
+
+sub _build__timeout_obj { return IPC::Run::timeout((shift)->timeout) }
+
+has 'timeout' => (
+    is => 'rw',
+    isa => 'Int',
+    required => 0,
+    default => 10,
+    trigger => sub {
+        (shift)->_timeout_obj->start( shift );
+    },
+);
+
 sub connect {
     my ($self, $args) = @_;
     $self->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
@@ -80,7 +99,7 @@ sub connect {
                $self->_in,
                $self->_out,
                $self->_err,
-               IPC::Run::timeout (10),
+               $self->_timeout_obj,
         )
     );
 }
