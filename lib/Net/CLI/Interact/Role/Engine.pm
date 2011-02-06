@@ -53,7 +53,7 @@ sub macro {
 
 sub cmd {
     my ($self, $command) = @_;
-    $self->log('engine', 'info', 'running command', $command);
+    $self->log('engine', 'notice', 'running command', $command);
 
     $self->_execute_actions(
         Net::CLI::Interact::Action->new({
