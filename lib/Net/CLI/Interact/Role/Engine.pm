@@ -11,7 +11,7 @@ has '_prompt' => (
     reader => 'prompt',
     clearer => 'unset_prompt',
     trigger => sub {
-        (shift)->log('prompt', 2, 'prompt has been set to', (shift));
+        (shift)->log('prompt', 'info', 'prompt has been set to', (shift));
     },
 );
 
@@ -43,8 +43,8 @@ sub last_prompt_as_match {
 
 sub macro {
     my ($self, $name, @params) = @_;
-    $self->log('engine', 1, 'running macro', $name);
-    $self->log('engine', 2, 'macro params are:', join ', ', @params);
+    $self->log('engine', 'notice', 'running macro', $name);
+    $self->log('engine', 'info', 'macro params are:', join ', ', @params);
 
     my $set = $self->_macro_tbl->{$name}->clone;
     $set->apply_params(@params);
@@ -53,7 +53,7 @@ sub macro {
 
 sub cmd {
     my ($self, $command) = @_;
-    $self->log('engine', 1, 'running command', $command);
+    $self->log('engine', 'info', 'running command', $command);
 
     $self->_execute_actions(
         Net::CLI::Interact::Action->new({
@@ -65,7 +65,7 @@ sub cmd {
 
 sub _execute_actions {
     my $self = shift;
-    $self->log('engine', 2, 'executing actions');
+    $self->log('engine', 'notice', 'executing actions');
 
     my $set = Net::CLI::Interact::ActionSet->new({ actions => [@_] });
     $set->register_callback(sub { $self->do_action(@_) });
@@ -73,13 +73,13 @@ sub _execute_actions {
     # user can install a prompt, call find_prompt, or let us trigger that
     $self->find_prompt if not $self->last_actionset;
 
-    $self->log('engine', 3, 'dispaching to set execute method');
+    $self->log('engine', 'debug', 'dispaching to set execute method');
     $set->execute($self->prompt || $self->last_prompt_as_match);
     $self->last_actionset($set);
 
     # if user used a match ref then we assume new prompt value
     if ($self->last_actionset->last->is_lazy) {
-        $self->log('prompt', 1, 'last match was a prompt reference, setting new prompt');
+        $self->log('prompt', 'info', 'last match was a prompt reference, setting new prompt');
         $self->_prompt($self->last_actionset->last->value);
     }
 }
@@ -87,13 +87,13 @@ sub _execute_actions {
 # pump until any of the prompts matches the output buffer
 sub find_prompt {
     my $self = shift;
-    $self->log('prompt', 1, 'finding prompt');
+    $self->log('prompt', 'notice', 'finding prompt');
 
     while ($self->_harness->pump) {
         foreach my $prompt (keys %{ $self->_prompt_tbl }) {
             # prompts consist of only one match action
             if ($self->out =~ $self->_prompt_tbl->{$prompt}->first->value) {
-                $self->log('prompt', 2, "hit, matches prompt $prompt");
+                $self->log('prompt', 'info', "hit, matches prompt $prompt");
                 $self->last_actionset(
                     Net::CLI::Interact::ActionSet->new({ actions => [
                         $self->_prompt_tbl->{$prompt}->first->clone({
@@ -103,7 +103,7 @@ sub find_prompt {
                 );
                 return;
             }
-            $self->log('prompt', 3, "nope, doesn't (yet) match $prompt");
+            $self->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
         }
     }
 }
