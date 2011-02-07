@@ -99,3 +99,90 @@ sub log {
 }
 
 1;
+
+# ABSTRACT: Provides per-instance multi-target logging with categories
+
+=head1 SYNOPSIS
+
+ $self->log('category', 'level', @messages);
+
+=head1 DESCRIPTION
+
+This module implements a generic logging function, based on
+L<Log::Dispatch::Config> but with additional options and configuration. Log
+messages coming from your application are categorized, and each category can
+be enabled/disabled separately and have its own log level (i.e. C<emergency>
+.. C<debug>). High resolution timestamps can be added to log messages.
+
+=head1 METHODS
+
+=over 4
+
+=item log($category, $level, @messages)
+
+The combination of category and level determine whether the the log messages
+are emitted to any of the log destinations. Destinations are set using the
+C<log_config> method, and categories are configured using the C<log_flags>
+method.
+
+The C<@messages> will be joined by a space character, and a newline appended
+if the last message doesn't contain one itself. Messages are prepended with
+the first character of their C<$category>, and then indented proportionally to
+their C<$level>.
+
+=item log_config(\%config)
+
+A C<Log::Dispatch::Config> configuration (hash ref), meaning multiple log
+targets may be specified with different minimum level thresholds. There is a
+default configuration which emits messages to standard output with no
+minimum threshold:
+
+ {
+     dispatchers => ['screen'],
+     screen => {
+         class => 'Log::Dispatch::Screen',
+         min_level => 'debug',
+     },
+ };
+
+
+=item log_flags(\@categories | \%category_level_map)
+
+The user is expected to specify which log categories they are interested in,
+and at what levels. If a category is used in the application for logging but
+not specified, then it is deemed disabled.
+
+In the array reference form, the list should contain category names, and they
+will all be mapped to the C<error> level. In the hash reference form, the keys
+should be category names and the values log levels from the list below
+(ordered such that each level "includes" the levels I<above>):
+
+ emergency
+ alert
+ critical
+ error
+ warning
+ notice
+ info
+ debug
+
+Messages at or above the specified level will be passed on to the
+C<Log::Dispatch> target, which may then specify an overriding threshold.
+
+=item log_stamps($boolean)
+
+Enable (default) or disable the display of high resolution interval timestamps
+with each log message.
+
+=item log_start([$seconds, $microseconds])
+
+Time of the start for generating a time interval when logging stamps. Defaults
+to the result of C<Time::HiRes::gettimeofday> in list context.
+
+=item would_log($category, $level)
+
+Returns True if, according to the current C<log_flags>, the given C<$category>
+is enabled at or above the threshold of C<$level>, otherwise returns False.
+Note that the C<Log::Dispatch> targets maintain their own thresholds as well.
+
+=back
