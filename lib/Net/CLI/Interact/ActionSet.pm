@@ -4,11 +4,8 @@ use Moose;
 use Net::CLI::Interact::Action;
 with 'Net::CLI::Interact::Role::Iterator';
 
-has '_sequence' => (
-    is => 'rw',
-    isa  => 'ArrayRef[Net::CLI::Interact::Action]',
-    auto_deref => 1,
-    required => 1,
+has '+_sequence' => (
+    isa => 'ArrayRef[Net::CLI::Interact::Action]',
 );
 
 sub BUILDARGS {
