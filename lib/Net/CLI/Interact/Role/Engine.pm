@@ -6,12 +6,6 @@ with 'Net::CLI::Interact::Role::Prompt';
 use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
 
-has 'logger' => (
-    is => 'ro',
-    isa => 'Net::CLI::Interact::Logger',
-    required => 1,
-);
-
 has 'last_actionset' => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
