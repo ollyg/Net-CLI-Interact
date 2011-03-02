@@ -3,6 +3,19 @@ package Net::CLI::Interact::Role::Transport;
 use Moose::Role;
 use IPC::Run ();
 
+has 'logger' => (
+    is => 'ro',
+    isa => 'Net::CLI::Interact::Logger',
+    required => 1,
+);
+
+has 'transport_options' => (
+    is => 'ro',
+    isa => 'HashRef[Any]',
+    required => 1,
+    default => sub { {} },
+);
+
 has 'irs' => (
     is => 'ro',
     isa => 'Str',
@@ -64,7 +77,7 @@ has '_err' => (
     required => 0,
 );
 
-has '_harness' => (
+has 'harness' => (
     is => 'rw',
     isa => 'IPC::Run',
     required => 0,
@@ -92,9 +105,9 @@ has 'timeout' => (
 
 sub connect {
     my $self = shift;
-    $self->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
+    $self->logger->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
 
-    $self->_harness(
+    $self->harness(
         IPC::Run::harness(
             [$self->app, $self->runtime_options],
                $self->_in,
@@ -108,29 +121,29 @@ sub connect {
 # returns either the content of the output buffer, or undef
 sub do_action {
     my ($self, $action) = @_;
-    $self->log('transport', 'info', 'callback received for', $action->type);
+    $self->logger->log('transport', 'info', 'callback received for', $action->type);
     $self->connect if not $self->done_connect;
 
     if ($action->type eq 'match') {
         my $cont = $action->continuation;
-        while ($self->_harness->pump) {
+        while ($self->harness->pump) {
             my $irs = $self->irs;
             my @out_lines = split m/$irs/, $self->out;
             my $maybe_stash = join $self->irs, @out_lines[0 .. -2];
             my $last_out = $out_lines[-1];
 
             if ($cont and $last_out =~ $cont->first->value) {
-                $self->log('transport', 'debug', 'continuation matched');
+                $self->logger->log('transport', 'debug', 'continuation matched');
                 $self->_stash($self->flush);
                 $self->send($cont->last->value);
             }
             elsif ($last_out =~ $action->value) {
-                $self->log('transport', 'debug', 'output matched, storing and returning');
+                $self->logger->log('transport', 'debug', 'output matched, storing and returning');
                 $action->response($self->flush);
                 last;
             }
             else {
-                $self->log('transport', 'debug', "nope, doesn't (yet) match", $action->value);
+                $self->logger->log('transport', 'debug', "nope, doesn't (yet) match", $action->value);
                 # put back the partial output and try again
                 $self->_stash( $self->_stash . $maybe_stash );
                 $self->out($last_out);
@@ -139,7 +152,7 @@ sub do_action {
     }
     if ($action->type eq 'send') {
         my $command = sprintf $action->value, $action->params;
-        $self->log('transport', 'debug', 'queueing data for send:', $command);
+        $self->logger->log('transport', 'debug', 'queueing data for send:', $command);
         $self->send( $command, ($action->literal ? () : $self->ors) );
     }
 }

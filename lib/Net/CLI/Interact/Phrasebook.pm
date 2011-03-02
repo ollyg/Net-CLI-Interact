@@ -1,7 +1,13 @@
-package Net::CLI::Interact::Role::Phrasebook;
+package Net::CLI::Interact::Phrasebook;
 
-use Moose::Role;
+use Moose;
 use Net::CLI::Interact::ActionSet;
+
+has 'logger' => (
+    is => 'ro',
+    isa => 'Net::CLI::Interact::Logger',
+    required => 1,
+);
 
 has 'personality' => (
     is => 'rw',
@@ -31,14 +37,14 @@ has 'add_library' => (
     required => 0,
 );
 
-has '_prompt_tbl' => (
+has 'prompt' => (
     is => 'ro',
     isa => 'HashRef[Net::CLI::Interact::ActionSet]',
     default => sub { {} },
     required => 0,
 );
 
-has '_macro_tbl' => (
+has 'macro' => (
     is => 'ro',
     isa => 'HashRef[Net::CLI::Interact::ActionSet]',
     default => sub { {} },
@@ -49,9 +55,9 @@ has '_macro_tbl' => (
 sub _bake {
     my ($self, $data) = @_;
     return unless ref $data eq ref {} and keys %$data;
-    $self->log('phrasebook', 'debug', 'storing type', $data->{type}, 'with name', $data->{name});
+    $self->logger->log('phrasebook', 'debug', 'storing type', $data->{type}, 'with name', $data->{name});
 
-    my $slot = '_'. (lc $data->{type}) .'_tbl';
+    my $slot = lc $data->{type};
     $self->$slot->{$data->{name}}
         = Net::CLI::Interact::ActionSet->new({
             actions => $data->{actions}
@@ -62,8 +68,8 @@ sub _bake {
 sub _resolve_lazy_matches {
     my $self = shift;
 
-    foreach my $name (keys %{$self->_macro_tbl}) {
-        my $set = $self->_macro_tbl->{$name};
+    foreach my $name (keys %{$self->macro}) {
+        my $set = $self->macro->{$name};
         my $new_set = [];
 
         $set->reset;
@@ -71,7 +77,7 @@ sub _resolve_lazy_matches {
             my $item = $set->next;
             if ($item->is_lazy) {
                 push @$new_set, $item->clone({ value =>
-                    $self->_prompt_tbl->{$item->value}->first->value
+                    $self->prompt->{$item->value}->first->value
                 });
             }
             else {
@@ -79,19 +85,19 @@ sub _resolve_lazy_matches {
             }
         }
 
-        $self->_macro_tbl->{$name} = Net::CLI::Interact::ActionSet->new({
+        $self->macro->{$name} = Net::CLI::Interact::ActionSet->new({
             actions => $new_set
         });
     }
 }
 
 # parse phrasebook files and load action objects
-sub _load_phrasebooks {
+sub load_phrasebooks {
     my $self = shift;
     my $data = {};
 
     foreach my $file ($self->_find_phrasebooks) {
-        $self->log('phrasebook', 'info', 'reading phrasebook', $file);
+        $self->logger->log('phrasebook', 'info', 'reading phrasebook', $file);
         my @lines = $file->slurp;
         while ($_ = shift @lines) {
             # Skip comments and empty lines

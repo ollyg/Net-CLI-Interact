@@ -1,6 +1,6 @@
-package Net::CLI::Interact::Role::Logger;
+package Net::CLI::Interact::Logger;
 
-use Moose::Role;
+use Moose;
 use Time::HiRes qw(gettimeofday tv_interval);
 use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;

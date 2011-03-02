@@ -1,35 +1,64 @@
 package Net::CLI::Interact;
 
 use Moose;
-with 'Net::CLI::Interact::Role::Phrasebook';
 with 'Net::CLI::Interact::Role::Engine';
-with 'Net::CLI::Interact::Role::Logger';
 
-has 'transport' => (
+has params => (
     is => 'ro',
-    isa => 'Str',
+    isa => 'HashRef[Any]',
+    auto_deref => 1,
     required => 1,
 );
 
-has 'transport_options' => (
+sub BUILDARGS {
+    my ($class, @params) = @_;
+    return { params => { @params } };
+}
+
+has 'logger' => (
     is => 'ro',
-    isa => 'HashRef[Str]',
-    default => sub { {} },
-    required => 0,
+    isa => 'Net::CLI::Interact::Logger',
+    lazy_build => 1,
 );
 
-sub BUILD {
-    my ($self, $params) = @_;
+sub _build_logger {
+    my $self = shift;
+    use Net::CLI::Interact::Logger;
+    return Net::CLI::Interact::Logger->new({$self->params});
+}
 
-    $self->log('phrasebook', 'notice', 'loading phrasebooks');
-    $self->_load_phrasebooks;
+has 'phrasebook' => (
+    is => 'ro',
+    isa => 'Net::CLI::Interact::Phrasebook',
+    lazy_build => 1,
+);
 
-    $self->log('transport', 'notice', 'loading transport', $self->transport);
-    use Moose::Util;
-    Moose::Util::apply_all_roles($self, 
-        'Net::CLI::Interact::Transport::'. $self->transport);
+sub _build_phrasebook {
+    my $self = shift;
+    use Net::CLI::Interact::Phrasebook;
+    my $pb = Net::CLI::Interact::Phrasebook->new({
+        logger => $self->logger,
+        $self->params,
+    });
+    $pb->load_phrasebooks;
+    return $pb;
+}
 
-    $self->log('build', 'notice', 'finished phrasebook and transport load');
+has 'transport' => (
+    is => 'ro',
+    does => 'Net::CLI::Interact::Role::Transport',
+    lazy_build => 1,
+);
+
+sub _build_transport {
+    my $self = shift;
+    my $tpt = 'Net::CLI::Interact::Transport::'. $self->params->{transport};
+    use Class::MOP;
+    Class::MOP::load_class($tpt);
+    return $tpt->new({
+        logger => $self->logger,
+        $self->params,
+    });
 }
 
 1;

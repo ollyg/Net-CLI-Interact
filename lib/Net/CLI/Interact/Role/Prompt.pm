@@ -1,68 +1,56 @@
-package Net::CLI::Interact::Role::Engine;
+package Net::CLI::Interact::Role::Prompt;
 
 use Moose::Role;
-with 'Net::CLI::Interact::Role::Prompt';
-
-use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
 
-has 'logger' => (
-    is => 'ro',
-    isa => 'Net::CLI::Interact::Logger',
-    required => 1,
-);
-
-has 'last_actionset' => (
+has '_prompt' => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet',
+    isa => 'Maybe[RegexpRef]',
     required => 0,
+    reader => 'prompt',
+    clearer => 'unset_prompt',
+    trigger => sub {
+        (shift)->logger->log('prompt', 'info', 'prompt has been set to', (shift));
+    },
 );
 
-sub last_response {
+sub set_prompt {
+    my ($self, $prompt) = @_;
+    $self->_prompt( $self->phrasebook->prompt->{$prompt}->first->value );
+}
+
+sub last_prompt {
     my $self = shift;
-    return $self->last_actionset->item_at(-2)->response;
+    return $self->last_actionset->item_at(-1)->response;
 }
 
-sub macro {
-    my ($self, $name, @params) = @_;
-    $self->logger->log('engine', 'notice', 'running macro', $name);
-    $self->logger->log('engine', 'info', 'macro params are:', join ', ', @params);
-
-    my $set = $self->phrasebook->macro->{$name}->clone;
-    $set->apply_params(@params);
-    $self->_execute_actions($set);
+sub last_prompt_as_match {
+    my $prompt = (shift)->last_prompt;
+    return qr/^$prompt$/;
 }
 
-sub cmd {
-    my ($self, $command) = @_;
-    $self->logger->log('engine', 'notice', 'running command', $command);
-
-    $self->_execute_actions(
-        Net::CLI::Interact::Action->new({
-            type => 'send',
-            value => $command,
-        }),
-    );
-}
-
-sub _execute_actions {
+# pump until any of the prompts matches the output buffer
+sub find_prompt {
     my $self = shift;
-    $self->logger->log('engine', 'notice', 'executing actions');
+    $self->logger->log('prompt', 'notice', 'finding prompt');
 
-    my $set = Net::CLI::Interact::ActionSet->new({ actions => [@_] });
-    $set->register_callback(sub { $self->transport->do_action(@_) });
-
-    # user can install a prompt, call find_prompt, or let us trigger that
-    $self->find_prompt if not $self->last_actionset;
-
-    $self->logger->log('engine', 'debug', 'dispaching to set execute method');
-    $set->execute($self->prompt || $self->last_prompt_as_match);
-    $self->last_actionset($set);
-
-    # if user used a match ref then we assume new prompt value
-    if ($self->last_actionset->last->is_lazy) {
-        $self->logger->log('prompt', 'info', 'last match was a prompt reference, setting new prompt');
-        $self->_prompt($self->last_actionset->last->value);
+    while ($self->transport->harness->pump) {
+        foreach my $prompt (keys %{ $self->phrasebook->prompt }) {
+            # prompts consist of only one match action
+            if ($self->transport->out =~ $self->phrasebook->prompt->{$prompt}->first->value) {
+                $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
+                $self->last_actionset(
+                    Net::CLI::Interact::ActionSet->new({ actions => [
+                        $self->phrasebook->prompt->{$prompt}->first->clone({
+                            response => $self->transport->flush,
+                        })
+                    ] })
+                );
+                $self->set_prompt($prompt);
+                return;
+            }
+            $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
+        }
     }
 }
 
