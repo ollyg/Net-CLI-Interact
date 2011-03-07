@@ -4,6 +4,18 @@ use Moose;
 use Net::CLI::Interact::Action;
 with 'Net::CLI::Interact::Role::Iterator';
 
+has continuation => (
+    is => 'rw',
+    isa => 'Net::CLI::Interact::ActionSet',
+    required => 0,
+);
+
+has current_match => (
+    is => 'rw',
+    isa => 'RegexpRef',
+    required => 1,
+);
+
 has '+_sequence' => (
     isa => 'ArrayRef[Net::CLI::Interact::Action]',
 );
@@ -44,6 +56,8 @@ sub clone {
     return Net::CLI::Interact::ActionSet->new({
         actions => [ map { $_->clone } $self->_sequence ],
         _callbacks => $self->_callbacks,
+        ($self->continuation  ? (continuation  => $self->continuation)  : ()),
+        ($self->current_match ? (current_match => $self->current_match) : ()),
     });
 }
 
@@ -73,7 +87,7 @@ sub register_callback {
 sub execute {
     my $self = shift;
 
-    $self->_pad_send_with_match(@_);
+    $self->_pad_send_with_match;
     $self->_forward_continuation_to_match;
     $self->_do_exec;
     $self->_marshall_responses;
@@ -90,12 +104,9 @@ sub _do_exec {
 
 # pad out the Actions with match Actions if needed between send pairs.
 sub _pad_send_with_match {
-    my ($self, $current_match) = @_;
-    confess "execute requires the current match action as a parameter\n"
-        unless defined $current_match and ref $current_match eq ref qr//;
-
+    my $self = shift;
     my $match = Net::CLI::Interact::Action->new({
-        type => 'match', value => $current_match,
+        type => 'match', value => $self->current_match,
     });
 
     $self->reset;
@@ -122,11 +133,12 @@ sub _forward_continuation_to_match {
     while ($self->has_next) {
         my $this = $self->next;
         my $next = $self->peek or last; # careful...
+        my $cont = ($this->continuation || $self->continuation);
         next unless $this->type eq 'send'
-            and defined $this->continuation
-            and $next->type eq 'match';
+            and $next->type eq 'match'
+            and defined $cont;
 
-        $next->continuation( $this->continuation );
+        $next->continuation($cont);
     }
 }
 

@@ -6,6 +6,22 @@ with 'Net::CLI::Interact::Role::Prompt';
 use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
 
+has 'default_continuation' => (
+    is => 'rw',
+    isa => 'Str',
+    required => 0,
+    trigger => \&_check_default_continuation
+    predicate => 'has_default_continuation',
+);
+
+sub _check_default_continuation {
+    my ($self, $cont) = @_;
+    confess "missing continuation" unless $cont;
+    confess "unknown continuation [$cont]" unless
+        exists $self->phrasebook->macro->{$cont};
+    $self->logger->log('engine', 'info', 'default continuation set to', $cont);
+}
+
 has 'last_actionset' => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
@@ -43,14 +59,20 @@ sub _execute_actions {
     my $self = shift;
     $self->logger->log('engine', 'notice', 'executing actions');
 
-    my $set = Net::CLI::Interact::ActionSet->new({ actions => [@_] });
+    my $set = Net::CLI::Interact::ActionSet->new({
+        actions => [@_],
+        current_match => ($self->prompt || $self->last_prompt_as_match),
+        ($self->has_default_continuation
+            ? (continuation => $self->phrasebook->macro->{$self->default_continuation})
+            : ()),
+    });
     $set->register_callback(sub { $self->transport->do_action(@_) });
 
     # user can install a prompt, call find_prompt, or let us trigger that
     $self->find_prompt if not $self->last_actionset;
 
     $self->logger->log('engine', 'debug', 'dispaching to set execute method');
-    $set->execute($self->prompt || $self->last_prompt_as_match);
+    $set->execute;
     $self->last_actionset($set);
 
     # if user used a match ref then we assume new prompt value
