@@ -3,6 +3,13 @@ package Net::CLI::Interact::Role::Prompt;
 use Moose::Role;
 use Net::CLI::Interact::ActionSet;
 
+has 'wake_up' => (
+    is => 'rw',
+    isa => 'Str',
+    default => sub { (shift}->transport->ors },
+    required => 0,
+);
+
 has '_prompt' => (
     is => 'rw',
     isa => 'Maybe[RegexpRef]',
@@ -31,26 +38,34 @@ sub last_prompt_as_match {
 
 # pump until any of the prompts matches the output buffer
 sub find_prompt {
-    my $self = shift;
+    my ($self, $tries) = @_;
     $self->logger->log('prompt', 'notice', 'finding prompt');
 
-    while ($self->transport->harness->pump) {
-        foreach my $prompt (keys %{ $self->phrasebook->prompt }) {
-            # prompts consist of only one match action
-            if ($self->transport->out =~ $self->phrasebook->prompt->{$prompt}->first->value) {
-                $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
-                $self->last_actionset(
-                    Net::CLI::Interact::ActionSet->new({ actions => [
-                        $self->phrasebook->prompt->{$prompt}->first->clone({
-                            response => $self->transport->flush,
-                        })
-                    ] })
-                );
-                $self->set_prompt($prompt);
-                return;
+    eval {
+        while ($self->transport->harness->pump) {
+            foreach my $prompt (keys %{ $self->phrasebook->prompt }) {
+                # prompts consist of only one match action
+                if ($self->transport->out =~ $self->phrasebook->prompt->{$prompt}->first->value) {
+                    $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
+                    $self->last_actionset(
+                        Net::CLI::Interact::ActionSet->new({ actions => [
+                            $self->phrasebook->prompt->{$prompt}->first->clone({
+                                response => $self->transport->flush,
+                            })
+                        ] })
+                    );
+                    $self->set_prompt($prompt);
+                    return;
+                }
+                $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
             }
-            $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
         }
+    };
+    # default call from user, $tries is zero, so run once more and inc tries
+    if ($@ and $self->wake_up and not $tries) {
+        $self->logger->log('prompt', 'info', 'timeout, sending WAKE_UP and trying again');
+        $self->transport->send( $self->wake_up );
+        $self->find_prompt(++$tries);
     }
 }
 
