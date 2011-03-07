@@ -113,9 +113,11 @@ sub load_phrasebooks {
             }
 
             if (m{^\s+(send(?:_literal)?)\s+(.+)$}) {
+                my ($type, $value) = ($1, $2);
+                $value =~ s/^["']//; $value =~ s/["']$//;
                 push @{ $data->{actions} }, {
-                    type => 'send', value => $2,
-                    literal => ($1 eq 'send_literal')
+                    type => 'send', value => $value,
+                    literal => ($type eq 'send_literal')
                 };
                 next;
             }
