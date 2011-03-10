@@ -45,6 +45,7 @@ sub _build_phrasebook {
 has 'transport' => (
     is => 'ro',
     does => 'Net::CLI::Interact::Role::Transport',
+    handles => ['connect'],
     lazy_build => 1,
 );
 
