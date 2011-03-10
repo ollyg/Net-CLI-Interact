@@ -117,12 +117,12 @@ sub load_phrasebooks {
                 unshift @lines, $_;
             }
 
-            if (m{^\s+(send(?:_literal)?)\s+(.+)$}) {
+            if (m{^\s+(send(?:_no_ors)?)\s+(.+)$}) {
                 my ($type, $value) = ($1, $2);
                 $value =~ s/^["']//; $value =~ s/["']$//;
                 push @{ $data->{actions} }, {
                     type => 'send', value => $value,
-                    literal => ($type eq 'send_literal')
+                    no_ors => ($type eq 'send_no_ors')
                 };
                 next;
             }
@@ -144,7 +144,7 @@ sub load_phrasebooks {
                 $send =~ s/^["']//; $send =~ s/["']$//;
                 $data->{actions}->[-1]->{continuation} = [
                     {type => 'match', value => qr/$match/},
-                    {type => 'send',  value => $send, literal => 1}
+                    {type => 'send',  value => $send, no_ors => 1}
                 ];
                 next;
             }
@@ -381,7 +381,7 @@ the end, as per Automatic Matching, above.
 =item Line Endings
 
 Normally all sent command statements are appended with a newline (or the value
-of C<ors>, if set). To suppress that feature, use the keyword C<send_literal>
+of C<ors>, if set). To suppress that feature, use the keyword C<send_no_ors>
 instead of C<send>. However this does not prevent the Format Interpolation via
 C<sprintf> as described above (which is not necessary: simply use C<%%>).
 

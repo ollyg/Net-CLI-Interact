@@ -16,7 +16,7 @@ has 'value' => (
     required => 1,
 );
 
-has 'literal' => (
+has 'no_ors' => (
     is => 'ro',
     isa => 'Bool',
     required => 0,
