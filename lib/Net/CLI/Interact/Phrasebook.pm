@@ -91,6 +91,11 @@ sub _resolve_lazy_matches {
     }
 }
 
+sub BUILD {
+    my $self = shift;
+    $self->load_phrasebooks;
+}
+
 # parse phrasebook files and load action objects
 sub load_phrasebooks {
     my $self = shift;

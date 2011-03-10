@@ -36,12 +36,10 @@ has 'phrasebook' => (
 sub _build_phrasebook {
     my $self = shift;
     use Net::CLI::Interact::Phrasebook;
-    my $pb = Net::CLI::Interact::Phrasebook->new({
+    return Net::CLI::Interact::Phrasebook->new({
         logger => $self->logger,
         $self->params,
     });
-    $pb->load_phrasebooks;
-    return $pb;
 }
 
 has 'transport' => (
