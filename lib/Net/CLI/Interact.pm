@@ -67,31 +67,43 @@ sub _build_transport {
 =head1 PURPOSE
 
 This module exists to support the development of applications and libraries
-that need to automate interaction with a command line interface. The intention
-is that this library is wrapped up for the user rather than being instantiated
-as-is.
+which need to automate interaction with a command line interface. The
+intention is that this library is wrapped up for the user rather than being
+instantiated directly.
 
 =head1 SYNOPSIS
 
- $s->set_prompt('user_exec');
- 
- $s->macro('show_int_br');
- my $interfaces = $s->last_response;
+ my $s = Net::CLI::Interact->new({
+    personality => 'cisco',
+    transport   => 'Telnet',
+    transport_options => { host => '192.0.2.1' },
+ });
+
+ $s->connect;
  
  $s->cmd('show ip interfaces brief');
- my $same_as_interfaces = $s->last_response;
+ my $interfaces = $s->last_response;
  
  $s->macro('to_priv_exec', 'enable_password');
- # prompt is updated automatically
+ # matched prompt is updated automatically
  
  $s->macro('show_run');
+ # paged output is slurped into one response
  my $config = $s->last_response;
 
 =head1 DESCRIPTION
 
-This module implements the API for command execution and Prompt management in
-L<Net::CLI::Interact>. After the Phrasebooks are loaded, a table of Prompts
-and a table of Macros is available to the application.
+Automating command line interface (CLI) interactions is not a new concept, but
+can be tricky to implement whilst remaining robust and uncomplicated. This
+module exists to support application developers who wish to automate CLI
+interactions, providing a number of features:
+
+Most device CLIs can be put into families, sharing look and feel. An example
+would be Cisco's IOS (cloned by non-Cisco platforms as well). CLI commands can
+be stored in a Phrasebook, reused, and referred to by name.  This module
+contains its own Phrasebook, and allows the application developer both to
+include their own Phrasebook and offer search paths to the end user for custom
+Phrasebooks.
 
 =head1 METHODS
 
