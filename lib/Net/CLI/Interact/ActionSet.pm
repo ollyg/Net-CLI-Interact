@@ -13,7 +13,7 @@ has continuation => (
 has current_match => (
     is => 'rw',
     isa => 'RegexpRef',
-    required => 1,
+    required => 0,
 );
 
 has '+_sequence' => (

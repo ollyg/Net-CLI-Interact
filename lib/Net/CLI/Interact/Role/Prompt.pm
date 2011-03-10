@@ -6,7 +6,8 @@ use Net::CLI::Interact::ActionSet;
 has 'wake_up' => (
     is => 'rw',
     isa => 'Str',
-    default => sub { (shift}->transport->ors },
+    default => sub { (shift)->transport->ors },
+    predicate => 'has_wake_up',
     required => 0,
 );
 
@@ -62,10 +63,10 @@ sub find_prompt {
         }
     };
     # default call from user, $tries is zero, so run once more and inc tries
-    if ($@ and $self->wake_up and not $tries) {
+    if ($@ and $self->has_wake_up and $tries) {
         $self->logger->log('prompt', 'info', 'timeout, sending WAKE_UP and trying again');
         $self->transport->send( $self->wake_up );
-        $self->find_prompt(++$tries);
+        $self->find_prompt;
     }
 }
 

@@ -10,7 +10,7 @@ has 'default_continuation' => (
     is => 'rw',
     isa => 'Str',
     required => 0,
-    trigger => \&_check_default_continuation
+    trigger => \&_check_default_continuation,
     predicate => 'has_default_continuation',
 );
 
@@ -59,6 +59,9 @@ sub _execute_actions {
     my $self = shift;
     $self->logger->log('engine', 'notice', 'executing actions');
 
+    # user can install a prompt, call find_prompt, or let us trigger that
+    $self->find_prompt if not $self->last_actionset;
+
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@_],
         current_match => ($self->prompt || $self->last_prompt_as_match),
@@ -67,9 +70,6 @@ sub _execute_actions {
             : ()),
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
-
-    # user can install a prompt, call find_prompt, or let us trigger that
-    $self->find_prompt if not $self->last_actionset;
 
     $self->logger->log('engine', 'debug', 'dispaching to set execute method');
     $set->execute;
