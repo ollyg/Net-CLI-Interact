@@ -45,7 +45,6 @@ sub _build_phrasebook {
 has 'transport' => (
     is => 'ro',
     does => 'Net::CLI::Interact::Role::Transport',
-    handles => ['connect'],
     lazy_build => 1,
 );
 
@@ -66,25 +65,23 @@ sub _build_transport {
 
 =head1 PURPOSE
 
-This module exists to support the development of applications and libraries
-which need to automate interaction with a command line interface. The
-intention is that this library is wrapped up for the user rather than being
-instantiated directly.
+This module exists to support developers of applications and libraries which
+must interact with a command line interface.
 
 =head1 SYNOPSIS
 
+ use Net::CLI::Interact;
+ 
  my $s = Net::CLI::Interact->new({
     personality => 'cisco',
     transport   => 'Telnet',
     transport_options => { host => '192.0.2.1' },
  });
-
- $s->connect;
  
  $s->cmd('show ip interfaces brief');
  my $interfaces = $s->last_response;
  
- $s->macro('to_priv_exec', 'enable_password');
+ $s->macro('to_priv_exec', 'my_password');
  # matched prompt is updated automatically
  
  $s->macro('show_run');
@@ -93,110 +90,108 @@ instantiated directly.
 
 =head1 DESCRIPTION
 
-Automating command line interface (CLI) interactions is not a new concept, but
-can be tricky to implement whilst remaining robust and uncomplicated. This
-module exists to support application developers who wish to automate CLI
-interactions, providing a number of features:
-
-Most device CLIs can be put into families, sharing look and feel. An example
-would be Cisco's IOS (cloned by non-Cisco platforms as well). CLI commands can
-be stored in a Phrasebook, reused, and referred to by name.  This module
-contains its own Phrasebook, and allows the application developer both to
-include their own Phrasebook and offer search paths to the end user for custom
-Phrasebooks.
-
-=head1 METHODS
+Automating command line interface (CLI) interactions is not a new idea, but
+can be tricky to implement. This module aims to provide a simple and
+manageable interface to CLI interactions, supporting:
 
 =over 4
 
-=item prompt
+=item *
 
-Returns the current Prompt, which is a regular expression reference. The
-Prompt is used as a default when a Macro has not been set up with explicit
-Prompt matching.
+SSH, Telnet and Serial-Line connections
 
-Typically you would set the prompt you are expecting (see below) once for a
-sequence of commands in a particular CLI context. The C<prompt> is also
-automatically updated when a Macro successfully ends which was defined in the
-Phrasebook with a known Prompt (referenced by name using C<match prompt...>).
+=item *
 
-=item unset_prompt
+Unix and Windows support
 
-You can use this method to empty the current Prompt setting (see above). The
-effect is that the module will automatically set the Prompt for itself based
-on the last line of output received from the connected CLI. Do not use this
-option unless you know what you are doing.
+=item *
 
-=item set_prompt($prompt_name)
-
-This method will be used most commonly by applications to set a prompt from
-the Phrasebook which matches the current context of the connected CLI session.
-This allows a sequence of commands to be sent which share the same Prompt.
-
-=item find_prompt
-
-A helper method that consumes output from the connected CLI session until a
-line matches one of the named Prompts in the loaded Phrasebooks, at which
-point no more output is consumed. As a consequence the C<prompt> will be set
-(see above) and also the C<last_*> (see below) accessors.
-
-This might be used when you are connecting to a device which maintains CLI
-state between sessions (for example a serial console), and you need to
-discover the current state. However, C<find_prompt> is executed automatically
-for you if you call a C<cmd> or C<macro> before any interaction with the CLI.
-
-You might need to send some input to the device to trigger generation of
-output for matching. If no output matches, the module will time out and throw
-an exception (see C<timeout>, documented elsewhere), in which case no output
-will be consumed so you are free to attempt another C<find_prompt>.
-
-=item macro($macro_name, ?@params)
-
-Execute the commands contained within the named Macro, which must be loaded
-in a Phrasebook. If the Macro contains commands using C<sprintf> Format
-variables then the corresponding parameters must be passed to the method.
-
-Values are consumed from the provided C<@params> and passed to the C<send>
-commands in the Macro in order, as needed. An exception will be thrown if
-there are insufficient parameters.
-
-An exception will also be thrown if the Match statements in the Macro are not
-successful with the output returned from the device. This is based on the
-value C<timeout>, which controls how long the module waits for matching
-output.
-
-=item cmd($command_statement)
-
-Execute a single C<send> command statement and consume output until there is a
-match with the current value of C<prompt>. The statement is executed verbatim
-on the device, with a newline appended.
-
-=item last_response
-
-Returns the gathered output after issueing the most recent C<send> command.
-
-=item last_prompt
-
-Returns the Prompt which most recently was matched to terminate gathering of
-output from the connected CLI. This is a simple text string.
-
-=item last_prompt_as_match
-
-Returns the text which was most recently matched to terminate gathering of
-output from the connected CLI, as a regular expression with line start and end
-anchors.
-
-=item last_actionset
-
-Returns the complete L<Net::CLI::Interact::ActionSet> that was constructed
-from the most recent C<macro> or C<cmd> execution. This will be a sequence of
-Actions that correspond to C<send> and C<match> statements.
-
-In the case of a Macro these directly relate to the contents of your
-Phrasebook, with the possible addition of C<match> statements added
-automatically. In the case of a C<cmd> execution, in effect a Macro is
-constructed which consists of a single C<send> and a single C<match>.
+Reuseable device command phrasebooks
 
 =back
+
+=head1 METHODS
+
+=head2 new( \%options )
+
+Prepares a new session for you, but will not connect to any device. Options
+are:
+
+=over 4
+
+=item C<< personality => $name >> (required)
+
+The family of device command phrasebooks to load. There is a built-in library
+within this module, or you can provide a search path to other libraries. See
+L<Net::CLI::Interact::Phrasebook> for further details.
+
+=item C<< transport => $backend >> (required)
+
+The name of the transport backend used for the session, which may be one of
+L<Telnet|Net::CLI::Interact::Telnet>, L<SSH|Net::CLI::Interact::SSH>, or
+L<Serial|Net::CLI::Interact::Serial>.
+
+=item C<< transport_options => \%options >>
+
+If the transport backend can take any options (for example the target
+hostname), then pass those options in this value. See the respective manual
+pages for each transport backend for further details.
+
+=back
+
+=head2 cmd( $command )
+
+Execute a single command statement on the connected device, and consume output
+until there is a match with the current I<prompt>. The statement is executed
+verbatim on the device, with a newline appended.
+
+=head2 macro( $name, \@params? )
+
+Execute the commands contained within the named Macro, which must be available
+in the loaded Phrasebook. If the Macro contains commands using C<sprintf>
+format variables then the corresponding total number of C<@params> must be
+passed to the method.
+
+=head2 last_response
+
+Returns the gathered output after the most recent C<cmd> or C<macro>.
+
+=head2 phrasebook
+
+Returns the Phrasebook object which was loaded based on the C<personality>
+option given to C<new>. See L<Net::CLI::Interact::Phrasebook> for further
+details.
+
+=head2 transport
+
+Returns the L<Net::CLI::Interact::Transport> backend which was loaded based on
+the C<transport> option to C<new>. See the
+L<Telnet|Net::CLI::Interact::Telnet>, L<SSH|Net::CLI::Interact::SSH>, or
+L<Serial|Net::CLI::Interact::Serial> documentation for further details.
+
+=head2 logger
+
+This is the application's L<Logger|Net::CLI::Interact::Logger> object. A
+powerful logging subsystem is available to your application, built upon the
+L<Log::Dispatch> distribution. You can enable logging of this module's
+processes at various levels, or add your own logging statements.
+
+=head1 FUTHER READING
+
+=head2 Prompt Matching
+
+Whenever a command statement is issued, output is slurped until a matching
+prompt is seen in that output. Control of the Prompts is shared between the
+definitions in L<Net::CLI::Interact::Phrasebook> dictionaries, and methods of
+the L<Net::CLI::Interact::Role::Prompt> core component. See that module's
+documentation for further details.
+
+=head2 Actions and ActionSets
+
+All commands and macros are composed from their phrasebook definitions into
+L<Actions|Net::CLI::Interact::Action> and
+L<ActionSets|Net::CLI::Interact::ActionSet> (simply iterable sequences of
+Actions). See those modules' documentation for further details, in case you
+wish to introspect their structures.
 
 =cut
