@@ -34,7 +34,7 @@ sub last_prompt {
 
 sub last_prompt_as_match {
     my $prompt = (shift)->last_prompt;
-    return qr/^$prompt$/;
+    return qr/^\Q$prompt\E$/;
 }
 
 # pump until any of the prompts matches the output buffer
