@@ -66,7 +66,7 @@ sub _execute_actions {
         actions => [@_],
         current_match => ($self->prompt || $self->last_prompt_as_match),
         ($self->has_default_continuation
-            ? (continuation => $self->phrasebook->macro->{$self->default_continuation})
+            ? (default_continuation => $self->phrasebook->macro->{$self->default_continuation})
             : ()),
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });

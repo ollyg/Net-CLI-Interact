@@ -4,7 +4,7 @@ use Moose;
 use Net::CLI::Interact::Action;
 with 'Net::CLI::Interact::Role::Iterator';
 
-has continuation => (
+has default_continuation => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
     required => 0,
@@ -56,7 +56,8 @@ sub clone {
     return Net::CLI::Interact::ActionSet->new({
         actions => [ map { $_->clone } $self->_sequence ],
         _callbacks => $self->_callbacks,
-        ($self->continuation  ? (continuation  => $self->continuation)  : ()),
+        ($self->default_continuation
+            ? (default_continuation => $self->default_continuation) : ()),
         ($self->current_match ? (current_match => $self->current_match) : ()),
     });
 }
@@ -133,7 +134,7 @@ sub _forward_continuation_to_match {
     while ($self->has_next) {
         my $this = $self->next;
         my $next = $self->peek or last; # careful...
-        my $cont = ($this->continuation || $self->continuation);
+        my $cont = ($this->continuation || $self->default_continuation);
         next unless $this->type eq 'send'
             and $next->type eq 'match'
             and defined $cont;
