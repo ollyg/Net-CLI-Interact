@@ -59,6 +59,9 @@ sub _execute_actions {
     my $self = shift;
     $self->logger->log('engine', 'notice', 'executing actions');
 
+    # make connection on transport if not yet done
+    $self->transport->connect if not $self->transport->done_connect;
+
     # user can install a prompt, call find_prompt, or let us trigger that
     $self->find_prompt if not $self->last_actionset;
 

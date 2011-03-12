@@ -122,7 +122,6 @@ sub connect {
 sub do_action {
     my ($self, $action) = @_;
     $self->logger->log('transport', 'info', 'callback received for', $action->type);
-    $self->connect if not $self->done_connect;
 
     if ($action->type eq 'match') {
         my $cont = $action->continuation;
