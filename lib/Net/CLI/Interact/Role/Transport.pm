@@ -137,7 +137,8 @@ sub do_action {
                 $self->send($cont->last->value);
             }
             elsif ($last_out =~ $action->value) {
-                $self->logger->log('transport', 'debug', 'output matched, storing and returning');
+                $self->logger->log('transport', 'debug',
+                    sprintf 'output matched %s, storing and returning', $action->value);
                 $action->response($self->flush);
                 last;
             }

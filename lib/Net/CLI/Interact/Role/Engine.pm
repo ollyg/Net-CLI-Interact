@@ -74,7 +74,7 @@ sub _execute_actions {
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
 
-    $self->logger->log('engine', 'debug', 'dispaching to set execute method');
+    $self->logger->log('engine', 'debug', 'dispatching to execute method');
     $set->execute;
     $self->last_actionset($set);
 
