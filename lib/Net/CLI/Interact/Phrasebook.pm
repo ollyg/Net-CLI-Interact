@@ -54,8 +54,18 @@ has 'macro' => (
 has 'default_continuation' => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
+    writer => '_default_continuation',
     required => 0,
 );
+
+sub set_default_continuation {
+    my ($self, $cont) = @_;
+    confess "missing continuation" unless $cont;
+    confess "unknown continuation [$cont]" unless
+        exists $self->macro->{$cont};
+    $self->_default_continuation( $self->macro->{$cont} );
+    $self->logger->log('phrasebook', 'info', 'default continuation set to', $cont);
+}
 
 # inflate the hashref into action objects
 sub _bake {
