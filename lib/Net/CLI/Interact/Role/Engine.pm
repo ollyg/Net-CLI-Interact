@@ -65,6 +65,10 @@ sub _execute_actions {
         $self->logger->log('prompt', 'info', 'last match was a prompt reference, setting new prompt');
         $self->_prompt($self->last_actionset->last->value);
     }
+
+    return (wantarray
+        ? (split $self->transport->irs, $self->last_response)
+        : $self->last_response);
 }
 
 1;

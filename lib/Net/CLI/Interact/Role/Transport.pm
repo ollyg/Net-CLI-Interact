@@ -3,6 +3,10 @@ package Net::CLI::Interact::Role::Transport;
 use Moose::Role;
 use IPC::Run ();
 
+use Moose::Util::TypeConstraints;
+coerce 'Net::CLI::Interact::Types::Transport::irs'
+    => from 'Str'
+        => via { m/$_/ };
 
 has 'logger' => (
     is => 'ro',
@@ -19,8 +23,9 @@ has 'transport_options' => (
 
 has 'irs' => (
     is => 'ro',
-    isa => 'Str',
-    default => sub { "\n" },
+    coerce => 1,
+    isa => 'Net::CLI::Interact::Types::Transport::irs',
+    default => sub { m/\n/ },
     required => 0,
 );
 
