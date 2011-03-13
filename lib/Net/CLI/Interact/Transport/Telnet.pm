@@ -1,7 +1,7 @@
 package Net::CLI::Interact::Transport::Telnet;
 
 use Moose;
-with 'Net::CLI::Interact::Role::Transport';
+extends 'Net::CLI::Interact::Transport';
 
 has 'app' => (
     is => 'ro',

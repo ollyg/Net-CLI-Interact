@@ -1,7 +1,9 @@
 package Net::CLI::Interact::Role::Transport;
 
-use Moose::Role;
+use Moose;
 use IPC::Run ();
+
+requires 'app';
 
 has 'logger' => (
     is => 'ro',
