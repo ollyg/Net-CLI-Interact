@@ -56,9 +56,8 @@ sub clone {
     return Net::CLI::Interact::ActionSet->new({
         actions => [ map { $_->clone } $self->_sequence ],
         _callbacks => $self->_callbacks,
-        ($self->default_continuation
-            ? (default_continuation => $self->default_continuation) : ()),
-        ($self->current_match ? (current_match => $self->current_match) : ()),
+        default_continuation => $self->default_continuation,
+        current_match => $self->current_match,
     });
 }
 

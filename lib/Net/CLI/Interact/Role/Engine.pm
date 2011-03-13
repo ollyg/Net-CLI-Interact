@@ -6,22 +6,6 @@ with 'Net::CLI::Interact::Role::Prompt';
 use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
 
-has 'default_continuation' => (
-    is => 'rw',
-    isa => 'Str',
-    required => 0,
-    trigger => \&_check_default_continuation,
-    predicate => 'has_default_continuation',
-);
-
-sub _check_default_continuation {
-    my ($self, $cont) = @_;
-    confess "missing continuation" unless $cont;
-    confess "unknown continuation [$cont]" unless
-        exists $self->phrasebook->macro->{$cont};
-    $self->logger->log('engine', 'info', 'default continuation set to', $cont);
-}
-
 has 'last_actionset' => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
@@ -68,9 +52,7 @@ sub _execute_actions {
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@_],
         current_match => ($self->prompt || $self->last_prompt_as_match),
-        ($self->has_default_continuation
-            ? (default_continuation => $self->phrasebook->macro->{$self->default_continuation})
-            : ()),
+        default_continuation => $self->phrasebook->default_continuation,
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
 

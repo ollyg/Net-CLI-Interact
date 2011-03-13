@@ -51,6 +51,12 @@ has 'macro' => (
     required => 0,
 );
 
+has 'default_continuation' => (
+    is => 'rw',
+    isa => 'Net::CLI::Interact::ActionSet',
+    required => 0,
+);
+
 # inflate the hashref into action objects
 sub _bake {
     my ($self, $data) = @_;
