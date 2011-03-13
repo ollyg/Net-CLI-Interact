@@ -78,14 +78,16 @@ must interact with a command line interface.
     transport_options => { host => '192.0.2.1' },
  });
  
- $s->cmd('show ip interfaces brief');
- my $interfaces = $s->last_response;
+ # respond to a usename/password prompt
+ $s->macro('to_user_exec', 'my_username', 'my_password');
+ 
+ my $interfaces = $s->cmd('show ip interfaces brief');
  
  $s->macro('to_priv_exec', 'my_password');
  # matched prompt is updated automatically
  
- $s->macro('show_run');
  # paged output is slurped into one response
+ $s->macro('show_run');
  my $config = $s->last_response;
 
 =head1 DESCRIPTION
@@ -145,12 +147,18 @@ Execute a single command statement on the connected device, and consume output
 until there is a match with the current I<prompt>. The statement is executed
 verbatim on the device, with a newline appended.
 
+In scalar context the C<last_response> is returned; in list context it is
+returned but split into a list on the I<input record separator> (newline).
+
 =head2 macro( $name, \@params? )
 
 Execute the commands contained within the named Macro, which must be available
 in the loaded Phrasebook. If the Macro contains commands using C<sprintf>
 format variables then the corresponding total number of C<@params> must be
 passed to the method.
+
+In scalar context the C<last_response> is returned; in list context it is
+returned but split into a list on the I<input record separator> (newline).
 
 =head2 last_response
 
@@ -164,8 +172,8 @@ details.
 
 =head2 transport
 
-Returns the L<Net::CLI::Interact::Transport> backend which was loaded based on
-the C<transport> option to C<new>. See the
+Returns the L<Transport|Net::CLI::Interact::Role::Transport> backend which was
+loaded based on the C<transport> option to C<new>. See the
 L<Telnet|Net::CLI::Interact::Telnet>, L<SSH|Net::CLI::Interact::SSH>, or
 L<Serial|Net::CLI::Interact::Serial> documentation for further details.
 
