@@ -191,20 +191,43 @@ sub _find_phrasebooks {
 
 1;
 
-# ABSTRACT: Load Interact Phrasebooks from a Library
+# ABSTRACT: Load command phrasebooks from a Library
 
 =head1 DESCRIPTION
 
-This module implements the loading and preparing of Interact Phrasebooks from
-an on-disk file-based hierarchical library. In our context, a phrasebook can
-contain either I<prompt> or I<macro> directives.
+A command phrasebook is where you store the repeatable sequences of commands
+which can be sent to connected network devices. An example would be a command
+to show the configuration of a device: storing this in a phrasebook (sometimes
+known as a dictionary) saves time and effort.
 
-Prompts are simply named regular expressions that will match the content of a
-single line of text. Macros are alternating sequences of CLI commands and
-regular expressions, with a few more options as described below.
+This module implements the loading and preparing of phrasebooks from an
+on-disk file-based hierarchical library, and makes them available to the
+application as smart objects for use in L<Net::CLI::Interact> sessions.
+Entries in the phrasebook will be one of the following types:
 
-Each Prompt or Macro is baked into an instance of the class
-L<Net::CLI::Interact::ActionSet>.
+=over 4
+
+=item Prompt
+
+Named regular expressions that will match the content of a single line of text
+in the output returned from a connected device. They are a demarcation between
+commands sent and responses returned.
+
+=item Macro
+
+Alternating sequences of command statements sent to the device, and regular
+expressions to match the response. There are different kinds of Macro,
+explained below.
+
+=back
+
+The named regular expressions used in Prompts and Macros are known as Match
+statements. The command statements in Macros which are sent to the device are
+known as Send statements.
+
+Each Send or Match statement becomes an instance of the
+L<Net::CLI::Interact::Action> class. These are built up into Prompts and
+Macros, which become instances of the L<Net::CLI::Interact::ActionSet> class.
 
 =head1 USAGE
 
@@ -221,32 +244,38 @@ Entries in C<file3> sharing a name with any entries from C<file1> or C<file2>
 will take precedence. Those in C<file2> will also override entries in
 C<file1>, because asciibetical sorting places the files in that order.
 
-When the module is loaded, a I<personality> is given. This locates a directory
-on disk, and then the files in that directory and all its ancestors in the
-hierarchy are loaded. The hierarchy is specified by two I<library> options.
+When this module is loaded, a I<personality> key is required. This locates a
+directory on disk, and then the files in that directory and all its ancestors
+in the hierarchy are loaded. The directory root is specified by two Library
+options.
 
-=head1 PARAMETERS
+=head1 METHODS
+
+=head2 new
+
+This takes the following options, and returns a baked phrasebook:
 
 =over 4
 
-=item personality($directory)
+=item C<< personality => $directory >> (required)
 
-The name of a directory on disk. Any files higher in the libraries hierarchy
-are also loaded, but entries in files contained within this directory, or
-"closer" to it, will take precedence.
+The name of a directory component on disk. Any files higher in the libraries
+hierarchy are also loaded, but entries in files contained within this
+directory, or "closer" to it, will take precedence.
 
-=item library($directory | \@directories)
+=item C<< library => $directory | \@directories >>
 
 First library hierarchy, specified either as a single directory or a list of
 directories that are searched in order. The idea is that this option be set in
 your application code, perhaps specifying some directory of phrasebooks
 shipped with the distribution.
 
-=item add_library($directory | \@directories)
+=item C<< add_library => $directory | \@directories >>
 
 Second library hierarchy, specified either as a single directory or a list of
 directories that are searched in order. This parameter is for the end-user to
-provide the location(s) of their own phrasebook(s).
+provide the location(s) of their own phrasebook(s). Any entries found via this
+path will override those found via the first C<library> path.
 
 =back
 
@@ -291,10 +320,13 @@ On the first line is the keyword C<macro> followed by the name of the Macro,
 which must be a valid Perl identifier (letters, numbers, underscores only).
 
 On the immediately following line is the keyword C<send> followed by a space
-and then any text up until the end of the line. This text is sent to the
-conneted CLI as a single command statement. The following line contains the
+and then any text up until the end of the line, and if you want to include
+whitespace at the beginning or end, use quotes. This text is sent to the
+connected CLI as a single command statement. The next line contains the
 keyword C<match> followed by the Prompt (regular expression) which will
 terminate gathering of returned output from the sent command.
+
+Macros support the following features:
 
 =over 4
 
@@ -302,9 +334,9 @@ terminate gathering of returned output from the sent command.
 
 Normally, you ought always to specify C<send> statements along with a
 following C<match> statement so that the module can tell when the output from
-your command has ended. However you can omit the Match and the module will
+your command has ended. However you can omit any Match and the module will
 insert either the current C<prompt> value if set by the user, or the last
-Prompt from the last Macro. So the above could be written as:
+Prompt from the last Macro. So the previous example could be re-written as:
 
  macro show_int_br
      send show ip int br
@@ -317,22 +349,23 @@ will be inserted for you:
      send show clock
 
 However it is recommended that this type of sequence be implemented as
-individual commands rather than a Macro, as it will be easier for you to
-retrieve the command response(s). Normally the Automatic Matching is used just
-to allow missing off of the final Match statement when it's the same as the
-current Prompt.
+individual commands (or separate Macros) rather than a single Macro, as it
+will be easier for you to retrieve the command response(s). Normally the
+Automatic Matching is used just to allow missing off of the final Match
+statement when it's the same as the current Prompt.
 
 =item Format Interpolation
 
 Each <send> statement is in fact run through Perl's C<sprintf> command, so
-variables may be interpolated into the statement using standard C<%> fields.
+variables may be interpolated into the statement using standard C<"%"> fields.
 For example:
 
  macro show_int_x
      send show interface %s
 
 The method for passing variables into the module upon execution of this Macro
-is documented elsewhere. This feature is useful for username/password prompts.
+is documented in L<Net::CLI::Interact::Role::Engine>. This feature is useful
+for username/password prompts.
 
 =item Named Match References
 
@@ -349,7 +382,7 @@ instead:
      send %s
      match prompt priv_exec
 
-As you can see, in the cae of the last Match, we have the keywords C<match
+As you can see, in the case of the last Match, we have the keywords C<match
 prompt> followed by the name of a defined Prompt.
 
 =item Continuations
@@ -371,19 +404,18 @@ the line. If you need to enclose whitespace use quotes, as in the example.
 
 The module will send the continuation text and gobble the matched prompt from
 the emitted output so you only have one complete piece of text returned, even
-if split over many pages. Metacharacters such as newlines are not yet
-supported in the continuation text.
+if split over many pages.
 
 Note that in the above example the C<follow> statement should be seen as an
-extension of the C<send> statement. There is an implicit Match prompt added at
-the end, as per Automatic Matching, above.
+extension of the C<send> statement. There is still an implicit Match prompt
+added at the end of this Macro, as per Automatic Matching, above.
 
 =item Line Endings
 
 Normally all sent command statements are appended with a newline (or the value
 of C<ors>, if set). To suppress that feature, use the keyword C<send_no_ors>
 instead of C<send>. However this does not prevent the Format Interpolation via
-C<sprintf> as described above (which is not necessary: simply use C<%%>).
+C<sprintf> as described above (which would be necessary: simply use C<"%%">).
 
 =back
 
