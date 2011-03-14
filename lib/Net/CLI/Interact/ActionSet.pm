@@ -173,9 +173,17 @@ This class is used internally by L<Net::CLI::Interact> and it's unlikely that
 an end-user will need to make use of ActionSet objects directly. The interface
 is documented here as a matter of record.
 
-An ActionSet comprises a sequence (usefully, two or more) of L<Actions|Net::CLI::Interact::Action> which describe a conversation with a connected network device. Actions will alternate between type C<send> and C<match>, perhaps not in their original L<Phrasebook|Net::CLI::Interact::Phrasebook> definition, but certainly by the time they are used.
+An ActionSet comprises a sequence (usefully, two or more) of
+L<Actions|Net::CLI::Interact::Action> which describe a conversation with a
+connected network device. Actions will alternate between type C<send> and
+C<match>, perhaps not in their original
+L<Phrasebook|Net::CLI::Interact::Phrasebook> definition, but certainly by the
+time they are used.
 
-If the first Action is of type C<send> then the ActionSet is a normal sequence of "send a command" then "match a response", perhaps repeated. If the first Action is of type C<match> then the ActionSet represents a C<continuation>, which is the method of dealing with paged output.
+If the first Action is of type C<send> then the ActionSet is a normal sequence
+of "send a command" then "match a response", perhaps repeated. If the first
+Action is of type C<match> then the ActionSet represents a C<continuation>,
+which is the method of dealing with paged output.
 
 =head1 COMPOSITION
 
@@ -191,11 +199,16 @@ L<Net::CLI::Interact::Role::Iterator>
 
 =head2 default_continuation
 
-An ActionSet (C<match> then C<send>) which will be available for use on all commands sent from this ActionSet. An alternative to explicitly describing the Continuation sequence within the Phrasebook.
+An ActionSet (C<match> then C<send>) which will be available for use on all
+commands sent from this ActionSet. An alternative to explicitly describing the
+Continuation sequence within the Phrasebook.
 
 =head2 current_match
 
-A stash for the current Prompt (regular expression reference) which L<Net::CLI::Interact> expects to see after each command. This is passed into the constructor and is used when padding Match Actions into the ActionSet (see C<execute>, below).
+A stash for the current Prompt (regular expression reference) which
+L<Net::CLI::Interact> expects to see after each command. This is passed into
+the constructor and is used when padding Match Actions into the ActionSet (see
+C<execute>, below).
 
 =head2 clone
 
@@ -207,32 +220,53 @@ L<Phrasebook|Net::CLI::Interact::Phrasebook>.
 
 =head2 apply_params
 
-Accepts a list of parameters which will be used when C<sprintf> is called on each Send Action in the set. You must supply sufficient parameters as a list for I<all> Send Actions in the set, and they will be popped off and stashed with the Action(s) according to how many are required.
+Accepts a list of parameters which will be used when C<sprintf> is called on
+each Send Action in the set. You must supply sufficient parameters as a list
+for I<all> Send Actions in the set, and they will be popped off and stashed
+with the Action(s) according to how many are required.
 
 =head2 register_callback
 
-Allows the L<Transport|Net::CLI::Interact::Role::Transport> to be registered such that when the ActionSet is executed, commands are sent to the registered callback subroutine. May be called more than once, and on execution each of the callbacks will be run, in turn and in order.
+Allows the L<Transport|Net::CLI::Interact::Role::Transport> to be registered
+such that when the ActionSet is executed, commands are sent to the registered
+callback subroutine. May be called more than once, and on execution each of
+the callbacks will be run, in turn and in order.
 
 =head2 execute
 
-The business end of this class, where the sequence of Actions is prepared for execution and then control passed to the Transport. This process is split into a number of phases:
+The business end of this class, where the sequence of Actions is prepared for
+execution and then control passed to the Transport. This process is split into
+a number of phases:
 
 =head3 Pad C<send> with C<match>
 
-The Phrasebook allows missing out of the Match statements between Send statements, when they are expected to be the same as the C<current_match>. This phase inserts Match statements to restore a complete ActionSet definition.
+The Phrasebook allows missing out of the Match statements between Send
+statements, when they are expected to be the same as the C<current_match>.
+This phase inserts Match statements to restore a complete ActionSet
+definition.
 
 =head3 Forward C<continuation> to C<match>
 
-In the Phrasebook a user defines a Continuation (C<match>, then C<send>) following a Send statement (because it deals with the response to the sent command). However they are actually used by the Match, as it's the Match which captures output.
+In the Phrasebook a user defines a Continuation (C<match>, then C<send>)
+following a Send statement (because it deals with the response to the sent
+command). However they are actually used by the Match, as it's the Match which
+captures output.
 
-This phase copies Continuation ActionSets from Send statements to following Match statements in the ActionSet. It also performs a similar action using the C<default_continuation> if one is set and there's no existing Continuation configured.
+This phase copies Continuation ActionSets from Send statements to following
+Match statements in the ActionSet. It also performs a similar action using the
+C<default_continuation> if one is set and there's no existing Continuation
+configured.
 
 =head3 Callback(s)
 
-Here the registered callbacks are executed (i.e. data is setnt to the Transport).
+Here the registered callbacks are executed (i.e. data is setnt to the
+Transport).
 
 =head3 Marshall Responses
 
-Finally, responses which are stashed in the Match Actions are copied back to the Send actions, as more logically they are responses to commands sent. The ActionSet is now ready for access to retrieve the C<last_response> from the device.
+Finally, responses which are stashed in the Match Actions are copied back to
+the Send actions, as more logically they are responses to commands sent. The
+ActionSet is now ready for access to retrieve the C<last_response> from the
+device.
 
 =cut
