@@ -184,18 +184,30 @@ returned but split into a list on the I<input record separator> (newline).
 
 Returns the gathered output after the most recent C<cmd> or C<macro>.
 
-=head2 phrasebook
-
-Returns the Phrasebook object which was loaded based on the C<personality>
-option given to C<new>. See L<Net::CLI::Interact::Phrasebook> for further
-details.
-
 =head2 transport
 
 Returns the L<Transport|Net::CLI::Interact::Role::Transport> backend which was
 loaded based on the C<transport> option to C<new>. See the
 L<Telnet|Net::CLI::Interact::Telnet>, L<SSH|Net::CLI::Interact::SSH>, or
 L<Serial|Net::CLI::Interact::Serial> documentation for further details.
+
+=head2 phrasebook
+
+Returns the Phrasebook object which was loaded based on the C<personality>
+option given to C<new>. See L<Net::CLI::Interact::Phrasebook> for further
+details.
+
+=head2 set_default_contination
+
+Briefly, a Continuation handles the slurping of paged output from commands.
+See the L<Net::CLI::Interact::Phrasebook> documentation for further details.
+
+Pass in the name of a defined Contination (Macro) to enable paging handling as
+a default for all sent commands. This is an alternative to describing the
+Continuation format in each Macro.
+
+To unset the default Continuation, call the C<clear_default_continuation>
+method.
 
 =head2 logger
 

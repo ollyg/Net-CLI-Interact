@@ -17,6 +17,23 @@ sub last_response {
     return $self->last_actionset->item_at(-2)->response;
 }
 
+has 'default_continuation' => (
+    is => 'rw',
+    isa => 'Net::CLI::Interact::ActionSet',
+    writer => '_default_continuation',
+    clearer => 'clear_default_continuation',
+    required => 0,
+);
+
+sub set_default_continuation {
+    my ($self, $cont) = @_;
+    confess "missing continuation" unless $cont;
+    confess "unknown continuation [$cont]" unless
+        exists $self->phrasebook->macro->{$cont};
+    $self->_default_continuation( $self->phrasebook->macro->{$cont} );
+    $self->logger->log('engine', 'info', 'default continuation set to', $cont);
+}
+
 sub macro {
     my ($self, $name, @params) = @_;
     $self->logger->log('engine', 'notice', 'running macro', $name);
@@ -52,7 +69,7 @@ sub _execute_actions {
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@_],
         current_match => ($self->prompt || $self->last_prompt_as_match),
-        default_continuation => $self->phrasebook->default_continuation,
+        default_continuation => $self->default_continuation,
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
 
