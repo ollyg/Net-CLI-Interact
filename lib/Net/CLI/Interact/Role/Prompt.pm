@@ -44,6 +44,9 @@ sub find_prompt {
     my ($self, $tries) = @_;
     $self->logger->log('prompt', 'notice', 'finding prompt');
 
+    # make connection on transport if not yet done
+    $self->transport->connect if not $self->transport->done_connect;
+
     eval {
         while ($self->transport->harness->pump) {
             foreach my $prompt (keys %{ $self->phrasebook->prompt }) {
