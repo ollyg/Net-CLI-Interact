@@ -24,6 +24,8 @@ has '_prompt' => (
 
 sub set_prompt {
     my ($self, $prompt) = @_;
+    confess "unknown prompt: [$prompt]"
+    	unless exists $self->phrasebook->prompt->{$prompt};
     $self->_prompt( $self->phrasebook->prompt->{$prompt}->first->value );
 }
 
@@ -72,121 +74,87 @@ sub find_prompt {
 
 1;
 
-# ABSTRACT: Command statement execution and Prompt management
-
-=head1 SYNOPSIS
-
- $s->set_prompt('user_exec');
- 
- $s->macro('show_int_br');
- my $interfaces = $s->last_response;
- 
- $s->cmd('show ip interfaces brief');
- my $same_as_interfaces = $s->last_response;
- 
- $s->macro('to_priv_exec', 'enable_password');
- # prompt is updated automatically
- 
- $s->macro('show_run');
- my $config = $s->last_response;
+# ABSTRACT: Command-line prompt management
 
 =head1 DESCRIPTION
 
-This module implements the API for command execution and Prompt management in
-L<Net::CLI::Interact>. After the Phrasebooks are loaded, a table of Prompts
-and a table of Macros is available to the application.
+This is another core component of L<Net::CLI::Interact>, and its role is to
+keep track of the current prompt on the connected command line interface. The
+idea is that most CLI have a prompt where you issue commands, and are returned
+some output which this module gathers. The prompt is a demarcation between
+each command and its response data.
 
 =head1 METHODS
 
-=over 4
+=head2 set_prompt($prompt_name)
 
-=item prompt
+This method will be used most commonly by applications to select and set a
+prompt from the Phrasebook which matches the current context of the connected
+CLI session. This allows a sequence of commands to be sent which share the
+same Prompt.
+
+The name you pass in is looked up in the loaded Phrasebook and the entry's
+regular expression stored in the C<prompt> slot. An exception is thrown if the
+named Prompt is not known.
+
+Typically you would either refer to a Prompt in a Macro, or set the prompt you
+are expecting once for a sequence of commands in a particular CLI context.
+
+When a Macro completes and it has been defined in the Phrasebook with an
+explicit named Prompt at the end, we can assume the user is indicating some
+change of context. Therefore the C<prompt> is I<automatically updated> on such
+occasions to have the regular expression from that named Prompt.
+
+=head2 prompt
 
 Returns the current Prompt, which is a regular expression reference. The
-Prompt is used as a default when a Macro has not been set up with explicit
-Prompt matching.
+Prompt is used as a default to catch the end of command response output, when
+a Macro has not been set up with explicit Prompt matching.
 
-Typically you would set the prompt you are expecting (see below) once for a
-sequence of commands in a particular CLI context. The C<prompt> is also
-automatically updated when a Macro successfully ends which was defined in the
-Phrasebook with a known Prompt (referenced by name using C<match prompt...>).
+Typically you would either refer to a Prompt in a Macro, or set the prompt you
+are expecting once for a sequence of commands in a particular CLI context.
 
-=item unset_prompt
+=head2 unset_prompt
 
-You can use this method to empty the current Prompt setting (see above). The
-effect is that the module will automatically set the Prompt for itself based
-on the last line of output received from the connected CLI. Do not use this
-option unless you know what you are doing.
+Use this method to empty the current C<prompt> setting (see above). The effect
+is that the module will automatically set the Prompt for itself based on the
+last line of output received from the connected CLI. Do not use this option
+unless you know what you are doing.
 
-=item set_prompt($prompt_name)
-
-This method will be used most commonly by applications to set a prompt from
-the Phrasebook which matches the current context of the connected CLI session.
-This allows a sequence of commands to be sent which share the same Prompt.
-
-=item find_prompt
+=head2 find_prompt($wake_up?)
 
 A helper method that consumes output from the connected CLI session until a
 line matches one of the named Prompts in the loaded Phrasebooks, at which
 point no more output is consumed. As a consequence the C<prompt> will be set
-(see above) and also the C<last_*> (see below) accessors.
+(see above).
 
-This might be used when you are connecting to a device which maintains CLI
-state between sessions (for example a serial console), and you need to
-discover the current state. However, C<find_prompt> is executed automatically
-for you if you call a C<cmd> or C<macro> before any interaction with the CLI.
+This might be used when you're connecting to a device which maintains CLI
+state between session disconnects (for example a serial console), and you need
+to discover the current state. However, C<find_prompt> is executed
+automatically for you if you call a C<cmd> or C<macro> before any interaction
+with the CLI.
 
-You might need to send some input to the device to trigger generation of
-output for matching. If no output matches, the module will time out and throw
-an exception (see C<timeout>, documented elsewhere), in which case no output
-will be consumed so you are free to attempt another C<find_prompt>.
+The current device output will be scanned against all known named Prompts. If
+nothing is found, the default behaviour is then to send the content of our
+C<wake_up> slot (see below), and try to match again. The idea is that by
+sending one carriage return, we might be sent a new prompt. If you wish to
+disable this behaviour, pass a I<false> value into this method.
 
-=item macro($macro_name, ?@params)
+=head2 wake_up
 
-Execute the commands contained within the named Macro, which must be loaded
-in a Phrasebook. If the Macro contains commands using C<sprintf> Format
-variables then the corresponding parameters must be passed to the method.
+Data sent to a device within C<find_prompt> if no output has so far matched
+any known named Prompt. Default is the value of the I<output record separator>
+from the L<Transport|Net::CLI::Interact::Transport> (newline).
 
-Values are consumed from the provided C<@params> and passed to the C<send>
-commands in the Macro in order, as needed. An exception will be thrown if
-there are insufficient parameters.
+=head2 last_prompt
 
-An exception will also be thrown if the Match statements in the Macro are not
-successful with the output returned from the device. This is based on the
-value C<timeout>, which controls how long the module waits for matching
-output.
-
-=item cmd($command_statement)
-
-Execute a single C<send> command statement and consume output until there is a
-match with the current value of C<prompt>. The statement is executed verbatim
-on the device, with a newline appended.
-
-=item last_response
-
-Returns the gathered output after issueing the most recent C<send> command.
-
-=item last_prompt
-
-Returns the Prompt which most recently was matched to terminate gathering of
+Returns the Prompt which most recently was matched and terminated gathering of
 output from the connected CLI. This is a simple text string.
 
-=item last_prompt_as_match
+=head2 last_prompt_as_match
 
-Returns the text which was most recently matched to terminate gathering of
-output from the connected CLI, as a regular expression with line start and end
-anchors.
+Returns the text which was most recently matched and terminated gathering of
+output from the connected CLI, as a quote-escaped regular expression with line
+start and end anchors.
 
-=item last_actionset
-
-Returns the complete L<Net::CLI::Interact::ActionSet> that was constructed
-from the most recent C<macro> or C<cmd> execution. This will be a sequence of
-Actions that correspond to C<send> and C<match> statements.
-
-In the case of a Macro these directly relate to the contents of your
-Phrasebook, with the possible addition of C<match> statements added
-automatically. In the case of a C<cmd> execution, in effect a Macro is
-constructed which consists of a single C<send> and a single C<match>.
-
-=back
-
+=cut

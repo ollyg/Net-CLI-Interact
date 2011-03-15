@@ -91,17 +91,17 @@ sub _execute_actions {
 
 1;
 
-# ABSTRACT: Statement Execution Engine
+# ABSTRACT: Statement execution engine
 
 =head1 DESCRIPTION
 
-This module is the core of L<Net::CLI::Interact>, and serves to take entries from your loaded L<Phrasebooks|Net::CLI::Interact::Phrasebook>, issue them to connected devices, and gather the returned output.
+This module is the core of L<Net::CLI::Interact>, and serves to take entries
+from your loaded L<Phrasebooks|Net::CLI::Interact::Phrasebook>, issue them to
+connected devices, and gather the returned output.
 
 =head1 METHODS
 
-=over 4
-
-=item cmd($command_statement)
+=head2 cmd($command_statement)
 
 Execute a single command statement on the connected device, and consume output
 until there is a match with the current I<prompt>. The statement is executed
@@ -111,7 +111,7 @@ In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the
 I<input record separator> (newline).
 
-=item macro($macro_name, ?@params)
+=head2 macro($macro_name, ?@params)
 
 Execute the commands contained within the named Macro, which must be loaded
 in a Phrasebook. If the Macro contains commands using C<sprintf> Format
@@ -130,7 +130,7 @@ In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the
 I<input record separator> (newline).
 
-=item last_response
+=head2 last_response
 
 Returns the gathered output after issueing the last recent C<send> command
 within the most recent C<cmd> or C<prompt>. That is, you get the output from
@@ -140,7 +140,7 @@ In scalar context all data is returned. In list context the gathered response
 is returned, only split into a list on the I<input record separator>
 (newline).
 
-=item last_actionset
+=head2 last_actionset
 
 Returns the complete L<ActionSet|Net::CLI::Interact::ActionSet> that was
 constructed from the most recent C<macro> or C<cmd> execution. This will be a
@@ -152,5 +152,5 @@ Phrasebook, with the possible addition of C<match> statements added
 automatically. In the case of a C<cmd> execution, an "anonymous" Macro is
 constructed which consists of a single C<send> and a single C<match>.
 
-=back
+=cut
 
