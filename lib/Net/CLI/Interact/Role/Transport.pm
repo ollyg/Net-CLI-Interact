@@ -105,7 +105,7 @@ has 'timeout' => (
     required => 0,
     default => 10,
     trigger => sub {
-        (shift)->_timeout_obj->start( shift );
+        (shift)->_timeout_obj->start(shift) if scalar @_ > 1;
     },
 );
 
@@ -175,72 +175,87 @@ output returned until a regular expression matches.
 
 =head1 METHODS
 
-=over 4
-
-=item connect
+=head2 connect
 
 This method I<must> be called before any other, to establish the L<IPC::Run>
-infrastructure, however it will be called for you by the module so there's no
-need to worry.
+infrastructure. However via L<Net::CLI::Interact>'s C<cmd>, C<match> or
+C<find_prompt> it will be called for you automatically.
 
-Two attributes of the loaded Transport are used. First the Application set in
-C<app> is of course required, plus the Runtime Options in C<runtime_options>
-are retrieved, if set, and passed as command line arguments to the
-Application.
+Two attributes of the specific loaded Transport are used. First the
+Application set in C<app> is of course required, plus the options in the
+Transport's C<runtime_options> are retrieved, if set, and passed as command
+line arguments to the Application.
 
-=item done_connect
+=head2 done_connect
 
 Returns True if C<connect> has been called successfully, otherwise returns
 False.
 
-=item do_action
+=head2 do_action
 
 When passed a L<Net::CLI::Interact::Action> instance, will execute the
 contained instruction on the connected CLI. This might be a command to
 C<send>, or a regular expression to C<match> in the output.
 
 Features of the commands and prompts are supported, such as Continuation
-Matching and Literal Sending (suppress appended C<ors>).
+matching (and slurping), and sending without an I<output record separator>.
 
-On failing to succeed with a Match, the module will time out (see C<timeout>,
+On failing to succeed with a Match, the module will time-out (see C<timeout>,
 below) and raise an exception.
 
-Output returned after issueing a command is stored with the Match Action by
-this method, but then marshalled into the correct C<send> Action elsewhere.
+Output returned after issueing a command is stored within the Match Action's
+C<response> slot by this method, but then marshalled into the correct C<send>
+Action by the L<ActionSet|Net::CLI::Interact::ActionSet>.
 
-=item send(@data)
+=head2 send(@data)
 
 Buffer for C<@data> which is to be sent to the connected CLI. Items in the
-list are joined together by the empty string.
+list are joined together by an empty string.
 
-=item out
+=head2 out
 
 Buffer for response data returned from the connected CLI. You can check the
 content of the buffer without emptying it.
 
-=item flush
+=head2 flush
 
 Empties the buffer used for response data returned from the connected CLI, and
 returns that data as a single text string (possibly with embedded newlines).
 
-=item timeout(?$seconds)
+=head2 timeout($seconds?)
 
 When C<do_action> is polling C<out> for response data matching a regular
-expression Action, it will eventually time out and throw an exception if
+expression Action, it will eventually time-out and throw an exception if
 nothing matches and no more data arrives.
 
 The number of seconds to wait is set via this method, which will also return
 the current value of C<timeout>.
 
-=item irs
+=head2 irs
 
 Line separator character(s) used when interpreting the data returned from the
 connected CLI. This defaults to a newline on the application's platform.
 
-=item ors
+=head2 ors
 
 Line separator character(s) appended to a command sent to the connected CLI.
 This defaults to a newline on the application's platform.
 
-=back
+=item harness
+
+Slot for storing the L<IPC::Run> instance for the connected transport session.
+Do not mess with this unless you know what you are doing.
+
+=item transport_options
+
+Slot for storing a Hash Ref of options for the specific loaded Transport,
+passed by the user of C<Net::CLI::Interact>. Do not access this directly, but
+instead use C<runtime_options> from the specific Transport class.
+
+=item logger
+
+Slot for storing a reference to the application's
+L<Logger|Net::CLI::Interact::Logger> object.
+
+=cut
 
