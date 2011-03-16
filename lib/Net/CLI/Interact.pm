@@ -27,23 +27,11 @@ sub _build_logger {
     return Net::CLI::Interact::Logger->new({$self->params});
 }
 
-has '_log_categories' => (
-    is => 'ro',
-    isa => 'HashRef',
-    auto_deref => 1,
-    default => sub {{ map {$_ => 1} qw/
-        engine
-        phrasebook
-        prompt
-        transport
-    /}},
-);
-
 sub log_at {
     my ($self, $level) = @_;
     return unless defined $level and length $level;
     $self->logger->log_flags({
-        map {$_ => $level} keys $self->_log_categories
+        map {$_ => $level} qw/engine phrasebook prompt transport/
     });
 }
 
@@ -70,6 +58,7 @@ has 'transport' => (
 
 sub _build_transport {
     my $self = shift;
+    confess 'missing transport' unless exists $self->params->{transport};
     my $tpt = 'Net::CLI::Interact::Transport::'. $self->params->{transport};
     use Class::MOP;
     Class::MOP::load_class($tpt);

@@ -4,6 +4,8 @@ use Moose::Role;
 use IPC::Run ();
 
 use Moose::Util::TypeConstraints;
+subtype 'Net::CLI::Interact::Types::Transport::irs'
+    => as 'RegexpRef';
 coerce 'Net::CLI::Interact::Types::Transport::irs'
     => from 'Str'
         => via { m/$_/ };
@@ -25,7 +27,7 @@ has 'irs' => (
     is => 'ro',
     coerce => 1,
     isa => 'Net::CLI::Interact::Types::Transport::irs',
-    default => sub { m/\n/ },
+    default => sub { qr/\n/ },
     required => 0,
 );
 
