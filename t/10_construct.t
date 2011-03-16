@@ -5,8 +5,12 @@ use Test::More 0.88;
 
 BEGIN { use_ok( 'Net::CLI::Interact') }
 
-my $s = new_ok('Net::CLI::Interact' =>[ 
+new_ok('Net::CLI::Interact' => [ 
     transport => 'Test'
 ]);
+
+new_ok('Net::CLI::Interact' => [{
+    transport => 'Test'
+}]);
 
 done_testing;

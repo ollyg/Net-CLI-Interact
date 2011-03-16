@@ -12,7 +12,9 @@ has params => (
 
 sub BUILDARGS {
     my ($class, @params) = @_;
-    return { params => { @params } };
+    return { params => {} } unless scalar @params > 0;
+    my %stuff = ((scalar @params > 1) ? @params : %{$params[0]});
+    return { params => { %stuff } };
 }
 
 has 'logger' => (
