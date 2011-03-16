@@ -6,13 +6,13 @@ with 'Net::CLI::Interact::Role::Iterator';
 
 has default_continuation => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet',
+    isa => 'Maybe[Net::CLI::Interact::ActionSet]',
     required => 0,
 );
 
 has current_match => (
     is => 'rw',
-    isa => 'RegexpRef',
+    isa => 'Maybe[RegexpRef]',
     required => 0,
 );
 

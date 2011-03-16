@@ -67,7 +67,7 @@ sub _execute_actions {
     $self->transport->connect if not $self->transport->done_connect;
 
     # user can install a prompt, call find_prompt, or let us trigger that
-    $self->find_prompt if not $self->last_actionset;
+    $self->find_prompt if not ($self->prompt || $self->last_actionset);
 
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@_],

@@ -43,7 +43,7 @@ Defaults to the value of C<$^X>.
 
 Returns Perl options which turn it into a C<cat> emulator:
 
- -pe 'BEGIN { $! = 1 }'
+ -pe 'BEGIN { $| = 1 }'
 
 =head1 COMPOSITION
 

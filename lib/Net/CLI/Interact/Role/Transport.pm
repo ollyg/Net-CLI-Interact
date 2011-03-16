@@ -134,8 +134,12 @@ sub do_action {
     if ($action->type eq 'match') {
         my $cont = $action->continuation;
         while ($self->harness->pump) {
+            $self->logger->log('dump', 'debug', 'SEEN: '. $self->out);
+
             my $irs = $self->irs;
             my @out_lines = split m/$irs/, $self->out;
+            next if !defined $out_lines[-1];
+
             my $maybe_stash = join $self->irs, @out_lines[0 .. -2];
             my $last_out = $out_lines[-1];
 

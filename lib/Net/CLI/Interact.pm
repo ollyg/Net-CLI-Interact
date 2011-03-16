@@ -33,7 +33,7 @@ sub log_at {
     my ($self, $level) = @_;
     return unless defined $level and length $level;
     $self->logger->log_flags({
-        map {$_ => $level} qw/engine phrasebook prompt transport/
+        map {$_ => $level} qw/dump engine phrasebook prompt transport/
     });
 }
 

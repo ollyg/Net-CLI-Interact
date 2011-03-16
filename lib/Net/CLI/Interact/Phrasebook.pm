@@ -175,7 +175,7 @@ sub _find_phrasebooks {
             $self->personality) unless $target;
 
     my @phrasebooks = ();
-    my $root = Path::Class::Dir->new();
+    my $root = Path::Class::Dir->new('/');
     foreach my $part ( $target->dir_list ) {
         $root = $root->subdir($part);
         next if scalar grep { $root->subsumes($_) } @libs;
