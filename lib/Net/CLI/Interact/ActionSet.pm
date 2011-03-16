@@ -185,16 +185,6 @@ of "send a command" then "match a response", perhaps repeated. If the first
 Action is of type C<match> then the ActionSet represents a C<continuation>,
 which is the method of dealing with paged output.
 
-=head1 COMPOSITION
-
-=over 4
-
-=item *
-
-L<Net::CLI::Interact::Role::Iterator>
-
-=back
-
 =head1 INTERFACE
 
 =head2 default_continuation
@@ -268,5 +258,17 @@ Finally, responses which are stashed in the Match Actions are copied back to
 the Send actions, as more logically they are responses to commands sent. The
 ActionSet is now ready for access to retrieve the C<last_response> from the
 device.
+
+=head1 COMPOSITION
+
+See the following for further interface details:
+
+=over 4
+
+=item *
+
+L<Net::CLI::Interact::Role::Iterator>
+
+=back
 
 =cut

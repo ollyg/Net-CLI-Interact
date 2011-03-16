@@ -170,10 +170,15 @@ sub do_action {
 =head1 DESCRIPTION
 
 This module provides a wrapped interface to L<IPC::Run> for the purpose of
-interacting with a command line interface. You can send a command, and gather
-output returned until a regular expression matches.
+interacting with a command line interface. Given an application path, the
+program will be started and an interface is provided to send commands and
+slurp the response output.
 
-=head1 METHODS
+You should not use this role directly, but instead consume it within a
+specific Transport that will set the application command line name, and
+marshall any runtime options.
+
+=head1 INTERFACE
 
 =head2 connect
 
@@ -241,18 +246,18 @@ connected CLI. This defaults to a newline on the application's platform.
 Line separator character(s) appended to a command sent to the connected CLI.
 This defaults to a newline on the application's platform.
 
-=item harness
+=head2 harness
 
 Slot for storing the L<IPC::Run> instance for the connected transport session.
 Do not mess with this unless you know what you are doing.
 
-=item transport_options
+=head2 transport_options
 
 Slot for storing a Hash Ref of options for the specific loaded Transport,
 passed by the user of C<Net::CLI::Interact>. Do not access this directly, but
 instead use C<runtime_options> from the specific Transport class.
 
-=item logger
+=head2 logger
 
 Slot for storing a reference to the application's
 L<Logger|Net::CLI::Interact::Logger> object.

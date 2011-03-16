@@ -129,7 +129,7 @@ wish to invent a new category for your application, simply think of the name
 and begin to use it, with a C<$level> and C<@message> as above in the
 SYNOPSIS.
 
-=head1 METHODS
+=head1 INTERFACE
 
 =over 4
 

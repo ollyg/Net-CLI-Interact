@@ -132,7 +132,7 @@ Reuseable device command phrasebooks
 
 =back
 
-=head1 METHODS
+=head1 INTERFACE
 
 =head2 new( \%options )
 
@@ -248,5 +248,17 @@ L<Actions|Net::CLI::Interact::Action> and
 L<ActionSets|Net::CLI::Interact::ActionSet> (simply iterable sequences of
 Actions). See those modules' documentation for further details, in case you
 wish to introspect their structures.
+
+=head1 COMPOSITION
+
+See the following for further interface details:
+
+=over 4
+
+=item *
+
+L<Net::CLI::Interact::Role::Engine>
+
+=back
 
 =cut

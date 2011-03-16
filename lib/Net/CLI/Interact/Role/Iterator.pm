@@ -108,7 +108,7 @@ C<BUILD> or C<init_arg>. For example:
     init_arg => 'things',
  );
 
-=head1 METHODS
+=head1 INTERFACE
 
 =head2 count
 

@@ -99,7 +99,7 @@ This module is the core of L<Net::CLI::Interact>, and serves to take entries
 from your loaded L<Phrasebooks|Net::CLI::Interact::Phrasebook>, issue them to
 connected devices, and gather the returned output.
 
-=head1 METHODS
+=head1 INTERFACE
 
 =head2 cmd($command_statement)
 
@@ -111,7 +111,7 @@ In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the
 I<input record separator> (newline).
 
-=head2 macro($macro_name, ?@params)
+=head2 macro($macro_name, @params?)
 
 Execute the commands contained within the named Macro, which must be loaded
 in a Phrasebook. If the Macro contains commands using C<sprintf> Format
@@ -152,5 +152,16 @@ Phrasebook, with the possible addition of C<match> statements added
 automatically. In the case of a C<cmd> execution, an "anonymous" Macro is
 constructed which consists of a single C<send> and a single C<match>.
 
-=cut
+=head1 COMPOSITION
 
+See the following for further interface details:
+
+=over 4
+
+=item *
+
+L<Net::CLI::Interact::Role::Prompt>
+
+=back
+
+=cut

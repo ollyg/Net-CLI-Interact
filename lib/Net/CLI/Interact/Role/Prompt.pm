@@ -25,7 +25,7 @@ has '_prompt' => (
 sub set_prompt {
     my ($self, $prompt) = @_;
     confess "unknown prompt: [$prompt]"
-    	unless exists $self->phrasebook->prompt->{$prompt};
+        unless exists $self->phrasebook->prompt->{$prompt};
     $self->_prompt( $self->phrasebook->prompt->{$prompt}->first->value );
 }
 
@@ -87,7 +87,7 @@ idea is that most CLI have a prompt where you issue commands, and are returned
 some output which this module gathers. The prompt is a demarcation between
 each command and its response data.
 
-=head1 METHODS
+=head1 INTERFACE
 
 =head2 set_prompt($prompt_name)
 

@@ -249,7 +249,7 @@ directory on disk, and then the files in that directory and all its ancestors
 in the hierarchy are loaded. The directory root is specified by two Library
 options.
 
-=head1 METHODS
+=head1 INTERFACE
 
 =head2 new
 
