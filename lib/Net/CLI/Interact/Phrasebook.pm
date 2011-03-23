@@ -148,6 +148,8 @@ sub load_phrasebooks {
                 ];
                 next;
             }
+
+            confess "don't know what to do with this phrasebook line:\n", $_;
         }
         # last entry in the file needs baking
         $self->_bake($data);
