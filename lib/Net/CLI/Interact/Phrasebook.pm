@@ -111,10 +111,13 @@ sub load_phrasebooks {
             if (m{^(prompt|macro)\s+(\w+)\s*$}) {
                 $self->_bake($data);
                 $data = {type => $1, name => $2};
+                next;
             }
+            # skip new sections we don't yet understand
             elsif (m{^\w}) {
                 $_ = shift @lines until m{^(?:prompt|macro)};
                 unshift @lines, $_;
+                next;
             }
 
             if (m{^\s+(send(?:_no_ors)?)\s+(.+)$}) {
