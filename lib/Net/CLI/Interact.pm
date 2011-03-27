@@ -2,13 +2,6 @@ package # hide from pause
     Net::CLI::Interact::Meta::Attribute::Trait::Mediated;
 use Moose::Role;
 
-has 'mediated' => (
-    is => 'ro',
-    isa => 'Bool',
-    default => 1,
-    predicate => 'is_mediated',
-);
-
 package # hide from pause
     Moose::Meta::Attribute::Custom::Trait::Mediated;
 sub register_implementation {
