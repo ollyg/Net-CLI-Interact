@@ -90,11 +90,15 @@ must interact with a command line interface.
  });
  
  # respond to a usename/password prompt
- $s->macro('to_user_exec', 'my_username', 'my_password');
+ $s->macro('to_user_exec', {
+     params => ['my_username', 'my_password'],
+ });
  
  my $interfaces = $s->cmd('show ip interfaces brief');
  
- $s->macro('to_priv_exec', 'my_password');
+ $s->macro('to_priv_exec', {
+     params => ['my_password'],
+ });
  # matched prompt is updated automatically
  
  # paged output is slurped into one response
@@ -162,12 +166,11 @@ In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the
 I<input record separator> (newline).
 
-=head2 macro( $name, \@params? )
+=head2 macro( $name, \%options? )
 
-Execute the commands contained within the named Macro, which must be available
-in the loaded Phrasebook. If the Macro contains commands using C<sprintf>
-format variables then the corresponding total number of C<@params> must be
-passed to the method.
+Execute the commands contained within the named Macro, which must be loaded
+from a Phrasebook. Options to control the output, including variables for
+substitution into the Macro, are passed in the C<%options> hash reference.
 
 In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the

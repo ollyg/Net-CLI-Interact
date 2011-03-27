@@ -38,29 +38,43 @@ sub set_default_continuation {
 }
 
 sub macro {
-    my ($self, $name, @params) = @_;
+    my ($self, $name, $options) = @_;
+    $options ||= {};
+
+    my $params = ($options->{params} || []);
     $self->logger->log('engine', 'notice', 'running macro', $name);
-    $self->logger->log('engine', 'info', 'macro params are:', join ', ', @params);
+    $self->logger->log('engine', 'info', 'macro params are:', join ', ', @$params);
 
     my $set = $self->phrasebook->macro->{$name}->clone;
-    $set->apply_params(@params);
-    $self->_execute_actions($set);
+    $set->apply_params(@$params);
+
+    return $self->_execute_actions(
+        $set,
+        {timeout => $options->{timeout}}
+    );
+
 }
 
 sub cmd {
-    my ($self, $command) = @_;
+    my ($self, $command, $options) = @_;
+    $options ||= {};
+
     $self->logger->log('engine', 'notice', 'running command', $command);
 
-    $self->_execute_actions(
+    return $self->_execute_actions(
         Net::CLI::Interact::Action->new({
             type => 'send',
             value => $command,
+            no_ors => $options->{no_ors},
         }),
+        {timeout => $options->{timeout}}
     );
 }
 
 sub _execute_actions {
-    my $self = shift;
+    my ($self, $options) = @_;
+    $options ||= {};
+
     $self->logger->log('engine', 'notice', 'executing actions');
 
     # make connection on transport if not yet done
@@ -77,12 +91,17 @@ sub _execute_actions {
     $set->register_callback(sub { $self->transport->do_action(@_) });
 
     $self->logger->log('engine', 'debug', 'dispatching to execute method');
+    my $timeout_bak = $self->transport->timeout;
+
+    $self->transport->timeout($options->{timeout} || $timeout_bak);
     $set->execute;
+    $self->transport->timeout($timeout_bak);
     $self->last_actionset($set);
 
     # if user used a match ref then we assume new prompt value
     if ($self->last_actionset->last->is_lazy) {
-        $self->logger->log('prompt', 'info', 'last match was a prompt reference, setting new prompt');
+        $self->logger->log('prompt', 'info',
+            'last match was a prompt reference, setting new prompt');
         $self->_prompt($self->last_actionset->last->value);
     }
 
@@ -101,29 +120,63 @@ connected devices, and gather the returned output.
 
 =head1 INTERFACE
 
-=head2 cmd($command_statement)
+=head2 cmd($command_statement, \%options?)
 
 Execute a single command statement on the connected device, and consume output
 until there is a match with the current I<prompt>. The statement is executed
 verbatim on the device, with a newline appended.
 
+The following options are supported:
+
+=over 4
+
+=item C<< timeout => $seconds >> (optional)
+
+Sets a value of C<timeout> for the L<Transport|Net::CLI::Interact::Transport>
+local to this call of C<cmd>, that overrides whatever is set in the Transport,
+or the default of 10 seconds.
+
+=item C<< no_ors => 1 >> (optional)
+
+When passed a true value, a newline character (in fact the value of C<ors>)
+will not be appended to the statement sent to the device.
+
+=back
+
 In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the
 I<input record separator> (newline).
 
-=head2 macro($macro_name, @params?)
+=head2 macro($macro_name, \%options?)
 
 Execute the commands contained within the named Macro, which must be loaded
-in a Phrasebook. If the Macro contains commands using C<sprintf> Format
-variables then the corresponding parameters must be passed to the method.
+from a Phrasebook. Options to control the output, including variables for
+substitution into the Macro, are passed in the C<%options> hash reference.
 
-Values are consumed from the provided C<@params> and passed to the C<send>
-commands in the Macro in order, as needed. An exception will be thrown if
-there are insufficient parameters.
+The following options are supported:
 
-An exception will also be thrown if the Match statements in the Macro are not
-successful upon the output returned from the device. This is based on the
-value C<timeout>, which controls how long the module waits for matching
+=over 4
+
+=item C<< params => \@values >> (optional)
+
+If the Macro contains commands using C<sprintf> Format variables then the
+corresponding parameters must be passed in this value as an array reference.
+
+Values are consumed from the provided array reference and passed to the
+C<send> commands in the Macro in order, as needed. An exception will be thrown
+if there are insufficient parameters.
+
+=item C<< timeout => $seconds >> (optional)
+
+Sets a value of C<timeout> for the L<Transport|Net::CLI::Interact::Transport>
+local to this call of C<macro>, that overrides whatever is set in the
+Transport, or the default of 10 seconds.
+
+=back
+
+An exception will be thrown if the Match statements in the Macro are not
+successful against the output returned from the device. This is based on the
+value of C<timeout>, which controls how long the module waits for matching
 output.
 
 In scalar context the C<last_response> is returned (see below). In list
