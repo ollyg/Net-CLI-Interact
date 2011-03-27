@@ -11,7 +11,7 @@ my $s = Net::CLI::Interact->new({
 });
 
 my $pb = $s->phrasebook;
-my $p = $pb->prompt->{'TEST_PROMPT_ONE'};
+my $p = $pb->prompt('TEST_PROMPT_ONE');
 
 ok($p->clone, 'clone method');
 my $p2 = $p->clone;
@@ -22,7 +22,7 @@ ok($p2->register_callback(sub{}), 'register_callback method');
 ok(eval{ $p2->execute ;1}, 'execute method does not blow up');
 ok(eval{ $p2->apply_params ;1}, 'empty apply_params');
 
-my $p3 = $pb->macro->{'TEST_MACRO_PARAMS'};
+my $p3 = $pb->macro('TEST_MACRO_PARAMS');
 
 ok($p3->clone, 'clone method');
 my $p4 = $p3->clone;

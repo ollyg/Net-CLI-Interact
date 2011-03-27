@@ -32,8 +32,8 @@ sub set_default_continuation {
     my ($self, $cont) = @_;
     confess "missing continuation" unless $cont;
     confess "unknown continuation [$cont]" unless
-        exists $self->phrasebook->macro->{$cont};
-    $self->_default_continuation( $self->phrasebook->macro->{$cont} );
+        eval{ $self->phrasebook->macro($cont) };
+    $self->_default_continuation( $self->phrasebook->macro($cont) );
     $self->logger->log('engine', 'info', 'default continuation set to', $cont);
 }
 
@@ -45,7 +45,7 @@ sub macro {
     $self->logger->log('engine', 'notice', 'running macro', $name);
     $self->logger->log('engine', 'info', 'macro params are:', join ', ', @$params);
 
-    my $set = $self->phrasebook->macro->{$name}->clone;
+    my $set = $self->phrasebook->macro($name)->clone;
     $set->apply_params(@$params);
 
     return $self->_execute_actions(
@@ -81,11 +81,11 @@ sub _execute_actions {
     $self->transport->connect if not $self->transport->done_connect;
 
     # user can install a prompt, call find_prompt, or let us trigger that
-    $self->find_prompt if not ($self->prompt || $self->last_actionset);
+    $self->find_prompt if not ($self->prompt_re || $self->last_actionset);
 
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@_],
-        current_match => ($self->prompt || $self->last_prompt_as_match),
+        current_match => ($self->prompt_re || $self->last_prompt_as_match),
         default_continuation => $self->default_continuation,
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
@@ -102,6 +102,7 @@ sub _execute_actions {
     if ($self->last_actionset->last->is_lazy) {
         $self->logger->log('prompt', 'info',
             'last match was a prompt reference, setting new prompt');
+        # direct access to the slot
         $self->_prompt($self->last_actionset->last->value);
     }
 

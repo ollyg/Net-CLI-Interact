@@ -37,19 +37,35 @@ has 'add_library' => (
     required => 0,
 );
 
-has 'prompt' => (
+has '_prompt' => (
     is => 'ro',
     isa => 'HashRef[Net::CLI::Interact::ActionSet]',
     default => sub { {} },
     required => 0,
 );
 
-has 'macro' => (
+sub prompt {
+    my ($self, $name) = @_;
+    confess "missing prompt argument!" unless defined $name;
+    confess "unknown prompt [$name]"
+        unless length $name and exists $self->_prompt->{$name};
+    return $self->_prompt->{$name};
+}
+
+has '_macro' => (
     is => 'ro',
     isa => 'HashRef[Net::CLI::Interact::ActionSet]',
     default => sub { {} },
     required => 0,
 );
+
+sub macro {
+    my ($self, $name) = @_;
+    confess "missing macro argument!" unless defined $name;
+    confess "unknown macro [$name]"
+        unless length $name and exists $self->_macro->{$name};
+    return $self->_macro->{$name};
+}
 
 # inflate the hashref into action objects
 sub _bake {
@@ -57,7 +73,7 @@ sub _bake {
     return unless ref $data eq ref {} and keys %$data;
     $self->logger->log('phrasebook', 'debug', 'storing type', $data->{type}, 'with name', $data->{name});
 
-    my $slot = lc $data->{type};
+    my $slot = '_'. lc $data->{type};
     $self->$slot->{$data->{name}}
         = Net::CLI::Interact::ActionSet->new({
             actions => $data->{actions}
@@ -68,8 +84,8 @@ sub _bake {
 sub _resolve_lazy_matches {
     my $self = shift;
 
-    foreach my $name (keys %{$self->macro}) {
-        my $set = $self->macro->{$name};
+    foreach my $name (keys %{$self->_macro}) {
+        my $set = $self->macro($name);
         my $new_set = [];
 
         $set->reset;
@@ -77,7 +93,7 @@ sub _resolve_lazy_matches {
             my $item = $set->next;
             if ($item->is_lazy) {
                 push @$new_set, $item->clone({ value =>
-                    $self->prompt->{$item->value}->first->value
+                    $self->prompt($item->value)->first->value
                 });
             }
             else {
@@ -85,7 +101,8 @@ sub _resolve_lazy_matches {
             }
         }
 
-        $self->macro->{$name} = Net::CLI::Interact::ActionSet->new({
+        # direct access to macros hash
+        $self->_macro->{$name} = Net::CLI::Interact::ActionSet->new({
             actions => $new_set
         });
     }

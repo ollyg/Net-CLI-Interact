@@ -11,7 +11,7 @@ my $s = Net::CLI::Interact->new({
 });
 
 my $pb = $s->phrasebook;
-my $m = $pb->macro->{'TEST_PROMPT_TWO'};
+my $m = $pb->macro('TEST_PROMPT_TWO');
 
 ok($m->clone, 'clone method');
 my $m2 = $m->clone;
@@ -25,7 +25,7 @@ is($a->value .'', qr/TEST_PROMPT_TWO/, 'regexp matches');
 ok($a->is_lazy, 'is_lazy set');
 is($a->num_params, 0, 'no params');
 
-my $m3 = $pb->macro->{'TEST_MACRO_PARAMS'};
+my $m3 = $pb->macro('TEST_MACRO_PARAMS');
 my $a2 = $m3->item_at(-1);
 
 is($a2->type, 'match', 'is a match');

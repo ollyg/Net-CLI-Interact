@@ -15,7 +15,7 @@ has '_prompt' => (
     is => 'rw',
     isa => 'Maybe[RegexpRef]',
     required => 0,
-    reader => 'prompt',
+    reader => 'prompt_re',
     clearer => 'unset_prompt',
     trigger => sub {
         (shift)->logger->log('prompt', 'info', 'prompt has been set to', (shift));
@@ -25,8 +25,8 @@ has '_prompt' => (
 sub set_prompt {
     my ($self, $prompt) = @_;
     confess "unknown prompt: [$prompt]"
-        unless exists $self->phrasebook->prompt->{$prompt};
-    $self->_prompt( $self->phrasebook->prompt->{$prompt}->first->value );
+        unless eval { $self->phrasebook->prompt($prompt) };
+    $self->_prompt( $self->phrasebook->prompt($prompt)->first->value );
 }
 
 sub last_prompt {
@@ -51,11 +51,11 @@ sub find_prompt {
         while ($self->transport->harness->pump) {
             foreach my $prompt (keys %{ $self->phrasebook->prompt }) {
                 # prompts consist of only one match action
-                if ($self->transport->out =~ $self->phrasebook->prompt->{$prompt}->first->value) {
+                if ($self->transport->out =~ $self->phrasebook->prompt($prompt)->first->value) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
                     $self->last_actionset(
                         Net::CLI::Interact::ActionSet->new({ actions => [
-                            $self->phrasebook->prompt->{$prompt}->first->clone({
+                            $self->phrasebook->prompt($prompt)->first->clone({
                                 response => $self->transport->flush,
                             })
                         ] })
