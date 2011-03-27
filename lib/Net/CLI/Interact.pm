@@ -29,7 +29,14 @@ sub _build_logger {
     return Net::CLI::Interact::Logger->new({$self->params});
 }
 
-sub log_at {
+has log_at => (
+    is => 'rw',
+    isa => 'Str',
+    required => 0,
+    trigger => \&set_default_logger,
+);
+
+sub set_default_logger {
     my ($self, $level) = @_;
     return unless defined $level and length $level;
     $self->logger->log_flags({
@@ -154,6 +161,14 @@ If the transport backend can take any options (for example the target
 hostname), then pass those options in this value. See the respective manual
 pages for each transport backend for further details.
 
+=item C<< log_at => $log_level >>
+
+To make using the C<logger> somewhat easier, you can pass this argument the
+name of a log I<level> (such as C<debug>, C<info>, etc) and all logging in the
+library will be enabled at that level. Use C<debug> to learn about how the
+library is working internally. See L<Net::CLI::Interact::Logger> for a list of
+the valid level names.
+
 =back
 
 =head2 cmd( $command )
@@ -213,17 +228,6 @@ This is the application's L<Logger|Net::CLI::Interact::Logger> object. A
 powerful logging subsystem is available to your application, built upon the
 L<Log::Dispatch> distribution. You can enable logging of this module's
 processes at various levels, or add your own logging statements.
-
-=head2 log_at
-
-To make using the C<logger> somewhat easier, you can pass this method the name
-of a log I<level> (such as C<debug>, C<info>, etc) and all logging in the
-library will be enabled at that level. Use C<debug> to learn about how the
-library is working internally:
-
- $s->log_at('debug');
-
-See L<Net::CLI::Interact::Logger> for a list of the valid level names.
 
 =head1 FUTHER READING
 
