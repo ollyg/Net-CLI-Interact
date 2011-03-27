@@ -1,22 +1,64 @@
+package # hide from pause
+    Net::CLI::Interact::Meta::Attribute::Trait::Mediated;
+use Moose::Role;
+
+has 'mediated' => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 1,
+    predicate => 'is_mediated',
+);
+
+package # hide from pause
+    Moose::Meta::Attribute::Custom::Trait::Mediated;
+sub register_implementation {
+    return 'Net::CLI::Interact::Meta::Attribute::Trait::Mediated';
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 package Net::CLI::Interact;
 
 use Moose;
 with 'Net::CLI::Interact::Role::Engine';
 
-has 'params' => (
+has '__mediator_params' => (
     is => 'ro',
     isa => 'HashRef[Any]',
     auto_deref => 1,
     required => 1,
 );
 
+# takes the params has and returns two hashes, the params
+# hash and a new hash of the current class's attribute slots
+sub _filter_my_attribute_list {
+    my ($class, $params) = @_;
+    my $our_params = {};
+    my $meta = $class->meta;
+
+    foreach my $slot (keys %$params) {
+        my $attr = $class->meta->get_attribute($slot);
+
+        if ($attr and
+            not $attr->does('Net::CLI::Interact::Meta::Attribute::Trait::Mediated')) {
+
+            $our_params->{$slot} = delete $params->{$slot};
+        }
+    }
+
+    return $params, $our_params;
+}
+
 sub BUILDARGS {
     my ($class, @params) = @_;
-    return { params => {} } unless scalar @params > 0;
+    return { __mediator_params => {} } unless scalar @params > 0;
     my %stuff = ((scalar @params > 1) ? @params : %{$params[0]});
+
+    my ($m_params, $our_params) = $class->_filter_my_attribute_list(\%stuff);
+
     return {
-        log_at => delete $stuff{'log_at'},
-        params => { %stuff },
+        __mediator_params => { %$m_params },
+        %$our_params,
     };
 }
 
@@ -24,12 +66,13 @@ has 'logger' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Logger',
     lazy_build => 1,
+    traits => ['Mediated'],
 );
 
 sub _build_logger {
     my $self = shift;
     use Net::CLI::Interact::Logger;
-    return Net::CLI::Interact::Logger->new({$self->params});
+    return Net::CLI::Interact::Logger->new({$self->__mediator_params});
 }
 
 has 'log_at' => (
@@ -52,6 +95,7 @@ has 'phrasebook' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Phrasebook',
     lazy_build => 1,
+    traits => ['Mediated'],
 );
 
 sub _build_phrasebook {
@@ -59,7 +103,7 @@ sub _build_phrasebook {
     use Net::CLI::Interact::Phrasebook;
     return Net::CLI::Interact::Phrasebook->new({
         logger => $self->logger,
-        $self->params,
+        $self->__mediator_params,
     });
 }
 
@@ -67,17 +111,18 @@ has 'transport' => (
     is => 'ro',
     does => 'Net::CLI::Interact::Role::Transport',
     lazy_build => 1,
+    traits => ['Mediated'],
 );
 
 sub _build_transport {
     my $self = shift;
-    confess 'missing transport' unless exists $self->params->{transport};
-    my $tpt = 'Net::CLI::Interact::Transport::'. $self->params->{transport};
+    confess 'missing transport' unless exists $self->__mediator_params->{transport};
+    my $tpt = 'Net::CLI::Interact::Transport::'. $self->__mediator_params->{transport};
     use Class::MOP;
     Class::MOP::load_class($tpt);
     return $tpt->new({
         logger => $self->logger,
-        $self->params,
+        $self->__mediator_params,
     });
 }
 
