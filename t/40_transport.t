@@ -8,8 +8,8 @@ use Net::CLI::Interact;
 my $s = new_ok('Net::CLI::Interact' => [{
     transport => 'Test',
     personality => 'testing',
+    log_at => 'debug',
 }]);
-$s->log_at('debug');
 
 $s->set_prompt('MATCH_ANY');
 

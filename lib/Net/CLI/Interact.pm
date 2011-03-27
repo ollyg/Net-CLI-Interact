@@ -3,7 +3,7 @@ package Net::CLI::Interact;
 use Moose;
 with 'Net::CLI::Interact::Role::Engine';
 
-has params => (
+has 'params' => (
     is => 'ro',
     isa => 'HashRef[Any]',
     auto_deref => 1,
@@ -14,7 +14,10 @@ sub BUILDARGS {
     my ($class, @params) = @_;
     return { params => {} } unless scalar @params > 0;
     my %stuff = ((scalar @params > 1) ? @params : %{$params[0]});
-    return { params => { %stuff } };
+    return {
+        log_at => delete $stuff{'log_at'},
+        params => { %stuff },
+    };
 }
 
 has 'logger' => (
@@ -29,10 +32,11 @@ sub _build_logger {
     return Net::CLI::Interact::Logger->new({$self->params});
 }
 
-has log_at => (
+has 'log_at' => (
     is => 'rw',
-    isa => 'Str',
+    isa => 'Maybe[Str]',
     required => 0,
+    default => $ENV{'NCI_LOG_AT'},
     trigger => \&set_global_log_at,
 );
 
