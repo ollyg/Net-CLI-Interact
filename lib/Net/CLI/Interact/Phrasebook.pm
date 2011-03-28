@@ -273,7 +273,7 @@ options.
 
 =head1 INTERFACE
 
-=head2 new
+=head2 new( \%options )
 
 This takes the following options, and returns a baked phrasebook:
 
@@ -300,6 +300,18 @@ provide the location(s) of their own phrasebook(s). Any entries found via this
 path will override those found via the first C<library> path.
 
 =back
+
+=head2 prompt( $name )
+
+Returns the Prompt associated to the given C<$name>, or throws an exception if
+no such prompt can be found. The returned object is an instance of
+L<Net::CLI::Interact::ActionSet>.
+
+=head2 macro( $name )
+
+Returns the Macro associated to the given C<$name>, or throws an exception if
+no such macro can be found. The returned object is an instance of
+L<Net::CLI::Interact::ActionSet>.
 
 =head1 PHRASEBOOK FORMAT
 
