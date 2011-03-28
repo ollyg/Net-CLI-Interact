@@ -1,3 +1,35 @@
+package # hide from pause
+    Net::CLI::Interact::Role::Engine::ExecuteOptions;
+use Moose;
+
+has 'no_ors' => (
+    is => 'ro',
+    isa => 'Bool',
+    default => 0,
+    required => 0,
+);
+
+has 'params' => (
+    is => 'ro',
+    isa => 'ArrayRef[Str]',
+    auto_deref => 1,
+    required => 0,
+);
+
+has 'timeout' => (
+    is => 'ro',
+    isa => 'Int',
+    required => 0,
+);
+
+sub BUILDARGS {
+    my ($class, @params) = @_;
+    return {} unless scalar @params > 0 and defined $params[0];
+    return { @params };
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 package Net::CLI::Interact::Role::Engine;
 
 use Moose::Role;
@@ -37,27 +69,9 @@ sub set_default_continuation {
     $self->logger->log('engine', 'info', 'default continuation set to', $cont);
 }
 
-sub macro {
-    my ($self, $name, $options) = @_;
-    $options ||= {};
-
-    my $params = ($options->{params} || []);
-    $self->logger->log('engine', 'notice', 'running macro', $name);
-    $self->logger->log('engine', 'info', 'macro params are:', join ', ', @$params);
-
-    my $set = $self->phrasebook->macro($name)->clone;
-    $set->apply_params(@$params);
-
-    return $self->_execute_actions(
-        $set,
-        {timeout => $options->{timeout}}
-    );
-
-}
-
 sub cmd {
     my ($self, $command, $options) = @_;
-    $options ||= {};
+    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options);
 
     $self->logger->log('engine', 'notice', 'running command', $command);
 
@@ -65,15 +79,28 @@ sub cmd {
         Net::CLI::Interact::Action->new({
             type => 'send',
             value => $command,
-            no_ors => $options->{no_ors},
+            no_ors => $options->no_ors,
         }),
-        {timeout => $options->{timeout}}
+        $options,
     );
+}
+
+sub macro {
+    my ($self, $name, $options) = @_;
+    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options);
+
+    $self->logger->log('engine', 'notice', 'running macro', $name);
+    $self->logger->log('engine', 'info', 'macro params are:',
+        join ', ', $options->params);
+
+    my $set = $self->phrasebook->macro($name)->clone;
+    $set->apply_params($options->params);
+
+    return $self->_execute_actions($set, $options);
 }
 
 sub _execute_actions {
     my ($self, $options) = @_;
-    $options ||= {};
 
     $self->logger->log('engine', 'notice', 'executing actions');
 
@@ -93,7 +120,7 @@ sub _execute_actions {
     $self->logger->log('engine', 'debug', 'dispatching to execute method');
     my $timeout_bak = $self->transport->timeout;
 
-    $self->transport->timeout($options->{timeout} || $timeout_bak);
+    $self->transport->timeout($options->timeout || $timeout_bak);
     $set->execute;
     $self->transport->timeout($timeout_bak);
     $self->last_actionset($set);

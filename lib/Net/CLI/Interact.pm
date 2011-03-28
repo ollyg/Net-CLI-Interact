@@ -84,6 +84,8 @@ sub set_global_log_at {
     });
 }
 
+sub BUILD { my $self = shift; $self->set_global_log_at($self->log_at); }
+
 has 'phrasebook' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Phrasebook',
