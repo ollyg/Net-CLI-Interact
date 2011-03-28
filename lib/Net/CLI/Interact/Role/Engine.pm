@@ -76,12 +76,12 @@ sub cmd {
     $self->logger->log('engine', 'notice', 'running command', $command);
 
     return $self->_execute_actions(
+        $options,
         Net::CLI::Interact::Action->new({
             type => 'send',
             value => $command,
             no_ors => $options->no_ors,
         }),
-        $options,
     );
 }
 
@@ -96,11 +96,11 @@ sub macro {
     my $set = $self->phrasebook->macro($name)->clone;
     $set->apply_params($options->params);
 
-    return $self->_execute_actions($set, $options);
+    return $self->_execute_actions($options, $set);
 }
 
 sub _execute_actions {
-    my ($self, $options) = @_;
+    my ($self, $options, @actions) = @_;
 
     $self->logger->log('engine', 'notice', 'executing actions');
 
@@ -111,7 +111,7 @@ sub _execute_actions {
     $self->find_prompt if not ($self->prompt_re || $self->last_actionset);
 
     my $set = Net::CLI::Interact::ActionSet->new({
-        actions => [@_],
+        actions => [@actions],
         current_match => ($self->prompt_re || $self->last_prompt_as_match),
         default_continuation => $self->default_continuation,
     });
