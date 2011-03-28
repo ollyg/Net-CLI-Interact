@@ -148,7 +148,7 @@ connected devices, and gather the returned output.
 
 =head1 INTERFACE
 
-=head2 cmd($command_statement, \%options?)
+=head2 cmd( $command_statement, \%options? )
 
 Execute a single command statement on the connected device, and consume output
 until there is a match with the current I<prompt>. The statement is executed
@@ -175,7 +175,7 @@ In scalar context the C<last_response> is returned (see below). In list
 context the gathered response is returned, only split into a list on the
 I<input record separator> (newline).
 
-=head2 macro($macro_name, \%options?)
+=head2 macro( $macro_name, \%options? )
 
 Execute the commands contained within the named Macro, which must be loaded
 from a Phrasebook. Options to control the output, including variables for

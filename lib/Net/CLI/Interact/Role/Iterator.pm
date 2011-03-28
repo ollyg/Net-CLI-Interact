@@ -124,23 +124,23 @@ Returns the first item in the iterator.
 
 Returns the last item in the iterator.
 
-=head2 item_at($pos)
+=head2 item_at( $pos )
 
 Returns the item at the given position in the iterator, or throws an exception
 if C<$pos> is past the end of the iterator. The position is 0-based.
 
-=head2 insert_at($pos, $iter)
+=head2 insert_at( $pos, $iter )
 
 Inserts the contents of the passed iterator starting I<at> (not I<after>) the
 position given. The passed iterator must also be a consumer of this role. The
 position is 0-based.
 
-=head2 append($iter)
+=head2 append( $iter )
 
 Shorthand for C<insert_at> when you want to add the contents of the passed
 iterator I<after> the end of the sequence.
 
-=head2 idx($pos?)
+=head2 idx( $pos? )
 
 Returns the index (0-based) of the current iterator cursor, or sets the
 cursor if a position (again, 0-based) is passed.

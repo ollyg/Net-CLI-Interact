@@ -211,7 +211,7 @@ Output returned after issueing a command is stored within the Match Action's
 C<response> slot by this method, but then marshalled into the correct C<send>
 Action by the L<ActionSet|Net::CLI::Interact::ActionSet>.
 
-=head2 send(@data)
+=head2 send( @data )
 
 Buffer for C<@data> which is to be sent to the connected CLI. Items in the
 list are joined together by an empty string.
@@ -226,7 +226,7 @@ content of the buffer without emptying it.
 Empties the buffer used for response data returned from the connected CLI, and
 returns that data as a single text string (possibly with embedded newlines).
 
-=head2 timeout($seconds?)
+=head2 timeout( $seconds? )
 
 When C<do_action> is polling C<out> for response data matching a regular
 expression Action, it will eventually time-out and throw an exception if

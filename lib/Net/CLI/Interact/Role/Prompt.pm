@@ -89,7 +89,7 @@ each command and its response data.
 
 =head1 INTERFACE
 
-=head2 set_prompt($prompt_name)
+=head2 set_prompt( $prompt_name )
 
 This method will be used most commonly by applications to select and set a
 prompt from the Phrasebook which matches the current context of the connected
@@ -124,7 +124,7 @@ is that the module will automatically set the Prompt for itself based on the
 last line of output received from the connected CLI. Do not use this option
 unless you know what you are doing.
 
-=head2 find_prompt($wake_up?)
+=head2 find_prompt( $wake_up? )
 
 A helper method that consumes output from the connected CLI session until a
 line matches one of the named Prompts in the loaded Phrasebooks, at which

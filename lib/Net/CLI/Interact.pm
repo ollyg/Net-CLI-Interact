@@ -254,7 +254,7 @@ Returns the Phrasebook object which was loaded based on the C<personality>
 option given to C<new>. See L<Net::CLI::Interact::Phrasebook> for further
 details.
 
-=head2 set_default_contination
+=head2 set_default_contination( $macro_name )
 
 Briefly, a Continuation handles the slurping of paged output from commands.
 See the L<Net::CLI::Interact::Phrasebook> documentation for further details.
@@ -273,7 +273,7 @@ powerful logging subsystem is available to your application, built upon the
 L<Log::Dispatch> distribution. You can enable logging of this module's
 processes at various levels, or add your own logging statements.
 
-=head2 set_global_log_at
+=head2 set_global_log_at( $level )
 
 To make using the C<logger> somewhat easier, you can pass this method the
 name of a log I<level> (such as C<debug>, C<info>, etc) and all logging in the
