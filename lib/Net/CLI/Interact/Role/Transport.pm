@@ -8,19 +8,12 @@ subtype 'Net::CLI::Interact::Types::Transport::irs'
     => as 'RegexpRef';
 coerce 'Net::CLI::Interact::Types::Transport::irs'
     => from 'Str'
-        => via { m/$_/ };
+        => via { qr/$_/ };
 
 has 'logger' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Logger',
     required => 1,
-);
-
-has 'transport_options' => (
-    is => 'ro',
-    isa => 'HashRef[Any]',
-    required => 1,
-    default => sub { {} },
 );
 
 has 'irs' => (
@@ -34,7 +27,7 @@ has 'irs' => (
 has 'ors' => (
     is => 'ro',
     isa => 'Str',
-    default => sub { "\n" },
+    default => "\n",
     required => 0,
 );
 
@@ -65,7 +58,7 @@ sub out {
 has '_stash' => (
     is => 'rw',
     isa => 'Str',
-    default => sub { '' },
+    default => '',
     required => 0,
 );
 
@@ -257,11 +250,11 @@ This defaults to a newline on the application's platform.
 Slot for storing the L<IPC::Run> instance for the connected transport session.
 Do not mess with this unless you know what you are doing.
 
-=head2 transport_options
+=head2 connect_options
 
-Slot for storing a Hash Ref of options for the specific loaded Transport,
-passed by the user of C<Net::CLI::Interact>. Do not access this directly, but
-instead use C<runtime_options> from the specific Transport class.
+Slot for storing a set of options for the specific loaded Transport, passed by
+the user of C<Net::CLI::Interact> as a hash ref. Do not access this directly,
+but instead use C<runtime_options> from the specific Transport class.
 
 =head2 logger
 

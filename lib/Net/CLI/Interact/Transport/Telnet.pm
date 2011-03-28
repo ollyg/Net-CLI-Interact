@@ -1,18 +1,42 @@
+package # hide from pause
+    Net::CLI::Interact::Transport::Telnet::Options;
+use Moose;
+
+has 'host' => (
+    is => 'rw',
+    isa => 'Str',
+    required => 1,
+);
+
+use Moose::Util::TypeConstraints;
+coerce 'Net::CLI::Interact::Transport::Telnet::Options'
+    => from 'HashRef[Any]'
+        => via { Net::CLI::Interact::Transport::Telnet::Options->new($_) };
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 package Net::CLI::Interact::Transport::Telnet;
 
 use Moose;
 with 'Net::CLI::Interact::Role::Transport';
 
+has 'connect_options' => (
+    is => 'ro',
+    isa => 'Net::CLI::Interact::Transport::Telnet::Options',
+    coerce => 1,
+    required => 1,
+);
+
 has 'app' => (
     is => 'ro',
     isa => 'Str',
-    default => sub { 'telnet' },
+    default => 'telnet',
     required => 0,
 );
 
 sub runtime_options {
     # simple, for now
-    return (shift)->transport_options->{host};
+    return (shift)->connect_options->host;
 }
 
 1;
@@ -33,9 +57,9 @@ which provides TELNET.
 
 =head2 runtime_options
 
-Based on the C<transport_options> provided to C<Net::CLI::Interact> on
-construction, selects hash keys to provide to C<app> on the command line.
-Supported keys:
+Based on the C<connect_options> hash provided to C<Net::CLI::Interact> on
+construction, selects attributes to provide to C<app> on the command line.
+Supported attributes:
 
 =over 4
 

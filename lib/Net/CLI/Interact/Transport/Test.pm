@@ -1,7 +1,26 @@
+package # hide from pause
+    Net::CLI::Interact::Transport::Test::Options;
+use Moose;
+
+use Moose::Util::TypeConstraints;
+coerce 'Net::CLI::Interact::Transport::Test::Options'
+    => from 'HashRef[Any]'
+        => via { Net::CLI::Interact::Transport::Test::Options->new($_) };
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 package Net::CLI::Interact::Transport::Test;
 
 use Moose;
 with 'Net::CLI::Interact::Role::Transport';
+
+has 'connect_options' => (
+    is => 'ro',
+    isa => 'Net::CLI::Interact::Transport::Test::Options',
+    default => sub { {} },
+    coerce => 1,
+    required => 1,
+);
 
 has 'app' => (
     is => 'ro',

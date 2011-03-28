@@ -135,7 +135,7 @@ must interact with a command line interface.
  my $s = Net::CLI::Interact->new({
     personality => 'cisco',
     transport   => 'Telnet',
-    transport_options => { host => '192.0.2.1' },
+    connect_options => { host => '192.0.2.1' },
  });
  
  # respond to a usename/password prompt
@@ -197,11 +197,11 @@ The name of the transport backend used for the session, which may be one of
 L<Telnet|Net::CLI::Interact::Telnet>, L<SSH|Net::CLI::Interact::SSH>, or
 L<Serial|Net::CLI::Interact::Serial>.
 
-=item C<< transport_options => \%options >>
+=item C<< connect_options => \%options >>
 
 If the transport backend can take any options (for example the target
-hostname), then pass those options in this value. See the respective manual
-pages for each transport backend for further details.
+hostname), then pass those options in this value as a hash ref. See the
+respective manual pages for each transport backend for further details.
 
 =item C<< log_at => $log_level >>
 

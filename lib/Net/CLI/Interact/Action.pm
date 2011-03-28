@@ -48,7 +48,7 @@ has 'params' => (
 has 'response' => (
     is => 'rw',
     isa => 'Str',
-    default => sub { '' },
+    default => '',
     required => 0,
 );
 
