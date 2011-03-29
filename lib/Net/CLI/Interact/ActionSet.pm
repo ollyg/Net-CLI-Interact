@@ -154,12 +154,17 @@ sub _marshall_responses {
 
         my $response = $match->response; # need an lvalue
         my $cmd = $send->value;
+        my $prompt = $match->value;
+
+        # remove echoed command from the beginning
         $response =~ s/^$cmd\s+//;
 
-        if ($response =~ s/(\s+)(\S+)\s*$/$1/) {
-            $match->response($2);
-            $send->response($response);
-        }
+        # remove and store the prompt from the end
+        $response =~ s/\s+($prompt)\s+$//;
+        $match->response($1);
+
+        # store the remainder as command output
+        $send->response($response);
     }
 }
 

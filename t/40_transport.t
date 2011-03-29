@@ -11,12 +11,12 @@ my $s = new_ok('Net::CLI::Interact' => [{
     log_at => 'debug',
 }]);
 
-$s->set_prompt('MATCH_ANY');
+$s->set_prompt('TEST_PROMPT');
 
-my $out = $s->cmd('TEST END');
-is($out, 'TEST END', 'sent data and it was echoed and captured');
+my $out = $s->cmd('TEST COMMAND');
+like($out, qr/^\d{10}$/, 'sent data and it was echoed and captured');
 
-use Data::Dumper;
-print Dumper $s->last_actionset;
+#use Data::Dumper;
+#print Dumper $s->last_actionset;
 
 done_testing;

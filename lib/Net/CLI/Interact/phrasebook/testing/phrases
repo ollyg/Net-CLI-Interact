@@ -1,11 +1,14 @@
 prompt TEST_PROMPT_ONE
-    match /TEST_PROMPT_ONE/
+    match /TEST_PROMPT_ONE$/
 
 prompt TEST_PROMPT_TWO
-    match /TEST_PROMPT_TWO/
+    match /TEST_PROMPT_TWO$/
 
 prompt MATCH_ANY
-    match /END$/
+    match /^.+$/
+
+prompt TEST_PROMPT
+    match /PROMPT>/
 
 macro TEST_MACRO_ONE
     send TEST_MACRO_ONE

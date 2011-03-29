@@ -127,7 +127,7 @@ sub do_action {
     if ($action->type eq 'match') {
         my $cont = $action->continuation;
         while ($self->harness->pump) {
-            $self->logger->log('dump', 'debug', 'SEEN: '. $self->out);
+            $self->logger->log('dump', 'debug', "SEEN:\n". $self->out);
 
             my $irs = $self->irs;
             my @out_lines = split m/$irs/, $self->out;

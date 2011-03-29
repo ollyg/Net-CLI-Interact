@@ -39,7 +39,7 @@ has 'app' => (
 #}
 
 sub runtime_options {
-    return ('-pe', 'BEGIN { $| = 1 }');
+    return ('-ne', 'BEGIN { $| = 1 }; print $_, time, "\nPROMPT>\n";');
 }
 
 1;
