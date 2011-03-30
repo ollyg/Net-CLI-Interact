@@ -244,7 +244,8 @@ connected CLI. This defaults to a newline on the application's platform.
 =head2 irs_re
 
 Returns a Regular Expression reference comprising the content of C<irs>. With
-the default value, this will be C<< qr/\n/ >>.
+the default value, this will be C<< qr/\n/ >>. This is useful if you need to
+C<split> the content of your Action's C<response> into lines.
 
 =head2 ors
 
