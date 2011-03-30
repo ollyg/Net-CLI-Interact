@@ -152,19 +152,10 @@ sub _marshall_responses {
         my $match = $self->peek or last; # careful...
         next unless $match->type eq 'match';
 
-        my $response = $match->response; # need an lvalue
-        my $cmd = $send->value;
-        my $prompt = $match->value;
-
         # remove echoed command from the beginning
-        $response =~ s/^$cmd\s+//;
-
-        # remove and store the prompt from the end
-        $response =~ s/\s+($prompt)\s+$//;
-        $match->response($1);
-
-        # store the remainder as command output
-        $send->response($response);
+        my $cmd = $send->value;
+        (my $output = $match->response_stash) =~ s/^$cmd\s+//;
+        $send->response($output);
     }
 }
 

@@ -52,6 +52,13 @@ has 'response' => (
     required => 0,
 );
 
+has 'response_stash' => (
+    is => 'rw',
+    isa => 'Str',
+    default => '',
+    required => 0,
+);
+
 sub BUILDARGS {
     my ($class, @rest) = @_;
     # accept single hash ref or naked hash
@@ -147,9 +154,15 @@ C<params>.
 
 =head2 response
 
-A stash for the returned output following a C<send> command. In fact, this
-slot is temporarily used by the C<match> action as it slurps output, but the
-content is then transferred over to the partner C<send> in the ActionSet.
+A stash for the returned prompt which matched and triggered the end of this
+action.
+
+=head2 response_stash
+
+A stash for the returned output following a C<send> command, but not including
+the matched prompt which ended the action. This slot is used by the C<match>
+action as it slurps output, but the content is then transferred over to the
+partner C<send> in the ActionSet.
 
 =head2 clone
 

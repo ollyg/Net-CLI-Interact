@@ -3,13 +3,6 @@ package Net::CLI::Interact::Role::Transport;
 use Moose::Role;
 use IPC::Run ();
 
-use Moose::Util::TypeConstraints;
-subtype 'Net::CLI::Interact::Types::Transport::irs'
-    => as 'RegexpRef';
-coerce 'Net::CLI::Interact::Types::Transport::irs'
-    => from 'Str'
-        => via { qr/$_/ };
-
 has 'logger' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Logger',
@@ -18,11 +11,16 @@ has 'logger' => (
 
 has 'irs' => (
     is => 'ro',
-    coerce => 1,
-    isa => 'Net::CLI::Interact::Types::Transport::irs',
-    default => sub { qr/\n/ },
+    isa => 'Str',
+    default => "\n",
     required => 0,
 );
+
+sub irs_re {
+    my $self = shift;
+    my $irs = $self->irs;
+    return qr/$irs/;
+}
 
 has 'ors' => (
     is => 'ro',
@@ -129,11 +127,10 @@ sub do_action {
         while ($self->harness->pump) {
             $self->logger->log('dump', 'debug', "SEEN:\n". $self->out);
 
-            my $irs = $self->irs;
-            my @out_lines = split m/$irs/, $self->out;
+            my @out_lines = split $self->irs_re, $self->out;
             next if !defined $out_lines[-1];
 
-            my $maybe_stash = join $self->irs, @out_lines[0 .. -2];
+            my $maybe_stash = join $self->irs, @out_lines[0 .. ($#out_lines - 1)];
             my $last_out = $out_lines[-1];
 
             if ($cont and $last_out =~ $cont->first->value) {
@@ -144,7 +141,11 @@ sub do_action {
             elsif ($last_out =~ $action->value) {
                 $self->logger->log('transport', 'debug',
                     sprintf 'output matched %s, storing and returning', $action->value);
-                $action->response($self->flush);
+                # prompt match is line oriented. want to split that off from
+                # rest of output which is marshalled into the 'send'.
+                my @output = split $self->irs_re, $self->flush;
+                $action->response_stash(join $self->irs, @output[0 .. ($#output - 1)]);
+                $action->response($output[-1]);
                 last;
             }
             else {
@@ -239,6 +240,11 @@ the current value of C<timeout>.
 
 Line separator character(s) used when interpreting the data returned from the
 connected CLI. This defaults to a newline on the application's platform.
+
+=head2 irs_re
+
+Returns a Regular Expression reference comprising the content of C<irs>. With
+the default value, this will be C<< qr/\n/ >>.
 
 =head2 ors
 
