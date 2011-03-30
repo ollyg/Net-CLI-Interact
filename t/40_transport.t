@@ -13,6 +13,6 @@ my $s = new_ok('Net::CLI::Interact' => [{
 $s->set_prompt('TEST_PROMPT');
 
 my $out = $s->cmd('TEST COMMAND');
-like($out, qr/^\d{10}$/, 'sent data and it was echoed and captured');
+like($out, qr/^\d{10}$/, 'sent data and command response issued');
 
 done_testing;
