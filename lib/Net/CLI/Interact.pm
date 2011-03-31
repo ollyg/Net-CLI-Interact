@@ -125,10 +125,14 @@ sub _build_transport {
 
 # ABSTRACT: Toolkit for CLI Automation
 
+=begin :prelude
+
 =head1 PURPOSE
 
 This module exists to support developers of applications and libraries which
 must interact with a command line interface.
+
+=end :prelude
 
 =head1 SYNOPSIS
 
