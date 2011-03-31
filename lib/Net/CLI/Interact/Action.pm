@@ -122,15 +122,16 @@ C<match>, a regular expression reference to match response from the device.
 
 =head2 no_ors
 
-Whether to append the I<output record separator> (newline) to the C<send>
-command when sent to the connected device.
+Only applies to the C<send> kind. Whether to skip appending the I<output
+record separator> (newline) to the C<send> command when sent to the connected
+device.
 
 =head2 is_lazy
 
 Only applies to the C<match> kind, and records whether the user specified this
-Match as a regular expression reference, or the name of a Match defined
-elsewhere. In the latter case, it can trigger C<Net::CLI::Interact> to assume
-the Prompt value has permanently changed.
+Match as a regular expression reference (false, the default), or the name of a
+Match defined elsewhere (true). In the latter case, it can trigger
+L<Net::CLI::Interact> to assume the Prompt value has permanently changed.
 
 =head2 continuation
 

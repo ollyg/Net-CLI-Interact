@@ -231,8 +231,8 @@ Entries in the phrasebook will be one of the following types:
 
 =item Prompt
 
-Named regular expressions that will match the content of a single line of text
-in the output returned from a connected device. They are a demarcation between
+Named regular expressions that match the content of a single line of text in
+the output returned from a connected device. They are a demarcation between
 commands sent and responses returned.
 
 =item Macro
@@ -243,9 +243,10 @@ explained below.
 
 =back
 
-The named regular expressions used in Prompts and Macros are known as Match
+The named regular expressions used in Prompts and Macros are known as I<Match>
 statements. The command statements in Macros which are sent to the device are
-known as Send statements.
+known as I<Send> statements. That is, Prompts and Macros are built from one or
+more Match and Send statements.
 
 Each Send or Match statement becomes an instance of the
 L<Net::CLI::Interact::Action> class. These are built up into Prompts and
@@ -264,18 +265,19 @@ For example:
 
 Entries in C<file3> sharing a name with any entries from C<file1> or C<file2>
 will take precedence. Those in C<file2> will also override entries in
-C<file1>, because asciibetical sorting places the files in that order.
+C<file1>, because asciibetical sorting places the files in that order, and
+later definitions with the same name and type override earlier ones.
 
 When this module is loaded, a I<personality> key is required. This locates a
 directory on disk, and then the files in that directory and all its ancestors
-in the hierarchy are loaded. The directory root is specified by two Library
+in the hierarchy are loaded. The directory root is specified by two I<Library>
 options.
 
 =head1 INTERFACE
 
 =head2 new( \%options )
 
-This takes the following options, and returns a baked phrasebook:
+This takes the following options, and returns a loaded phrasebook object:
 
 =over 4
 
@@ -334,11 +336,12 @@ include them within.
 
 The Prompt is used to find out when the connected CLI has emitted all of the
 response to a command. Try to make the Prompt as specific as possible,
-including line-end anchors.
+including line-end anchors. Remember that it will be matched against one line
+of text, only.
 
 =head2 Macro
 
-In general Macros are alternating sequences of commands to send to the
+In general, Macros are alternating sequences of commands to send to the
 connected CLI, and regular expressions to match the end of the returned
 response. Macros are useful for issueing commands which have intermediate
 prompts, or confirmation steps. They also support the I<slurping> of
@@ -355,10 +358,10 @@ which must be a valid Perl identifier (letters, numbers, underscores only).
 
 On the immediately following line is the keyword C<send> followed by a space
 and then any text up until the end of the line, and if you want to include
-whitespace at the beginning or end, use quotes. This text is sent to the
-connected CLI as a single command statement. The next line contains the
-keyword C<match> followed by the Prompt (regular expression) which will
-terminate gathering of returned output from the sent command.
+whitespace at the beginning or end of the command, use quotes. This text is
+sent to the connected CLI as a single command statement. The next line
+contains the keyword C<match> followed by the Prompt (regular expression)
+which will terminate gathering of returned output from the sent command.
 
 Macros support the following features:
 
@@ -390,7 +393,7 @@ statement when it's the same as the current Prompt.
 
 =item Format Interpolation
 
-Each <send> statement is in fact run through Perl's C<sprintf> command, so
+Each C<send> statement is in fact run through Perl's C<sprintf> command, so
 variables may be interpolated into the statement using standard C<"%"> fields.
 For example:
 
@@ -449,7 +452,7 @@ added at the end of this Macro, as per Automatic Matching, above.
 Normally all sent command statements are appended with a newline (or the value
 of C<ors>, if set). To suppress that feature, use the keyword C<send_no_ors>
 instead of C<send>. However this does not prevent the Format Interpolation via
-C<sprintf> as described above (which would be necessary: simply use C<"%%">).
+C<sprintf> as described above (simply use C<"%%"> to get a literal C<"%">).
 
 =back
 

@@ -57,13 +57,13 @@ which provides TELNET.
 
 =head2 runtime_options
 
-Based on the C<connect_options> hash provided to C<Net::CLI::Interact> on
-construction, selects attributes to provide to C<app> on the command line.
-Supported attributes:
+Based on the C<connect_options> hash provided to Net::CLI::Interact on
+construction, selects and formats parameters to provide to C<app> on the
+command line. Supported attributes:
 
 =over 4
 
-=item host
+=item host (required)
 
 Host name or IP address of the host to which the TELNET application is to
 connect.

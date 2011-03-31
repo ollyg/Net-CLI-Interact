@@ -34,7 +34,7 @@ sub last_prompt {
     return $self->last_actionset->item_at(-1)->response;
 }
 
-sub last_prompt_as_match {
+sub last_prompt_re {
     my $prompt = (shift)->last_prompt;
     return qr/^\Q$prompt\E$/;
 }
@@ -87,6 +87,10 @@ idea is that most CLI have a prompt where you issue commands, and are returned
 some output which this module gathers. The prompt is a demarcation between
 each command and its response data.
 
+Note that although we "keep track" of the prompt, Net::CLI::Interact is not a
+state machine, and the choice of command issued to the connected device bears
+no relation to the current (or last matched) prompt.
+
 =head1 INTERFACE
 
 =head2 set_prompt( $prompt_name )
@@ -97,8 +101,8 @@ CLI session. This allows a sequence of commands to be sent which share the
 same Prompt.
 
 The name you pass in is looked up in the loaded Phrasebook and the entry's
-regular expression stored in the C<prompt> slot. An exception is thrown if the
-named Prompt is not known.
+regular expression stored internally. An exception is thrown if the named
+Prompt is not known.
 
 Typically you would either refer to a Prompt in a Macro, or set the prompt you
 are expecting once for a sequence of commands in a particular CLI context.
@@ -108,9 +112,9 @@ explicit named Prompt at the end, we can assume the user is indicating some
 change of context. Therefore the C<prompt> is I<automatically updated> on such
 occasions to have the regular expression from that named Prompt.
 
-=head2 prompt
+=head2 prompt_re
 
-Returns the current Prompt, which is a regular expression reference. The
+Returns the current Prompt in the form of a regular expression reference. The
 Prompt is used as a default to catch the end of command response output, when
 a Macro has not been set up with explicit Prompt matching.
 
@@ -127,7 +131,7 @@ unless you know what you are doing.
 =head2 find_prompt( $wake_up? )
 
 A helper method that consumes output from the connected CLI session until a
-line matches one of the named Prompts in the loaded Phrasebooks, at which
+line matches any one of the named Prompts in the loaded Phrasebook, at which
 point no more output is consumed. As a consequence the C<prompt> will be set
 (see above).
 
@@ -145,16 +149,16 @@ disable this behaviour, pass a I<false> value into this method.
 
 =head2 wake_up
 
-Data sent to a device within C<find_prompt> if no output has so far matched
-any known named Prompt. Default is the value of the I<output record separator>
-from the L<Transport|Net::CLI::Interact::Transport> (newline).
+Text sent to a device within the C<find_prompt> method if no output has so far
+matched any known named Prompt. Default is the value of the I<output record
+separator> from the L<Transport|Net::CLI::Interact::Transport> (one newline).
 
 =head2 last_prompt
 
 Returns the Prompt which most recently was matched and terminated gathering of
 output from the connected CLI. This is a simple text string.
 
-=head2 last_prompt_as_match
+=head2 last_prompt_re
 
 Returns the text which was most recently matched and terminated gathering of
 output from the connected CLI, as a quote-escaped regular expression with line

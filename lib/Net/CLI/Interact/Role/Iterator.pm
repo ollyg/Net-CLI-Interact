@@ -93,9 +93,9 @@ sub reset { (shift)->_position(-1) }
 This module implements an array-based iterator which may be mixed-in to add
 management of a sequence of elements and processing of that sequence.
 
-The iterator is loosely based on L<MooseX::Iterator> but is limited to arrays
-and adds many other facilities. The following section describes the methods
-provided by this class.
+The iterator is inspired by L<MooseX::Iterator> but limited to arrays and adds
+many other facilities. The following section describes the methods provided by
+this class.
 
 =head1 USAGE
 

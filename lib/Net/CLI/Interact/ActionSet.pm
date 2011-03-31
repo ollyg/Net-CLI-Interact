@@ -224,14 +224,16 @@ The business end of this class, where the sequence of Actions is prepared for
 execution and then control passed to the Transport. This process is split into
 a number of phases:
 
-=head3 Pad C<send> with C<match>
+=over 4
+
+=item Pad C<send> with C<match>
 
 The Phrasebook allows missing out of the Match statements between Send
 statements, when they are expected to be the same as the C<current_match>.
 This phase inserts Match statements to restore a complete ActionSet
 definition.
 
-=head3 Forward C<continuation> to C<match>
+=item Forward C<continuation> to C<match>
 
 In the Phrasebook a user defines a Continuation (C<match>, then C<send>)
 following a Send statement (because it deals with the response to the sent
@@ -243,17 +245,19 @@ Match statements in the ActionSet. It also performs a similar action using the
 C<default_continuation> if one is set and there's no existing Continuation
 configured.
 
-=head3 Callback(s)
+=item Callback(s)
 
 Here the registered callbacks are executed (i.e. data is setnt to the
 Transport).
 
-=head3 Marshall Responses
+=item Marshall Responses
 
 Finally, responses which are stashed in the Match Actions are copied back to
 the Send actions, as more logically they are responses to commands sent. The
 ActionSet is now ready for access to retrieve the C<last_response> from the
 device.
+
+=back
 
 =head1 COMPOSITION
 

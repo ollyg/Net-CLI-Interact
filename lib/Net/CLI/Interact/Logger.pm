@@ -119,9 +119,9 @@ resolution timestamps can be added to log messages.
 =head1 DEFAULT CONFIGURATION
 
 Being based on L<Log::Dispatch::Config>, this logger can have multiple
-targets, each configured for independent level thresholds. The default
+targets, each configured for independent level thresholds. The overall default
 configuration is to print log messages to the screen (console), with a minimum
-level of C<debug> (that is, all messages).
+level of C<debug>. Each category (see below) has its own log level as well.
 
 Note that categories, as discussed below, are arbitrary so if a category is
 not explicity enabled or disabled, it is assumed to be B<disabled>. If you
@@ -131,9 +131,7 @@ SYNOPSIS.
 
 =head1 INTERFACE
 
-=over 4
-
-=item log( $category, $level, @message )
+=head2 log( $category, $level, @message )
 
 The combination of category and level determine whether the the log messages
 are emitted to any of the log destinations. Destinations are set using the
@@ -145,7 +143,7 @@ appended if the last message doesn't contain one itself. Messages are
 prepended with the first character of their C<$category>, and then indented
 proportionally to their C<$level>.
 
-=item log_config( \%config )
+=head2 log_config( \%config )
 
 A C<Log::Dispatch::Config> configuration (hash ref), meaning multiple log
 targets may be specified with different minimum level thresholds. There is a
@@ -161,11 +159,13 @@ minimum threshold:
  };
 
 
-=item log_flags( \@categories | \%category_level_map )
+=head2 log_flags( \@categories | \%category_level_map )
 
 The user is expected to specify which log categories they are interested in,
 and at what levels. If a category is used in the application for logging but
-not specified, then it is deemed B<disabled>.
+not specified, then it is deemed B<disabled>. Hence, even though the default
+destination log level is C<debug>, no messages are emitted until a category is
+enabled.
 
 In the array reference form, the list should contain category names, and they
 will all be mapped to the C<error> level:
@@ -202,20 +202,21 @@ For example:
 Messages at or above the specified level will be passed on to the
 C<Log::Dispatch> target, which may then specify an overriding threshold.
 
-=item log_stamps( $boolean )
+=head2 log_stamps( $boolean )
 
 Enable (the default) or disable the display of high resolution interval
 timestamps with each log message.
 
-=item log_start( [$seconds, $microseconds] )
+=head2 log_start( [$seconds, $microseconds] )
 
 Time of the start for generating a time interval when logging stamps. Defaults
-to the result of C<Time::HiRes::gettimeofday> in list context.
+to the result of C<Time::HiRes::gettimeofday> at the point the module is
+loaded, in list context.
 
-=item would_log( $category, $level )
+=head2 would_log( $category, $level )
 
 Returns True if, according to the current C<log_flags>, the given C<$category>
 is enabled at or above the threshold of C<$level>, otherwise returns False.
 Note that the C<Log::Dispatch> targets maintain their own thresholds as well.
 
-=back
+=cut
