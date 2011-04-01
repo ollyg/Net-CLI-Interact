@@ -184,9 +184,9 @@ Reuseable device command phrasebooks
 =back
 
 If you're a new user, please read the
-L<Tutorial|Net:CLI::Interact::Manual::Tutorial>. There's also a
-L<Cookbook|Net:CLI::Interact::Manual::Cookbook> and a L<Phrasebook
-Listing|Net:CLI::Interact::Manual::Phrasebook>.
+L<Tutorial|Net::CLI::Interact::Manual::Tutorial>. There's also a
+L<Cookbook|Net::CLI::Interact::Manual::Cookbook> and a L<Phrasebook
+Listing|Net::CLI::Interact::Manual::Phrasebook>.
 
 =head1 INTERFACE
 

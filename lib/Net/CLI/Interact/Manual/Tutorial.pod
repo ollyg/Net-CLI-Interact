@@ -56,7 +56,7 @@ required for all new instances. Let's look at them in turn:
 =item transport
 
 How do you want to connect to your CLI? The current choices are
-L<Telnet|Net:CLI::Interact::Transport::Telnet>,
+L<Telnet|Net::CLI::Interact::Transport::Telnet>,
 L<SSH|Net::CLI::Interact::Transport::SSH> and a
 L<Serial|Net::CLI::Interact::Transport::Serial> line (that is, a console
 cable). In this option you need to tell the library which underlying transport
@@ -146,7 +146,7 @@ simply use C<@output> instead in the above example.
 
 Life gets more complicated when your command has things like confirmation
 steps (e.g. reboot), other prompts (e.g. extended ping), etc. For these
-situations we have L<Macros> in the phrasebook.
+situations we have I<Macros> in the phrasebook.
 
 A macro is simply a sequence of commands we could issue using C<< $s->cmd()
 >>, bundled together and given a friendly name. Macros are also smart enough
