@@ -1,16 +1,17 @@
-package # hide from pause
-    Net::CLI::Interact::Meta::Attribute::Trait::Mediated;
-use Moose::Role;
-
-package # hide from pause
-    Moose::Meta::Attribute::Custom::Trait::Mediated;
-sub register_implementation {
-    return 'Net::CLI::Interact::Meta::Attribute::Trait::Mediated';
-}
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 package Net::CLI::Interact;
+
+{
+    package # hide from pause
+        Net::CLI::Interact::Meta::Attribute::Trait::Mediated;
+    use Moose::Role;
+
+    package # hide from pause
+        Moose::Meta::Attribute::Custom::Trait::Mediated;
+    sub register_implementation {
+        return 'Net::CLI::Interact::Meta::Attribute::Trait::Mediated';
+    }
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use Moose;
 with 'Net::CLI::Interact::Role::Engine';

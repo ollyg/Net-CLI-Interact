@@ -1,21 +1,22 @@
-package # hide from pause
-    Net::CLI::Interact::Transport::Telnet::Options;
-use Moose;
-
-has 'host' => (
-    is => 'rw',
-    isa => 'Str',
-    required => 1,
-);
-
-use Moose::Util::TypeConstraints;
-coerce 'Net::CLI::Interact::Transport::Telnet::Options'
-    => from 'HashRef[Any]'
-        => via { Net::CLI::Interact::Transport::Telnet::Options->new($_) };
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 package Net::CLI::Interact::Transport::Telnet;
+
+{
+    package # hide from pause
+        Net::CLI::Interact::Transport::Telnet::Options;
+    use Moose;
+
+    has 'host' => (
+        is => 'rw',
+        isa => 'Str',
+        required => 1,
+    );
+
+    use Moose::Util::TypeConstraints;
+    coerce 'Net::CLI::Interact::Transport::Telnet::Options'
+        => from 'HashRef[Any]'
+            => via { Net::CLI::Interact::Transport::Telnet::Options->new($_) };
+}
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use Moose;
 with 'Net::CLI::Interact::Role::Transport';
