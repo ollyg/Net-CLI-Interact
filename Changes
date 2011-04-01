@@ -1,6 +1,7 @@
 {{$NEXT}}
 
   * Fix "private" packages scoping so that Dist::Zilla works
+  * Add tutorial and cookbook POD files
 
 1.110900  2011-03-31 14:41:17 Europe/London
 

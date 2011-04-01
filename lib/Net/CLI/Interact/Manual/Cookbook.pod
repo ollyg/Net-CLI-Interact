@@ -1,4 +1,6 @@
-# ABSTRACT: Miscellaneous recipes
+=head1 NAME
+
+Net::CLI::Interact::Manual::Cookbook - Miscellaneous recipes
 
 =head1 Phrasebook Entries
 

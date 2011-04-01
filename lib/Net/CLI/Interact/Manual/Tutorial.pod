@@ -1,4 +1,6 @@
-# ABSTRACT: Guide for new users
+=head1 NAME
+
+Net::CLI::Interact::Manual::Tutorial - Guide for new users
 
 =head1 Introduction
 
