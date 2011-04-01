@@ -1,0 +1,60 @@
+# ABSTRACT: Miscellaneous recipes
+
+=head1 Phrasebook Entries
+
+=head2 Prompts
+
+These are nothing more than named regular expressions:
+
+ prompt configure
+     match /\(config[^)]*\)# ?$/
+
+=head2 Macros
+
+This example waits for the device to ask "[startup-config]?" and then responds
+with the text C<startup-config>.
+
+ macro copy_run_start
+     send copy running-config startup-config
+     match /Destination filename \[startup-config\]\?$/
+     send startup-config
+
+To send instead a press of the Return key (I<output record separator>), use:
+
+ macro write_mem
+     send copy running-config startup-config
+     match /Destination filename \[startup-config\]\?$/
+     send ''
+
+To instead allow the user to pass in the file name, use a C<sprintf> format.
+
+ macro save_to_file
+     send copy running-config startup-config
+     match /Destination filename \[startup-config\]\?$/
+     send %s
+
+The user I<must> then pass a parameter to the C<macro> call, even if it's an
+empty string:
+
+ $s->macro('save_to_file', { params => ['file_name'] });
+ # or
+ $s->macro('save_to_file', { params => [''] });
+
+=head2 Continuations
+
+These are Macros which start with a match instead of a send:
+
+ macro more_pages
+     match / --More-- /
+     send ' '
+
+Note that the parameter of the C<send> is I<not> sent with a Return character
+(I<output record separator>) appended.
+
+When included in a macro, the same is achieved like this:
+
+ macro show_ip_route
+     send show ip route
+     follow / --More-- / with ' '
+
+=cut
