@@ -154,7 +154,7 @@ sub _marshall_responses {
 
         # remove echoed command from the beginning
         my $cmd = $send->value;
-        (my $output = $match->response_stash) =~ s/^$cmd\s+//;
+        (my $output = $match->response_stash) =~ s/^$cmd\s*//;
         $send->response($output);
     }
 }
