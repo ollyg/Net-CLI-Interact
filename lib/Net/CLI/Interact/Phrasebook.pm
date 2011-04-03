@@ -27,7 +27,8 @@ sub _build_library {
     my (undef, $directory, undef) = fileparse(
         $INC{ 'Net/CLI/Interact.pm' }
     );
-    return ["${directory}Interact/phrasebook"];
+    return [ Path::Class::Dir->new($directory)
+		->subdir("Interact", "phrasebook")->stringify ];
 }
 
 has 'add_library' => (
@@ -52,6 +53,8 @@ sub prompt {
     return $self->_prompt->{$name};
 }
 
+sub prompt_names { return keys %{ (shift)->_prompt } }
+
 has '_macro' => (
     is => 'ro',
     isa => 'HashRef[Net::CLI::Interact::ActionSet]',
@@ -66,6 +69,8 @@ sub macro {
         unless length $name and exists $self->_macro->{$name};
     return $self->_macro->{$name};
 }
+
+sub macro_names { return keys %{ (shift)->_macro } }
 
 # inflate the hashref into action objects
 sub _bake {
@@ -197,7 +202,7 @@ sub _find_phrasebooks {
             $self->personality) unless $target;
 
     my @phrasebooks = ();
-    my $root = Path::Class::Dir->new('/');
+    my $root = Path::Class::Dir->new();
     foreach my $part ( $target->dir_list ) {
         $root = $root->subdir($part);
         next if scalar grep { $root->subsumes($_) } @libs;
@@ -309,11 +314,19 @@ Returns the Prompt associated to the given C<$name>, or throws an exception if
 no such prompt can be found. The returned object is an instance of
 L<Net::CLI::Interact::ActionSet>.
 
+=head2 prompt_names
+
+Returns a list of the names of the current loaded Prompts.
+
 =head2 macro( $name )
 
 Returns the Macro associated to the given C<$name>, or throws an exception if
 no such macro can be found. The returned object is an instance of
 L<Net::CLI::Interact::ActionSet>.
+
+=head2 macro_names
+
+Returns a list of the names of the current loaded Macros.
 
 =head1 PHRASEBOOK FORMAT
 

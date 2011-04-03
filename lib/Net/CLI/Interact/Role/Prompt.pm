@@ -16,6 +16,7 @@ has '_prompt' => (
     isa => 'Maybe[RegexpRef]',
     required => 0,
     reader => 'prompt_re',
+    predicate => 'has_set_prompt',
     clearer => 'unset_prompt',
     trigger => sub {
         (shift)->logger->log('prompt', 'info', 'prompt has been set to', (shift));
@@ -41,15 +42,16 @@ sub last_prompt_re {
 
 # pump until any of the prompts matches the output buffer
 sub find_prompt {
-    my ($self, $tries) = @_;
+    my ($self, $wake_up) = @_;
     $self->logger->log('prompt', 'notice', 'finding prompt');
 
     # make connection on transport if not yet done
     $self->transport->connect if not $self->transport->done_connect;
 
     eval {
-        while ($self->transport->harness->pump) {
-            foreach my $prompt (keys %{ $self->phrasebook->prompt }) {
+        PUMPING: while (1) {
+            $self->transport->harness->pump;
+            foreach my $prompt ($self->phrasebook->prompt_names) {
                 # prompts consist of only one match action
                 if ($self->transport->out =~ $self->phrasebook->prompt($prompt)->first->value) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
@@ -61,18 +63,22 @@ sub find_prompt {
                         ] })
                     );
                     $self->set_prompt($prompt);
-                    return;
+                    last PUMPING;
                 }
                 $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
             }
+            $self->logger->log('prompt', 'debug', 'no match so far, more data?');
         }
     };
-    # default call from user, $tries is zero, so run once more and inc tries
-    if ($@ and $self->has_wake_up and $tries) {
+
+    if ($@ and $self->has_wake_up and $wake_up) {
         $self->logger->log('prompt', 'info', 'timeout, sending WAKE_UP and trying again');
         $self->transport->send( $self->wake_up );
         $self->find_prompt;
     }
+
+	$self->logger->log('prompt', 'notice', 'failed to find prompt!')
+        if not $self->has_set_prompt;
 }
 
 1;
@@ -127,6 +133,10 @@ Use this method to empty the current C<prompt> setting (see above). The effect
 is that the module will automatically set the Prompt for itself based on the
 last line of output received from the connected CLI. Do not use this option
 unless you know what you are doing.
+
+=head2 has_set_prompt
+
+Returns True if there is currently a Prompt set, otherwise returns False.
 
 =head2 find_prompt( $wake_up? )
 

@@ -31,13 +31,15 @@ has 'connect_options' => (
 has 'app' => (
     is => 'ro',
     isa => 'Str',
-    default => 'telnet',
+    default => 'C:\Users\ecmwf\Desktop\plink.exe',
+    #default => 'C:\Windows\System32\telnet.exe',
     required => 0,
 );
 
 sub runtime_options {
     # simple, for now
-    return (shift)->connect_options->host;
+    return ('-telnet', (shift)->connect_options->host);
+    #return (shift)->connect_options->host;
 }
 
 1;

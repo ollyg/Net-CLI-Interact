@@ -27,8 +27,8 @@ package Net::CLI::Interact::Role::Engine;
 
     sub BUILDARGS {
         my ($class, @params) = @_;
-        return {} unless scalar @params > 0 and defined $params[0];
-        return { @params };
+        return {} unless scalar @params > 0 and ref $params[0] eq ref {};
+        return $params[0];
     }
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@ sub _execute_actions {
     $self->transport->connect if not $self->transport->done_connect;
 
     # user can install a prompt, call find_prompt, or let us trigger that
-    $self->find_prompt if not ($self->prompt_re || $self->last_actionset);
+    $self->find_prompt(1) if not ($self->prompt_re || $self->last_actionset);
 
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@actions],
