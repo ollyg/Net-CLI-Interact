@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Cross platform support (i.e. Win32)
+
 1.110911  2011-04-01 15:09:58 Europe/London
 
   * Minor POD formatting typos fixed
