@@ -2,6 +2,17 @@
 
 Net::CLI::Interact::Manual::Cookbook - Miscellaneous recipes
 
+=head1 Windows Support
+
+The library works just fine under native windows (i.e use something like
+Strawberry Perl - no need for cygwin). However one additional step is
+required for you to have success:
+
+You B<must> download the C<plink.exe> application, and pass its filesystem
+location to the C<app> parameter to C<new()>. Do not try to use any other
+Telnet or SSH programs (for instance the Windows bundled C<telnet>) - they
+I<will not work>.
+
 =head1 Phrasebook Entries
 
 =head2 Prompts

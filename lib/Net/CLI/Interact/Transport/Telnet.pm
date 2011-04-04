@@ -31,15 +31,21 @@ has 'connect_options' => (
 has 'app' => (
     is => 'ro',
     isa => 'Str',
-    default => 'C:\Users\ecmwf\Desktop\plink.exe',
-    #default => 'C:\Windows\System32\telnet.exe',
-    required => 0,
+    lazy_build => 1,
 );
 
+sub _build_app {
+    my $self = shift;
+    confess "please pass location of plink.exe in 'app' parameter to new()\n"
+        if $^O eq 'MSWin32';
+    return 'telnet'; # unix
+}
+
 sub runtime_options {
-    # simple, for now
-    return ('-telnet', (shift)->connect_options->host);
-    #return (shift)->connect_options->host;
+    return (
+        ($^O eq 'MSWin32' ? '-telnet' : ()),
+        (shift)->connect_options->host,
+    );
 }
 
 1;
@@ -55,8 +61,9 @@ for use by L<Net::CLI::Interact>.
 
 =head2 app
 
-Defaults to C<telnet> but can be changed to the name of the local application
-which provides TELNET.
+On Windows platforms you B<must> download the C<plink.exe> program, and pass its
+location to the library in this parameter. On other platforms, this defaults to
+C<telnet>.
 
 =head2 runtime_options
 

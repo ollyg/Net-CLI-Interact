@@ -184,6 +184,7 @@ sub load_phrasebooks {
 }
 
 # finds the path of Phrasebooks within the Library leading to Personality
+# FIXME: *sniff* *sniff* this code seems a bit whiffy
 use Path::Class;
 sub _find_phrasebooks {
     my $self = shift;
@@ -202,7 +203,7 @@ sub _find_phrasebooks {
             $self->personality) unless $target;
 
     my @phrasebooks = ();
-    my $root = Path::Class::Dir->new();
+    my $root = Path::Class::Dir->new($target->is_absolute ? '' : ());
     foreach my $part ( $target->dir_list ) {
         $root = $root->subdir($part);
         next if scalar grep { $root->subsumes($_) } @libs;

@@ -117,6 +117,11 @@ sub connect {
     );
 }
 
+sub DEMOLISH {
+    my $self = shift;
+    $self->harness->kill_kill(grace => 1) if $^O eq 'MSWin32';
+}
+
 # returns either the content of the output buffer, or undef
 sub do_action {
     my ($self, $action) = @_;

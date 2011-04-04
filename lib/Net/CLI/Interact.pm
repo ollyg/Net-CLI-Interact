@@ -192,8 +192,9 @@ Listing|Net::CLI::Interact::Manual::Phrasebook>.
 
 =head2 new( \%options )
 
-Prepares a new session for you, but will not connect to any device. Options
-are:
+Prepares a new session for you, but will not connect to any device. On
+Windows platforms, you B<must> download the C<plink.exe> program, and pass
+its location to the C<app> parameter. Other options are:
 
 =over 4
 

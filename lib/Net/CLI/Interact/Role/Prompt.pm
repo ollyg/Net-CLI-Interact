@@ -72,13 +72,14 @@ sub find_prompt {
     };
 
     if ($@ and $self->has_wake_up and $wake_up) {
-        $self->logger->log('prompt', 'info', 'timeout, sending WAKE_UP and trying again');
+        $self->logger->log('prompt', 'info', "failed: [$@], sending WAKE_UP and trying again");
         $self->transport->send( $self->wake_up );
         $self->find_prompt;
     }
-
-	$self->logger->log('prompt', 'notice', 'failed to find prompt!')
-        if not $self->has_set_prompt;
+    else {
+        $self->logger->log('prompt', 'notice', 'failed to find prompt!')
+            if not $self->has_set_prompt;
+    }
 }
 
 1;
