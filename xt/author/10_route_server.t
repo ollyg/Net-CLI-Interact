@@ -7,7 +7,8 @@ BEGIN { use_ok( 'Net::CLI::Interact') }
 
 my $s = Net::CLI::Interact->new(
     transport => "Telnet",
-    app => 'C:\Users\ecmwf\Desktop\plink.exe',
+    ($^O eq 'MSWin32' ?
+        (app => 'C:\Users\ecmwf\Desktop\plink.exe') : () ),
     connect_options => { host => "route-server.bb.pipex.net" },
     personality => "cisco",
 );
