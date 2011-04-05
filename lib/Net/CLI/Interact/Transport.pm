@@ -1,6 +1,6 @@
-package Net::CLI::Interact::Role::Transport;
+package Net::CLI::Interact::Transport;
 
-use Moose::Role;
+use Moose;
 use IPC::Run ();
 
 has 'logger' => (

@@ -105,7 +105,7 @@ sub _build_phrasebook {
 
 has 'transport' => (
     is => 'ro',
-    does => 'Net::CLI::Interact::Role::Transport',
+    isa => 'Net::CLI::Interact::Transport',
     lazy_build => 1,
     traits => ['Mediated'],
 );
@@ -255,7 +255,7 @@ returned, only split into a list on the I<input record separator> (newline).
 
 =head2 transport
 
-Returns the L<Transport|Net::CLI::Interact::Role::Transport> backend which was
+Returns the L<Transport|Net::CLI::Interact::Transport> backend which was
 loaded based on the C<transport> option to C<new>. See the
 L<Telnet|Net::CLI::Interact::Transport::Telnet>,
 L<SSH|Net::CLI::Interact::Transport::SSH>, or

@@ -19,7 +19,7 @@ package Net::CLI::Interact::Transport::SSH;
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use Moose;
-with 'Net::CLI::Interact::Role::Transport';
+extends 'Net::CLI::Interact::Transport';
 
 has 'connect_options' => (
     is => 'ro',
@@ -88,7 +88,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Role::Transport>
+L<Net::CLI::Interact::Transport>
 
 =back
 
