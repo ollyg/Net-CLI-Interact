@@ -4,6 +4,7 @@ package Net::CLI::Interact::Transport::Serial;
     package # hide from pause
         Net::CLI::Interact::Transport::Serial::Options;
     use Moose;
+    use Moose::Util::TypeConstraints qw(enum);
 
     has 'device' => (
         is => 'rw',
@@ -13,7 +14,7 @@ package Net::CLI::Interact::Transport::Serial;
 
     has 'parity' => (
         is => 'rw',
-        isa => 'Str',
+        isa => enum([qw/none even odd/]);
         default => 'none',
         required => 0,
     );
