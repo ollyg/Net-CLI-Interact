@@ -8,7 +8,7 @@ BEGIN {
     use_ok( 'Net::CLI::Interact');
 }
 
-new_ok('Net::CLI::Interact' => [ 
+new_ok('Net::CLI::Interact' => [
     transport => 'Test'
 ]);
 

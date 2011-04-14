@@ -3,7 +3,7 @@
 use strict; use warnings FATAL => 'all';
 use Test::More 0.88;
 
-use lib 't/lib'; 
+use lib 't/lib';
 use Net::CLI::Interact;
 
 my $s = new_ok('Net::CLI::Interact' => [{
