@@ -9,6 +9,7 @@ use Net::CLI::Interact;
 my $s = Net::CLI::Interact->new({
     transport => 'Test',
     personality => 'testing',
+    add_library => 't/phrasebook',
 });
 
 my $pb = $s->phrasebook;

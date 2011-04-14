@@ -9,6 +9,7 @@ use Net::CLI::Interact;
 my $s = new_ok('Net::CLI::Interact' => [{
     transport => 'Test',
     personality => 'testing',
+    add_library => 't/phrasebook',
 }]);
 
 $s->set_prompt('TEST_PROMPT');
