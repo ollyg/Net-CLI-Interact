@@ -1,0 +1,8 @@
+# prompt prompt
+#     match /[\/a-zA-Z0-9._:-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
+
+prompt basic
+    match /: ?$/
+
+prompt user
+    match /login as: ?$/

@@ -1,0 +1,11 @@
+# prompt prompt
+#     match /[\/a-zA-Z0-9._-]+ ?[#>] ?(?:\(enable[^)]*\))? ?$/
+
+prompt privileged
+    match /> \(enable\) ?$/
+
+# prompt err_string
+#     match /% ?(?:Error|Type "[^?]+\?"|(?:Incomplete|Unknown) command|Invalid input)/
+
+macro paging
+    send set length %s

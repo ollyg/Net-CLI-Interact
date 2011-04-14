@@ -1,0 +1,23 @@
+# prompt prompt
+#     match /[\/a-zA-Z0-9._\@-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
+
+prompt privileged
+    match /> ?$/
+
+prompt configure
+    match /# ?$/
+
+prompt user
+    match /(?:[Ll]ogin|[Uu]sername)/
+
+# prompt userpass
+#     match /(?:[Ll]ogin|[Uu]sername|[Pp]assword): ?$/
+
+# prompt err_string
+#     match /(?:syntax error|unknown command|ambiguous)/
+
+macro begin_configure
+    send configure
+
+macro paging
+    send set cli screen-length %s

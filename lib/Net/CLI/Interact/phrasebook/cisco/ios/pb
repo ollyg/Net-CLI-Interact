@@ -1,44 +1,5 @@
-prompt user_prompt
-    match /[Uu]sername: ?$/
+# prompt err_string
+#     match /% ?(?:Error|Type "[^?]+\?"|(?:Incomplete|Unknown) command|Invalid input)/
 
-prompt pass_prompt
-    match /[Pp]assword: ?$/
-
-prompt user_exec
-    match /> ?$/
-
-prompt priv_exec
-    match /# ?$/
-
-prompt configure
-    match /\(config[^)]*\)# ?$/
-
-
-macro to_user_exec
-    send %s
-    match /[Pp]assword: ?$/
-    send %s
-    match prompt user_exec
-
-macro to_priv_exec
-    send enable
-    match /[Pp]assword: ?$/
-    send %s
-    match prompt priv_exec
-
-macro write_mem
-    send copy running-config startup-config
-    match /Destination filename \[startup-config\]\?$/
-    send startup-config
-
-macro show_ip_route
-    send show ip route
-    follow / --More-- / with ' '
-
-macro show_run
-    send show running-config
-    follow / --More-- / with ' '
-
-macro show_int_br
-    send show ip int br
-    send show ip int br
+macro paging
+    send terminal length %s
