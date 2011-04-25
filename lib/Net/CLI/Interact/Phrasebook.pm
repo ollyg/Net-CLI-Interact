@@ -28,7 +28,7 @@ sub _build_library {
         $INC{ 'Net/CLI/Interact.pm' }
     );
     return [ Path::Class::Dir->new($directory)
-		->subdir("Interact", "phrasebook")->stringify ];
+        ->subdir("Interact", "phrasebook")->stringify ];
 }
 
 has 'add_library' => (

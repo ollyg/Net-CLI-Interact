@@ -24,10 +24,8 @@ has '_prompt' => (
 );
 
 sub set_prompt {
-    my ($self, $prompt) = @_;
-    confess "unknown prompt: [$prompt]"
-        unless eval { $self->phrasebook->prompt($prompt) };
-    $self->_prompt( $self->phrasebook->prompt($prompt)->first->value );
+    my ($self, $name) = @_;
+    $self->_prompt( $self->phrasebook->prompt($name)->first->value );
 }
 
 sub last_prompt {
@@ -36,8 +34,15 @@ sub last_prompt {
 }
 
 sub last_prompt_re {
-    my $prompt = (shift)->last_prompt;
+    my $self = shift;
+    my $prompt = $self->last_prompt;
     return qr/^\Q$prompt\E$/;
+}
+
+sub prompt_looks_like {
+    my ($self, $name) = @_;
+    return ($self->last_prompt
+        =~ $self->phrasebook->prompt($name)->first->value);
 }
 
 # pump until any of the prompts matches the output buffer
@@ -138,6 +143,11 @@ unless you know what you are doing.
 =head2 has_set_prompt
 
 Returns True if there is currently a Prompt set, otherwise returns False.
+
+=head2 prompt_looks_like( $name )
+
+Returns True if the current prompt matches the given named prompt. This is
+useful when you wish to make a more specific check on the current prompt.
 
 =head2 find_prompt( $wake_up? )
 
