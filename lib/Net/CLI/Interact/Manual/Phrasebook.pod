@@ -1,0 +1,115 @@
+=head1 NAME
+
+Net::CLI::Interact::Manual::Phrasebook - List of Supported CLIs
+
+=head1 INTRODUCTION
+
+The bundled phrasebook includes support for a variety of network device CLIs.
+Many were contributed by users of the module, so if you too set up a new CLI
+dictionary, please do contribute it back.
+
+For each supported CLI, there is a name which must be passed in the
+C<personality> option to L<Net::CLI::Interact>'s C<new()> method. After that,
+you can call the included Macros, and the module will use the included Prompt
+to match the current state of the CLI. More information is available in the
+L<Tutorial|Net::CLI::Interact::Manual::Tutorial> and
+L<Cookbook|Net::CLI::Interact::Manual::Cookbook>.
+
+Below is a list of all current bundled CLI dictionaries. Each lists its name,
+the avilable Prompts, Macros and Continuations, and from which other CLI
+dictionaries it inherits.
+
+=head1 Cisco
+
+This personality goes by the name of C<cisco> and provides a basis for many
+other CLI dictionaries.
+
+Prompts are C<basic>, C<privileged>, C<configure>, C<user>, and C<pass>.
+
+Macros are C<begin_privileged>, C<end_privileged>, C<begin_configure>,
+C<end_configure>, and C<disconnect>.
+
+=head1 CatOS
+
+This personality goes by the name of C<catos> and inherits from the C<cisco>
+dictionary.
+
+Additionally it provides the C<privileged> Prompt.
+
+Additionally it also provides the C<paging> Macro to set the terminal page
+size.
+
+=head1 ExtremeOS
+
+This personality goes by the name of C<extremeos> and inherits from the
+C<cisco> dictionary.
+
+Additional Prompts are C<basic>, C<privileged>, C<configure>, C<user>, and
+C<pass>.
+
+Additional Macros are C<begin_privileged>, C<end_privileged>, and
+C<disconnect>.
+
+=head1 IOS
+
+This personality goes by the name of C<ios> and inherits from the C<cisco>
+dictionary.
+
+Additionally it provides the C<paging> Macro to set the terminal page size.
+
+=head1 HP
+
+This personality goes by the name of C<hp> and inherits from the C<cisco>
+dictionary.
+
+Additionally it provides the C<basic> and C<user> Prompts.
+
+=head1 JunOS
+
+This personality goes by the name of C<junos> and inherits from the C<cisco>
+dictionary.
+
+Additionally it provides the C<privileged>, C<configure>, and C<user> Prompts.
+
+Additionally it also provides the C<begin_configure> and C<paging> Macros.
+
+=head1 Nortel
+
+This personality goes by the name of C<nortel> and inherits from the C<cisco>
+dictionary.
+
+Additionally it provides the C<user> Prompt.
+
+=head1 PIXOS
+
+This personality goes by the name of C<pixos> and inherits from the C<cisco>
+dictionary.
+
+Additionally it provides the C<paging> Macro to set the terminal page size.
+
+It can be used in its own right for Cisco PIX firewalls, but is
+also used as a base for other dictionaries.
+
+=head1 PIXOS 7
+
+This personality goes by the name of C<pixos7> and inherits from the C<pixos>
+dictionary.
+
+Additonally it provides the C<paging> Macro to set the terminal page size.
+
+=head1 FWSM
+
+This personality goes by the name of C<fwsm> and inherits from the C<pixos>
+dictionary.
+
+It provides no further functionality, as Cisco FWSM software version 1 and 2
+was the same as the PIX OS.
+
+=head1 FWSM 3
+
+This personality goes by the name of C<fwsm3> and inherits from the C<pixos>
+dictionary.
+
+Additionally it provides the C<paging> Macro to set the terminal page size.
+
+=cut
