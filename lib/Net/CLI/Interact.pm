@@ -103,6 +103,16 @@ sub _build_phrasebook {
     });
 }
 
+# does not really *change* the phrasebook, just reconfig and nuke
+sub set_phrasebook {
+    my ($self, $args) = @_;
+    return unless defined $args and ref $args eq ref {};
+    foreach my $k (keys %$args) {
+        $self->__mediator_params->{$k} = $args->{$k};
+    }
+    $self->clear_phrasebook;
+}
+
 has 'transport' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Transport',
@@ -267,6 +277,13 @@ details.
 Returns the Phrasebook object which was loaded based on the C<personality>
 option given to C<new>. See L<Net::CLI::Interact::Phrasebook> for further
 details.
+
+=head2 set_phrasebook( \%options )
+
+Allows you to (re-)configure the loaded phrasebook, perhaps changing the
+personality or library, or other properties. The C<%options> Hash ref should
+be any parameters from the L<Phrasebook|Net::CLI::Interact::Phrasebook>
+module, but at a minimum must include a C<personality>.
 
 =head2 set_default_contination( $macro_name )
 
