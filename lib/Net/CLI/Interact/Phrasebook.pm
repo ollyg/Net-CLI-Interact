@@ -76,7 +76,7 @@ sub macro_names { return keys %{ (shift)->_macro } }
 sub _bake {
     my ($self, $data) = @_;
     return unless ref $data eq ref {} and keys %$data;
-    $self->logger->log('phrasebook', 'debug', 'storing type', $data->{type}, 'with name', $data->{name});
+    $self->logger->log('phrasebook', 'debug', 'storing', $data->{type}, $data->{name});
 
     my $slot = '_'. lc $data->{type};
     $self->$slot->{$data->{name}}

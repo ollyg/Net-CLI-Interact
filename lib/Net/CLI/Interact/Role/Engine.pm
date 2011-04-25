@@ -85,7 +85,7 @@ sub cmd {
 
     if ($options->has_match) {
         # convert prompt name from user into regexpref, or die
-        if (ref $options->has_match eq ref '') {
+        if (ref $options->match eq ref '') {
             $options->match(
                 $self->phrasebook->prompt( $options->match )->first->value );
         }

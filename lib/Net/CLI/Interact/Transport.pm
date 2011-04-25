@@ -81,6 +81,7 @@ has 'harness' => (
     isa => 'IPC::Run',
     required => 0,
     predicate => 'done_connect',
+    clearer => 'disconnect',
 );
 
 has '_timeout_obj' => (
@@ -106,6 +107,7 @@ sub connect {
     my $self = shift;
     $self->logger->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
 
+    $self->flush;
     $self->harness(
         IPC::Run::harness(
             [$self->app, $self->runtime_options],
@@ -200,6 +202,13 @@ line arguments to the Application.
 
 Returns True if C<connect> has been called successfully, otherwise returns
 False.
+
+=head2 disconnect
+
+Undefines the IPC::Run harness and flushes any output data buffer such that
+the next call to C<cmd> or C<macro> will cause a new connection to be made.
+Useful if you intentionally timeout a command and end up with junk in the
+output buffer.
 
 =head2 do_action
 
