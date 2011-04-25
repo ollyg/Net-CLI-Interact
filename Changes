@@ -1,6 +1,10 @@
 {{$NEXT}}
 
+1.111150  2011-04-25 19:55:40 Europe/London
+
   * Cross platform support (i.e. Win32)
+  * More documentation
+  * Added a few minor support methods
 
 1.110911  2011-04-01 15:09:58 Europe/London
 
