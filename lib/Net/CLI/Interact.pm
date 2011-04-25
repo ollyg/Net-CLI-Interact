@@ -212,7 +212,7 @@ its location to the C<app> parameter. Other options are:
 
 The family of device command phrasebooks to load. There is a built-in library
 within this module, or you can provide a search path to other libraries. See
-L<Net::CLI::Interact::Phrasebook> for further details.
+L<Net::CLI::Interact::Manual::Phrasebook> for further details.
 
 =item C<< transport => $backend >> (required)
 

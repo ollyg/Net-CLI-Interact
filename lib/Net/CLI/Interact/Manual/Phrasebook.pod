@@ -5,8 +5,9 @@ Net::CLI::Interact::Manual::Phrasebook - List of Supported CLIs
 =head1 INTRODUCTION
 
 The bundled phrasebook includes support for a variety of network device CLIs.
-Many were contributed by users of the module, so if you too set up a new CLI
-dictionary, please do contribute it back.
+Many were contributed by users of the module. If you set up a new CLI
+dictionary, please consider contributing it back! The phrasbook specification
+is given in L<Net::CLI::Interact::Phrasebook>.
 
 For each supported CLI, there is a name which must be passed in the
 C<personality> option to L<Net::CLI::Interact>'s C<new()> method. After that,
