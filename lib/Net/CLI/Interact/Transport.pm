@@ -181,7 +181,7 @@ interacting with a command line interface. Given an application path, the
 program will be started and an interface is provided to send commands and
 slurp the response output.
 
-You should not use this role directly, but instead consume it within a
+You should not use this class directly, but instead inherit from it in
 specific Transport that will set the application command line name, and
 marshall any runtime options.
 
