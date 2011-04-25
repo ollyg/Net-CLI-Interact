@@ -25,6 +25,13 @@ package Net::CLI::Interact::Role::Engine;
         required => 0,
     );
 
+    has 'match' => (
+        is => 'rw',
+        isa => 'Str|RegexpRef',
+        predicate => 'has_match',
+        required => 0,
+    );
+
     sub BUILDARGS {
         my ($class, @params) = @_;
         return {} unless scalar @params > 0 and ref $params[0] eq ref {};
@@ -76,6 +83,15 @@ sub cmd {
 
     $self->logger->log('engine', 'notice', 'running command', $command);
 
+    if ($options->has_match) {
+        # convert prompt name from user into regexpref, or die
+        if (ref $options->has_match eq ref '') {
+            $options->match(
+                $self->phrasebook->prompt( $options->match )->first->value );
+        }
+        $self->logger->log('engine', 'info', 'to match', $options->match);
+    }
+
     return $self->_execute_actions(
         $options,
         Net::CLI::Interact::Action->new({
@@ -113,7 +129,7 @@ sub _execute_actions {
 
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@actions],
-        current_match => ($self->prompt_re || $self->last_prompt_re),
+        current_match => ($options->match || $self->prompt_re || $self->last_prompt_re),
         default_continuation => $self->default_continuation,
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
@@ -169,6 +185,12 @@ overrides whatever is set in the Transport, or the default of 10 seconds.
 
 When passed a true value, a newline character (in fact the value of C<ors>)
 will not be appended to the statement sent to the device.
+
+=item C<< match => $name | $regexp >> (optional)
+
+Allows this command only to complete with a custom match, which may either be
+the name of a loaded phrasebook Prompt, or your own regular expression
+reference (C<< qr// >>).
 
 =back
 
