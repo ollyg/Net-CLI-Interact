@@ -9,7 +9,7 @@ Strawberry Perl - no need for cygwin). However one additional step is
 required for you to have success:
 
 You B<must> download the C<plink.exe> application, and pass its filesystem
-location to the C<app> parameter to C<new()>. Do not try to use any other
+location in the C<app> parameter to C<new()>. Do not try to use any other
 Telnet or SSH programs (for instance the Windows bundled C<telnet>) - they
 I<will not work>.
 
@@ -64,10 +64,66 @@ These are Macros which start with a match instead of a send:
 Note that the parameter of the C<send> is I<not> sent with a Return character
 (I<output record separator>) appended.
 
-When included in a macro, the same is achieved like this:
+When included in a macro, the continuation can be in-line, like this:
 
  macro show_ip_route
      send show ip route
      follow / --More-- / with ' '
+
+=head1 Running Commands
+
+=head2 Standalone Commands
+
+Simply send the command you wish to execute to the library. If not already
+done, a connection to the device will be established automatically:
+
+ $s->cmd('show ip int br');
+
+Normally this matches against a default prompt, which has been discovered
+automatically, or set by you:
+
+ $s->set_prompt('user_prompt');
+
+It's also possible to pass in a custom prompt for this command only:
+
+ $s->cmd('show ip int br', { match => qr/special prompt>$/ });
+
+=head2 Composite Macro Commands
+
+Call a predefined Macro from the phrasebook using this method:
+
+ $s->macro('write_mem');
+
+Sometimes the Macro needs parameters:
+
+ $s->macro('to_priv_exec', { params => ['my_password'] });
+
+You can't really create a Macro on the fly very easily, but with suitable use
+of C<cmd()>, C<set_prompt()>, and the C<match> option to C<cmd()> it's
+possible to achieve some simple flexibility.
+
+=head1 Reconfiguring On-the-Fly
+
+=head2 Phrasebook
+
+It's possible to load a new phrasebook by the following method, which must be
+passed at least the name of the personality:
+
+ $s->set_phrasebook({ personality => 'ios' });
+
+You can pass any options which the
+L<Phrasebook|Net::CLI::Interact::Phrasebook> module itself would take.
+
+=head2 Prompt
+
+The current prompt can be changed by passing the name of the new Prompt as it
+is known by the phrasebook:
+
+ $s->set_prompt('name');
+
+If you want to test whether the current prompt matches a diffrent named Prompt
+from the phrasebook, this method can be used:
+
+ $s->prompt_looks_like('name');
 
 =cut
