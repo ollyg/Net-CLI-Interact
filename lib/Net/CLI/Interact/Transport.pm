@@ -1,6 +1,8 @@
 package Net::CLI::Interact::Transport;
 
 use Moose;
+use Moose::Util::TypeConstraints;
+
 use IPC::Run ();
 
 has 'logger' => (
@@ -81,7 +83,7 @@ has 'harness' => (
     isa => 'IPC::Run',
     required => 0,
     predicate => 'done_connect',
-    clearer => 'disconnect',
+    clearer => 'disconnect', # FIXME Win32, see DEMOLISH
 );
 
 has '_timeout_obj' => (
@@ -95,7 +97,7 @@ sub _build__timeout_obj { return IPC::Run::timeout((shift)->timeout) }
 
 has 'timeout' => (
     is => 'rw',
-    isa => 'Int',
+    isa => subtype( 'Int' => where { $_ > 0 } ),
     required => 0,
     default => 10,
     trigger => sub {
@@ -124,7 +126,16 @@ sub DEMOLISH {
     $self->harness->kill_kill(grace => 1) if $^O eq 'MSWin32';
 }
 
-# returns either the content of the output buffer, or undef
+# see if any regexp in the arrayref match the response
+sub _first_match {
+    my ($text, $matches) = @_;
+    $matches = ((ref $matches eq ref qr//) ? [$matches] : $matches);
+    return undef if ref $matches->[0] ne ref qr//;
+
+    use List::Util 'first';
+    return first { $text =~ $_ } @$matches;
+}
+
 sub do_action {
     my ($self, $action) = @_;
     $self->logger->log('transport', 'info', 'callback received for', $action->type);
@@ -145,9 +156,9 @@ sub do_action {
                 $self->_stash($self->flush);
                 $self->send($cont->last->value);
             }
-            elsif ($last_out =~ $action->value) {
+            elsif (my $hit = _first_match($last_out, $action->value)) {
                 $self->logger->log('transport', 'debug',
-                    sprintf 'output matched %s, storing and returning', $action->value);
+                    sprintf 'output matched %s, storing and returning', $hit);
                 # prompt match is line oriented. want to split that off from
                 # rest of output which is marshalled into the 'send'.
                 my @output = split $self->irs_re, $self->flush;

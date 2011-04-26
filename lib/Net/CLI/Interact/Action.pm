@@ -12,7 +12,7 @@ has 'type' => (
 
 has 'value' => (
     is => 'ro',
-    isa => 'Str|RegexpRef',
+    isa => 'Str|RegexpRef|ArrayRef[RegexpRef]',
     required => 1,
 );
 
@@ -118,7 +118,9 @@ Denotes the kind of Action, which may be C<send> or C<match>.
 =head2 value
 
 In the case of C<send>, a String command to send to the device. In the case of
-C<match>, a regular expression reference to match response from the device.
+C<match>, a regular expression reference to match response from the device. In
+special circumstances an array reference of regular expression references is
+also valid, and each will be checked for a match against the device response.
 
 =head2 no_ors
 

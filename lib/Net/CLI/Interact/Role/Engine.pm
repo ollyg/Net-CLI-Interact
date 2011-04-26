@@ -27,7 +27,7 @@ package Net::CLI::Interact::Role::Engine;
 
     has 'match' => (
         is => 'rw',
-        isa => 'Str|RegexpRef',
+        isa => 'Str|RegexpRef|ArrayRef[RegexpRef]',
         predicate => 'has_match',
         required => 0,
     );
@@ -89,7 +89,8 @@ sub cmd {
             $options->match(
                 $self->phrasebook->prompt( $options->match )->first->value );
         }
-        $self->logger->log('engine', 'info', 'to match', $options->match);
+        $self->logger->log('engine', 'info', 'to match',
+            (ref $options->match eq ref [] ? (join '|', @{$options->match}) : $options->match));
     }
 
     return $self->_execute_actions(

@@ -24,4 +24,7 @@ like($out, qr/^\d{10}$/, 'sent data with named custom match');
 my $out2 = $s->cmd('TEST COMMAND', {match => qr/PROMPT>/});
 like($out2, qr/^\d{10}$/, 'sent data with regexp custom match');
 
+my $out3 = $s->cmd('TEST COMMAND', {match => [qr/PROMPT>/, qr/ANOTHER PROMPT>/]});
+like($out3, qr/^\d{10}$/, 'sent data with two regexp custom matches');
+
 done_testing;

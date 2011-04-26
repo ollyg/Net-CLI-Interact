@@ -12,7 +12,7 @@ has default_continuation => (
 
 has current_match => (
     is => 'rw',
-    isa => 'Maybe[RegexpRef]',
+    isa => 'Maybe[RegexpRef|ArrayRef[RegexpRef]]',
     required => 0,
 );
 
