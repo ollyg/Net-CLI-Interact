@@ -110,12 +110,16 @@ sub connect {
     $self->logger->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
 
     $self->flush;
+    my $app = ($^O eq 'MSWin32' ? $self->app : 'sh');
+    my @opt = ($^O eq 'MSWin32' ? $self->runtime_options
+                                : ('-c', (join ' ', $self->app, $self->runtime_options)));
+
     $self->harness(
         IPC::Run::harness(
-            [$self->app, $self->runtime_options],
-               $self->_in,
-               $self->_out,
-               $self->_err,
+            [$app, @opt],
+               '<pty<', $self->_in,
+               '>pty>', $self->_out,
+               '2>', $self->_err,
                $self->_timeout_obj,
         )
     );

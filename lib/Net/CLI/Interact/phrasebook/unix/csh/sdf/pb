@@ -1,0 +1,7 @@
+macro sdf_login
+    send %s
+    match /BACKSPACE key: ?$/
+    send ''
+    match /\[CONTINUE\]/
+    send ''
+    match prompt shell
