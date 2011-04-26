@@ -13,7 +13,8 @@ my $s = Net::CLI::Interact->new(
     personality => 'sdf',
 );
 
-ok($s->macro('sdf_login', { params => [$ENV{SDF_PASS}] }), 'logged in using SSH');
+ok($s->macro('sdf_login', { params => [$ENV{SDF_PASS} || 'letmein'] }),
+    'logged in using SSH');
 
 ok( $s->cmd('ls -la'), 'ran ls -la' );
 

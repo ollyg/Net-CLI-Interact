@@ -38,14 +38,16 @@ sub _build_app {
     my $self = shift;
     confess "please pass location of plink.exe in 'app' parameter to new()\n"
         if $^O eq 'MSWin32';
-    return 'ssh'; # unix
+    return 'sh'; # unix hack for openssh pty
 }
 
 sub runtime_options {
-    return (
-        ($^O eq 'MSWin32' ? '-ssh' : ()),
-        (shift)->connect_options->host,
-    );
+    if ($^O eq 'MSWin32') {
+        return '-ssh';
+    }
+    else {
+        return ('-i', '-c', 'ssh '. (shift)->connect_options->host);
+    }
 }
 
 1;

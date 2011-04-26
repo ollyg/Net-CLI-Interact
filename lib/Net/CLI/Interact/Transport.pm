@@ -114,9 +114,13 @@ sub connect {
     my @opt = ($^O eq 'MSWin32' ? $self->runtime_options
                                 : ('-c', (join ' ', $self->app, $self->runtime_options)));
 
+    $self->logger->log('transport', 'debug', 'which expands to: ',
+        #$app, (join ' ', @opt));
+        $self->app, (join ' ', map {"'". $_ ."'"} $self->runtime_options));
+
     $self->harness(
         IPC::Run::harness(
-            [$app, @opt],
+            [$self->app, $self->runtime_options],
                '<pty<', $self->_in,
                '>pty>', $self->_out,
                '2>', $self->_err,
