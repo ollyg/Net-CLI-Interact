@@ -4,6 +4,7 @@ package Net::CLI::Interact::Role::Engine;
     package # hide from pause
         Net::CLI::Interact::Role::Engine::ExecuteOptions;
     use Moose;
+    use Moose::Util::TypeConstraints;
 
     has 'no_ors' => (
         is => 'ro',
@@ -21,7 +22,7 @@ package Net::CLI::Interact::Role::Engine;
 
     has 'timeout' => (
         is => 'ro',
-        isa => 'Int',
+        isa => subtype( 'Int' => where { $_ > 0 } ),
         required => 0,
     );
 

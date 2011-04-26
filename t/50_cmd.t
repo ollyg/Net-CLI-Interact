@@ -13,6 +13,7 @@ my $s = new_ok('Net::CLI::Interact' => [{
 }]);
 
 $s->set_prompt('TEST_PROMPT_TWO'); # wrong!
+ok(! eval { $s->cmd('TEST COMMAND', {timeout => 0} ) }, 'timeout of zero not accepted');
 ok(! eval { $s->cmd('TEST COMMAND', {timeout => 1} ) }, 'wrong prompt causes timeout');
 
 # need to reinit the connection
