@@ -188,11 +188,11 @@ overrides whatever is set in the Transport, or the default of 10 seconds.
 When passed a true value, a newline character (in fact the value of C<ors>)
 will not be appended to the statement sent to the device.
 
-=item C<< match => $name | $regexp >> (optional)
+=item C<< match => $name | $regexp  | \@regexps >> (optional)
 
 Allows this command only to complete with a custom match, which may either be
-the name of a loaded phrasebook Prompt, or your own regular expression
-reference (C<< qr// >>).
+the name of a loaded phrasebook Prompt, or one of more of your own regular
+expression references (C<< qr// >>).
 
 =back
 
