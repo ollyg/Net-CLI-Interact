@@ -21,6 +21,6 @@ ok( $s->cmd('ls -la'), 'ran ls -la' );
 like( $s->last_prompt, qr{sdf:/udd/o/ollyg> $}, 'command ran and prompt looks ok' );
 
 my @out = $s->last_response;
-cmp_ok( scalar @out, '>=', 6, 'sensible number of lines in the command output');
+cmp_ok( scalar @out, '>=', 5, 'sensible number of lines in the command output');
 
 done_testing;
