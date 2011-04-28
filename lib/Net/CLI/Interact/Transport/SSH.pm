@@ -28,7 +28,7 @@ has 'connect_options' => (
     required => 1,
 );
 
-sub _build_needs_pty { return 1; }
+sub _build_needs_pty { return not ($^O eq 'MSWin32'); }
 
 sub _build_app {
     my $self = shift;
@@ -80,8 +80,9 @@ connect.
 
 =head2 needs_pty
 
-This is set to True, in order that the Transport back-end knows to configure a
-controlling pseudo terminal for the OpenSSH client application.
+This is set to True on non-Windows platforms, in order that the Transport
+back-end knows to configure a controlling pseudo terminal for the OpenSSH
+client application.
 
 =head1 COMPOSITION
 
