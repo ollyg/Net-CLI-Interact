@@ -23,13 +23,6 @@ has 'connect_options' => (
     required => 1,
 );
 
-has 'app' => (
-    is => 'ro',
-    isa => 'Str',
-    default => $^X,
-    required => 0,
-);
-
 #sub _which_perl {
 #    use Config;
 #    $secure_perl_path = $Config{perlpath};
@@ -38,6 +31,8 @@ has 'app' => (
 #            unless $secure_perl_path =~ m/$Config{_exe}$/i;}
 #    return $secure_perl_path;
 #}
+
+sub _build_app { return $^X }
 
 sub runtime_options {
     return ('-ne', 'BEGIN { $| = 1 }; print $_, time, "\nPROMPT>\n";');

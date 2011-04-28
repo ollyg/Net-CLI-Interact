@@ -28,12 +28,6 @@ has 'connect_options' => (
     required => 1,
 );
 
-has 'app' => (
-    is => 'ro',
-    isa => 'Str',
-    lazy_build => 1,
-);
-
 sub _build_app {
     my $self = shift;
     confess "please pass location of plink.exe in 'app' parameter to new()\n"

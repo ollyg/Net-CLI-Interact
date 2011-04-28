@@ -28,11 +28,7 @@ has 'connect_options' => (
     required => 1,
 );
 
-has 'app' => (
-    is => 'ro',
-    isa => 'Str',
-    lazy_build => 1,
-);
+sub _build_needs_pty { return 1; }
 
 sub _build_app {
     my $self = shift;
@@ -81,6 +77,11 @@ Host name or IP address of the host to which the SSH application is to
 connect.
 
 =back
+
+=head2 needs_pty
+
+This is set to True, in order that the Transport back-end knows to configure a
+controlling pseudo terminal for the OpenSSH client application.
 
 =head1 COMPOSITION
 

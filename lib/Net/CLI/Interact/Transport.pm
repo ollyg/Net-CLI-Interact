@@ -105,25 +105,34 @@ has 'timeout' => (
     },
 );
 
+has 'app' => (
+    is => 'ro',
+    isa => 'Str',
+    lazy_build => 1,
+);
+
+has 'needs_pty' => (
+    is => 'ro',
+    isa => 'Bool',
+    lazy_build => 1,
+);
+
+sub _build_needs_pty { return 0; }
+
 sub connect {
     my $self = shift;
     $self->logger->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
+    $self->logger->log('transport', 'debug', 'which expands to: ',
+        $self->app, (join ' ', map {($_ =~ m/\s/) ? ("'". $_ ."'") : $_}
+                                   $self->runtime_options));
 
     $self->flush;
-    my $app = ($^O eq 'MSWin32' ? $self->app : 'sh');
-    my @opt = ($^O eq 'MSWin32' ? $self->runtime_options
-                                : ('-c', (join ' ', $self->app, $self->runtime_options)));
-
-    $self->logger->log('transport', 'debug', 'which expands to: ',
-        #$app, (join ' ', @opt));
-        $self->app, (join ' ', map {"'". $_ ."'"} $self->runtime_options));
-
     $self->harness(
         IPC::Run::harness(
             [$self->app, $self->runtime_options],
-               '<pty<', $self->_in,
-               '>pty>', $self->_out,
-               '2>', $self->_err,
+               ($self->needs_pty ? '<pty<' : ()), $self->_in,
+               ($self->needs_pty ? '>pty>' : ()), $self->_out,
+               ($self->needs_pty ? '2>' : ()), $self->_err,
                $self->_timeout_obj,
         )
     );
@@ -301,6 +310,12 @@ instead use C<runtime_options> from the specific Transport class.
 
 Slot for storing a reference to the application's
 L<Logger|Net::CLI::Interact::Logger> object.
+
+=head2 needs_pty
+
+This is a hint to the Transport back-end that the spawned application requires
+a controlling pseudo terminal. The canonical example of this is the OpenSSH
+client. By default this has a False value but in the SSH Transport it's True.
 
 =cut
 
