@@ -83,7 +83,7 @@ has 'harness' => (
     isa => 'IPC::Run',
     required => 0,
     predicate => 'done_connect',
-    clearer => 'disconnect', # FIXME Win32, see DEMOLISH
+    clearer => 'clear_harness',
 );
 
 has '_timeout_obj' => (
@@ -138,9 +138,16 @@ sub connect {
     );
 }
 
-sub DEMOLISH {
+sub disconnect {
     my $self = shift;
     $self->harness->kill_kill(grace => 1) if $^O eq 'MSWin32';
+    $self->clear_harness;
+}
+
+sub DEMOLISH {
+    my $self = shift;
+    $self->disconnect;
+    # $self->harness->kill_kill(grace => 1) if $^O eq 'MSWin32';
 }
 
 # see if any regexp in the arrayref match the response
