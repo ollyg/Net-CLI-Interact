@@ -147,7 +147,6 @@ sub disconnect {
 sub DEMOLISH {
     my $self = shift;
     $self->disconnect;
-    # $self->harness->kill_kill(grace => 1) if $^O eq 'MSWin32';
 }
 
 # see if any regexp in the arrayref match the response

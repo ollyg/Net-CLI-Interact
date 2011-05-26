@@ -23,7 +23,7 @@ has '__mediator_params' => (
     required => 1,
 );
 
-# takes the params has and returns two hashes, the params
+# takes the params hash and returns two hashes, the params
 # hash and a new hash of the current class's attribute slots
 sub _filter_my_attribute_list {
     my ($class, $params) = @_;

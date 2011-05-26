@@ -142,12 +142,20 @@ sub load_phrasebooks {
                 next;
             }
 
-            if (m{^\s+(send(?:_no_ors)?)\s+(.+)$}) {
-                my ($type, $value) = ($1, $2);
+            if (m{^\s+send\s+(.+)$}) {
+                my $value = $1;
                 $value =~ s/^["']//; $value =~ s/["']$//;
                 push @{ $data->{actions} }, {
                     type => 'send', value => $value,
-                    no_ors => ($type eq 'send_no_ors')
+                };
+                next;
+            }
+
+            if (m{^\s+put\s+(.+)$}) {
+                my $value = $1;
+                $value =~ s/^["']//; $value =~ s/["']$//;
+                push @{ $data->{actions} }, {
+                    type => 'send', value => $value, no_ors => 1,
                 };
                 next;
             }
@@ -464,8 +472,8 @@ added at the end of this Macro, as per Automatic Matching, above.
 =item Line Endings
 
 Normally all sent command statements are appended with a newline (or the value
-of C<ors>, if set). To suppress that feature, use the keyword C<send_no_ors>
-instead of C<send>. However this does not prevent the Format Interpolation via
+of C<ors>, if set). To suppress that feature, use the keyword C<put> instead
+of C<send>. However this does not prevent the Format Interpolation via
 C<sprintf> as described above (simply use C<"%%"> to get a literal C<"%">).
 
 =back
