@@ -21,6 +21,9 @@ package Net::CLI::Interact::Transport::Telnet;
 use Moose;
 extends 'Net::CLI::Interact::Transport';
 
+# allow native use of Net::Telnet on Unix
+has '+use_net_telnet_connection' => ( default => 1 );
+
 has 'connect_options' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Transport::Telnet::Options',
@@ -31,14 +34,15 @@ has 'connect_options' => (
 sub _build_app {
     my $self = shift;
     confess "please pass location of plink.exe in 'app' parameter to new()\n"
-        if $^O eq 'MSWin32';
+        if $self->is_win32;
     return 'telnet'; # unix
 }
 
 sub runtime_options {
+    my $self = shift;
     return (
-        ($^O eq 'MSWin32' ? '-telnet' : ()),
-        (shift)->connect_options->host,
+        ($self->is_win32 ? '-telnet' : ()),
+        $self->connect_options->host,
     );
 }
 

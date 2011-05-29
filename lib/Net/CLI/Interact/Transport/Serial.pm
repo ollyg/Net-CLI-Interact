@@ -53,14 +53,14 @@ has 'connect_options' => (
 sub _build_app {
     my $self = shift;
     confess "please pass location of plink.exe in 'app' parameter to new()\n"
-        if $^O eq 'MSWin32';
+        if $self->is_win32;
     return 'cu'; # unix
 }
 
 sub runtime_options {
     my $self = shift;
 
-    if ($^O eq 'mswin32') {
+    if ($self->is_win32) {
         return ('-serial',);
     }
     else {

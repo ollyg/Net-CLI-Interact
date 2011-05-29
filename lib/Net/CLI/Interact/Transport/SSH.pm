@@ -28,22 +28,19 @@ has 'connect_options' => (
     required => 1,
 );
 
-sub _build_needs_pty { return not ($^O eq 'MSWin32'); }
-
 sub _build_app {
     my $self = shift;
     confess "please pass location of plink.exe in 'app' parameter to new()\n"
-        if $^O eq 'MSWin32';
-    return 'sh'; # unix hack for openssh pty
+        if $self->is_win32;
+    return 'ssh';
 }
 
 sub runtime_options {
-    if ($^O eq 'MSWin32') {
-        return '-ssh';
-    }
-    else {
-        return ('-i', '-c', 'ssh '. (shift)->connect_options->host);
-    }
+    my $self = shift;
+    return (
+        ($self->is_win32 ? '-telnet' : ()),
+        $self->connect_options->host,
+    );
 }
 
 1;

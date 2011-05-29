@@ -177,7 +177,7 @@ sub load_phrasebooks {
                 $send =~ s/^["']//; $send =~ s/["']$//;
                 $data->{actions}->[-1]->{continuation} = [
                     {type => 'match', value => qr/$match/},
-                    {type => 'send',  value => $send, no_ors => 1}
+                    {type => 'send',  value => eval "qq{$send}", no_ors => 1}
                 ];
                 next;
             }
@@ -463,7 +463,8 @@ the line. If you need to enclose whitespace use quotes, as in the example.
 
 The module will send the continuation text and gobble the matched prompt from
 the emitted output so you only have one complete piece of text returned, even
-if split over many pages.
+if split over many pages. The sent text can contain metacharacters such as
+C<\n> for a newline.
 
 Note that in the above example the C<follow> statement should be seen as an
 extension of the C<send> statement. There is still an implicit Match prompt

@@ -51,14 +51,14 @@ sub find_prompt {
     $self->logger->log('prompt', 'notice', 'finding prompt');
 
     # make connection on transport if not yet done
-    $self->transport->connect if not $self->transport->done_connect;
+    $self->transport->go if not $self->transport->connect_ready;
 
     eval {
         PUMPING: while (1) {
-            $self->transport->harness->pump;
+            $self->transport->pump;
             foreach my $prompt ($self->phrasebook->prompt_names) {
                 # prompts consist of only one match action
-                if ($self->transport->out =~ $self->phrasebook->prompt($prompt)->first->value) {
+                if ($self->transport->buffer =~ $self->phrasebook->prompt($prompt)->first->value) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
                     $self->last_actionset(
                         Net::CLI::Interact::ActionSet->new({ actions => [
@@ -78,7 +78,7 @@ sub find_prompt {
 
     if ($@ and $self->has_wake_up and $wake_up) {
         $self->logger->log('prompt', 'info', "failed: [$@], sending WAKE_UP and trying again");
-        $self->transport->send( $self->wake_up );
+        $self->transport->put( $self->wake_up );
         $self->find_prompt;
     }
     else {

@@ -2,6 +2,5 @@ macro sdf_login
     send %s
     match /BACKSPACE key: ?$/
     send ''
-    match /\[CONTINUE\]/
-    send ''
+    follow /\(continue\)/ with "\n"
     match prompt shell

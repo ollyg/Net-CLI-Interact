@@ -10,6 +10,6 @@ my $s = Net::CLI::Interact->new({
     transport => 'Test',
 });
 
-ok($s->transport->connect);
+ok($s->transport->go);
 
 done_testing;
