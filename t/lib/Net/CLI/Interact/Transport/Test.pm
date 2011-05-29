@@ -4,6 +4,7 @@ package Net::CLI::Interact::Transport::Test;
     package # hide from pause
         Net::CLI::Interact::Transport::Test::Options;
     use Moose;
+    with 'Net::CLI::Interact::Transport::Role::Options';
 
     use Moose::Util::TypeConstraints;
     coerce 'Net::CLI::Interact::Transport::Test::Options'

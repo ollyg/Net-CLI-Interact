@@ -5,6 +5,7 @@ package Net::CLI::Interact::Transport::Serial;
         Net::CLI::Interact::Transport::Serial::Options;
     use Moose;
     use Moose::Util::TypeConstraints qw(enum);
+    with 'Net::CLI::Interact::Transport::Role::Options';
 
     has 'device' => (
         is => 'rw',

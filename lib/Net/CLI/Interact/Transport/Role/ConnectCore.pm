@@ -30,7 +30,7 @@ sub _via_spawn {
         Cmd_remove_mode => 1,
         Telnetmode      => 0,
     );
-    
+
     $t->fhopen( $self->_spawn_command(@_) )
         or confess "failed to spawn connection to target device.";
     return $t;
@@ -89,7 +89,7 @@ sub _spawn_command {
         my $errstatus = sysread(STAT_RDR, $errno, 256);
         confess "Cannot sync with child: $!" if not defined $errstatus;
         CORE::close STAT_RDR;
-        
+
         if ($errstatus) {
             $! = $errno+0;
             confess "Cannot exec(@command): $!\n" if $^W;
@@ -107,7 +107,7 @@ sub _spawn_command {
             or confess "Cannot get slave: $!";
 
         $slv->set_raw();
-        
+
         CORE::close($pty);
 
         CORE::close(STDIN);

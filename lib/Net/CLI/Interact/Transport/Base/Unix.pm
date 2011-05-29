@@ -60,6 +60,9 @@ override '_build_wrapper' => sub {
     $self->logger->log('transport', 'notice', 'creating Net::Telnet wrapper for', $self->app);
     super();
 
+    $SIG{CHLD} = 'IGNORE'
+        if not $self->connect_options->reap;
+
     with 'Net::CLI::Interact::Transport::Role::ConnectCore';
     return $self->connect_core($self->app, $self->runtime_options);
 };

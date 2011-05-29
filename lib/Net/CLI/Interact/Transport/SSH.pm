@@ -4,6 +4,7 @@ package Net::CLI::Interact::Transport::SSH;
     package # hide from pause
         Net::CLI::Interact::Transport::SSH::Options;
     use Moose;
+    with 'Net::CLI::Interact::Transport::Role::Options';
 
     has 'host' => (
         is => 'rw',
