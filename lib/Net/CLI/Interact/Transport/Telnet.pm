@@ -22,7 +22,9 @@ use Moose;
 extends 'Net::CLI::Interact::Transport';
 
 # allow native use of Net::Telnet on Unix
-has '+use_net_telnet_connection' => ( default => 1 );
+if ($^O ne 'MSWin32') {
+    has '+use_net_telnet_connection' => ( default => 1 );
+}
 
 has 'connect_options' => (
     is => 'ro',

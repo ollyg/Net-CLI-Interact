@@ -71,7 +71,7 @@ override '_build_wrapper' => sub {
             $self->_err,
             $self->_timeout_obj,
     );
-}
+};
 
 before 'disconnect' => sub {
     my $self = shift;

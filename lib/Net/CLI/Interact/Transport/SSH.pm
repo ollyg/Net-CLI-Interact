@@ -38,7 +38,7 @@ sub _build_app {
 sub runtime_options {
     my $self = shift;
     return (
-        ($self->is_win32 ? '-telnet' : ()),
+        ($self->is_win32 ? '-ssh' : ()),
         $self->connect_options->host,
     );
 }
