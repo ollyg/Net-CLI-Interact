@@ -17,6 +17,8 @@ has '+ors' => (
     },
 );
 
+sub put { (shift)->wrapper->put( join '', @_ ) }
+
 has '_buffer' => (
     is => 'rw',
     isa => 'Str',
@@ -44,7 +46,6 @@ has '+timeout' => (
 
 has '+wrapper' => (
     isa => 'Net::Telnet',
-    handles => ['put'],
 );
 
 has 'use_net_telnet_connection' => (
