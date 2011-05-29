@@ -1,5 +1,5 @@
 macro sdf_login
-    send %s
+    send %s\n
     match /BACKSPACE key: ?$/
     send ''
     follow /\(continue\)/ with "\n"

@@ -142,7 +142,7 @@ sub do_action {
     if ($action->type eq 'send') {
         my $command = sprintf $action->value, $action->params;
         $self->logger->log('transport', 'debug', 'queueing data for send: "'. $command .'"');
-        $self->put( $command . ($action->no_ors ? () : $self->ors) );
+        $self->put( $command, ($action->no_ors ? () : $self->ors) );
     }
 }
 1;
