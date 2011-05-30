@@ -10,4 +10,11 @@ BEGIN {
         : 'Net::CLI::Interact::Transport::Base::Unix');
 }
 
+{
+    package # hide from pause
+        Net::CLI::Interact::Transport::Options;
+    use Moose;
+    extends 'Net::CLI::Interact::Transport::Platform::Options';
+}
+
 1;

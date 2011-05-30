@@ -5,6 +5,13 @@ use Moose::Util::TypeConstraints;
 
 extends 'Net::CLI::Interact::Transport::Base';
 
+{
+    package # hide from pause
+        Net::CLI::Interact::Transport::Platform::Options;
+    use Moose;
+    extends 'Net::CLI::Interact::Transport::Base::Options';
+}
+
 use IPC::Run ();
 
 has '_in' => (

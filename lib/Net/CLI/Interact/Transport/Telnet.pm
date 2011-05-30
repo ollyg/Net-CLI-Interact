@@ -1,10 +1,13 @@
 package Net::CLI::Interact::Transport::Telnet;
 
+use Moose;
+extends 'Net::CLI::Interact::Transport';
+
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Telnet::Options;
     use Moose;
-    with 'Net::CLI::Interact::Transport::Role::Options';
+    extends 'Net::CLI::Interact::Transport::Options';
 
     has 'host' => (
         is => 'rw',
@@ -18,9 +21,6 @@ package Net::CLI::Interact::Transport::Telnet;
             => via { Net::CLI::Interact::Transport::Telnet::Options->new($_) };
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use Moose;
-extends 'Net::CLI::Interact::Transport';
 
 # allow native use of Net::Telnet on Unix
 if ($^O ne 'MSWin32') {

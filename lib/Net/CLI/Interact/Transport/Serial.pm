@@ -1,11 +1,14 @@
 package Net::CLI::Interact::Transport::Serial;
 
+use Moose;
+extends 'Net::CLI::Interact::Transport';
+
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Serial::Options;
     use Moose;
     use Moose::Util::TypeConstraints qw(enum);
-    with 'Net::CLI::Interact::Transport::Role::Options';
+    extends 'Net::CLI::Interact::Transport::Options';
 
     has 'device' => (
         is => 'rw',
@@ -40,9 +43,6 @@ package Net::CLI::Interact::Transport::Serial;
             => via { Net::CLI::Interact::Transport::Serial::Options->new($_) };
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use Moose;
-extends 'Net::CLI::Interact::Transport';
 
 has 'connect_options' => (
     is => 'ro',

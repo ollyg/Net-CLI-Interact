@@ -3,6 +3,12 @@ package Net::CLI::Interact::Transport::Base;
 use Moose;
 use Moose::Util::TypeConstraints;
 
+{
+    package # hide from pause
+        Net::CLI::Interact::Transport::Base::Options;
+    use Moose;
+}
+
 has 'logger' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Logger',

@@ -1,10 +1,13 @@
 package Net::CLI::Interact::Transport::Test;
 
+use Moose;
+extends 'Net::CLI::Interact::Transport';
+
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Test::Options;
     use Moose;
-    with 'Net::CLI::Interact::Transport::Role::Options';
+    extends 'Net::CLI::Interact::Transport::Options';
 
     use Moose::Util::TypeConstraints;
     coerce 'Net::CLI::Interact::Transport::Test::Options'
@@ -12,9 +15,6 @@ package Net::CLI::Interact::Transport::Test;
             => via { Net::CLI::Interact::Transport::Test::Options->new($_) };
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use Moose;
-extends 'Net::CLI::Interact::Transport';
 
 has 'connect_options' => (
     is => 'ro',
