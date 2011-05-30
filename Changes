@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+1.111500  2011-05-30 16:00:03 Europe/London
+
+  * New cross platform backend (IPC::Run or Net::Telnet)
+
 1.111150  2011-04-25 19:55:40 Europe/London
 
   * Cross platform support (i.e. Win32)
