@@ -80,8 +80,8 @@ sub runtime_options {
 
 =head1 DECRIPTION
 
-This module provides an L<IPC::Run> wrapped instance of a Serial-line client
-for use by L<Net::CLI::Interact>.
+This module provides a wrapped instance of a Serial-line client for use by
+L<Net::CLI::Interact>.
 
 =head1 INTERFACE
 
@@ -121,6 +121,12 @@ value.
 
 You can set the speed (or I<baud rate>) of the serial line by passing a value
 to this named parameter. The default is C<9600>.
+
+=item reap
+
+Only used on Unix platforms, this installs a signal handler which attemps to
+reap the C<ssh> child process. Pass a true value to enable this feature only
+if you notice zombie processes are being left behind after use.
 
 =back
 

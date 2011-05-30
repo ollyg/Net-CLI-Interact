@@ -124,7 +124,7 @@ sub _execute_actions {
     $self->logger->log('engine', 'notice', 'executing actions');
 
     # make connection on transport if not yet done
-    $self->transport->go if not $self->transport->connect_ready;
+    $self->transport->init if not $self->transport->connect_ready;
 
     # user can install a prompt, call find_prompt, or let us trigger that
     $self->find_prompt(1) if not ($self->prompt_re || $self->last_actionset);

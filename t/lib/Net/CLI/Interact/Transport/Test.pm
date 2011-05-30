@@ -45,9 +45,8 @@ sub runtime_options {
 
 =head1 DECRIPTION
 
-This module provides an L<IPC::Run> wrapped instance of Perl which simply
-echoes back any input provided. This is used for the L<Net::CLI::Interact>
-test suite.
+This module provides a wrapped instance of Perl which simply echoes back any
+input provided. This is used for the L<Net::CLI::Interact> test suite.
 
 =head1 INTERFACE
 

@@ -51,7 +51,7 @@ sub find_prompt {
     $self->logger->log('prompt', 'notice', 'finding prompt');
 
     # make connection on transport if not yet done
-    $self->transport->go if not $self->transport->connect_ready;
+    $self->transport->init if not $self->transport->connect_ready;
 
     eval {
         PUMPING: while (1) {

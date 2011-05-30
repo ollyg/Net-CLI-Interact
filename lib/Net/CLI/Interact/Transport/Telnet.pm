@@ -23,7 +23,7 @@ extends 'Net::CLI::Interact::Transport';
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # allow native use of Net::Telnet on Unix
-if ($^O ne 'MSWin32') {
+if (Net::CLI::Interact::Transport::is_win32) {
     has '+use_net_telnet_connection' => ( default => 1 );
 }
 
@@ -55,8 +55,8 @@ sub runtime_options {
 
 =head1 DECRIPTION
 
-This module provides an L<IPC::Run> wrapped instance of a TELNET client for
-use by L<Net::CLI::Interact>.
+This module provides a wrapped instance of a TELNET client for use by
+L<Net::CLI::Interact>.
 
 =head1 INTERFACE
 
@@ -78,6 +78,12 @@ command line. Supported attributes:
 
 Host name or IP address of the host to which the TELNET application is to
 connect.
+
+=item reap
+
+Only used on Unix platforms, this installs a signal handler which attemps to
+reap the C<ssh> child process. Pass a true value to enable this feature only
+if you notice zombie processes are being left behind after use.
 
 =back
 

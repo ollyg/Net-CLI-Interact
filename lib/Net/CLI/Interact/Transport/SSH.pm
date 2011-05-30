@@ -50,8 +50,8 @@ sub runtime_options {
 
 =head1 DECRIPTION
 
-This module provides an L<IPC::Run> wrapped instance of an SSH client for use
-by L<Net::CLI::Interact>.
+This module provides a wrapped instance of an SSH client for use by
+L<Net::CLI::Interact>.
 
 =head1 INTERFACE
 
@@ -59,7 +59,7 @@ by L<Net::CLI::Interact>.
 
 On Windows platforms you B<must> download the C<plink.exe> program, and pass its
 location to the library in this parameter. On other platforms, this defaults to
-C<ssh>.
+C<ssh> (openssh).
 
 =head2 runtime_options
 
@@ -74,13 +74,13 @@ command line. Supported attributes:
 Host name or IP address of the host to which the SSH application is to
 connect.
 
+=item reap
+
+Only used on Unix platforms, this installs a signal handler which attemps to
+reap the C<ssh> child process. Pass a true value to enable this feature only
+if you notice zombie processes are being left behind after use.
+
 =back
-
-=head2 needs_pty
-
-This is set to True on non-Windows platforms, in order that the Transport
-back-end knows to configure a controlling pseudo terminal for the OpenSSH
-client application.
 
 =head1 COMPOSITION
 

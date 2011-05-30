@@ -5,13 +5,38 @@ Net::CLI::Interact::Manual::Cookbook - Miscellaneous recipes
 =head1 Windows Support
 
 The library works just fine under native windows (i.e use something like
-Strawberry Perl - no need for cygwin). However one additional step is
-required for you to have success:
+Strawberry Perl - no need for cygwin), for Telnet, Serial and SSH connections.
+However one additional step is required for you to have success:
 
 You B<must> download the C<plink.exe> application, and pass its filesystem
 location in the C<app> parameter to C<new()>. Do not try to use any other
 Telnet or SSH programs (for instance the Windows bundled C<telnet>) - they
-I<will not work>.
+I<will not work>. Here's an example:
+
+ my $s = Net::CLI::Interact->new(
+     personality => "cisco",
+     transport => "Telnet",
+     (Net::CLI::Interact::Transport::is_win32 ?
+         (app => '..\..\..\Desktop\plink.exe') : () ),
+ );
+
+=head1 Unix Support
+
+The library works fine on most Unix platforms. It will try to use the native
+C<telnet>, C<ssh> (openssh) and C<cu> programs for Telnet, SSH and Serial
+connections, respectively. If you want to use another application, pass it in
+the C<app> parameter to C<new>.
+
+In some Unix environments there can be zombie child processes left around
+after running your script. If this happens, set the C<reap> option, like so:
+
+ my $s = Net::CLI::Interact->new(
+     personality => "cisco",
+     transport => "Telnet",
+     connect_options => {
+        reap => 1,
+    },
+ );
 
 =head1 Phrasebook Entries
 
