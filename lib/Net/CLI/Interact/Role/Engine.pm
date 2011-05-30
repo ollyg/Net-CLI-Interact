@@ -192,7 +192,8 @@ will not be appended to the statement sent to the device.
 
 Allows this command only to complete with a custom match, which may either be
 the name of a loaded phrasebook Prompt, or one of more of your own regular
-expression references (C<< qr// >>).
+expression references (C<< qr// >>). In the case of a named Prompt, the
+module updates the current prompt to be the same value on a successful match.
 
 =back
 

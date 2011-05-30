@@ -107,6 +107,7 @@ sub _pad_send_with_match {
     my $self = shift;
     my $match = Net::CLI::Interact::Action->new({
         type => 'match', value => $self->current_match,
+        is_lazy => (ref $self->current_match eq ref '' ? 1 : 0),
     });
 
     $self->reset;
