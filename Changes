@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+1.111530  2011-06-02 23:44:29 Europe/London
+
   * Support multi match in macros
   * Remove is_lazy - always update the prompt
   * Phrasebook fixes for Net::Appliance::Session
