@@ -25,7 +25,7 @@ has '_prompt' => (
 
 sub set_prompt {
     my ($self, $name) = @_;
-    $self->_prompt( $self->phrasebook->prompt($name)->first->value );
+    $self->_prompt( $self->phrasebook->prompt($name)->first->value->[0] );
 }
 
 sub last_prompt {
@@ -41,8 +41,8 @@ sub last_prompt_re {
 
 sub prompt_looks_like {
     my ($self, $name) = @_;
-    return ($self->last_prompt
-        =~ $self->phrasebook->prompt($name)->first->value);
+    return ( $self->last_prompt
+        =~ $self->phrasebook->prompt($name)->first->value->[0] );
 }
 
 # pump until any of the prompts matches the output buffer
@@ -58,7 +58,8 @@ sub find_prompt {
             $self->transport->pump;
             foreach my $prompt ($self->phrasebook->prompt_names) {
                 # prompts consist of only one match action
-                if ($self->transport->buffer =~ $self->phrasebook->prompt($prompt)->first->value) {
+                # FIXME for prompt deref
+                if ($self->transport->buffer =~ $self->phrasebook->prompt($prompt)->first->value->[0]) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
                     $self->last_actionset(
                         Net::CLI::Interact::ActionSet->new({ actions => [

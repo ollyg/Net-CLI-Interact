@@ -3,4 +3,4 @@ macro sdf_login
     match /BACKSPACE key: ?$/
     send ''
     follow /\(continue\)/ with "\n"
-    match prompt shell
+    match shell

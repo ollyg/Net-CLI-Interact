@@ -129,6 +129,8 @@ sub do_action {
             elsif (my $hit = _first_match($last_out, $action->value)) {
                 $self->logger->log('transport', 'debug',
                     sprintf 'output matched %s, storing and returning', $hit);
+                $action->prompt_hit($hit);
+
                 # prompt match is line oriented. want to split that off from
                 # rest of output which is marshalled into the 'send'.
                 my @output = split $self->irs_re, $self->flush;

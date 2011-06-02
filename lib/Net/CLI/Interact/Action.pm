@@ -12,7 +12,7 @@ has 'type' => (
 
 has 'value' => (
     is => 'ro',
-    isa => 'Str|RegexpRef|ArrayRef[RegexpRef]',
+    isa => 'Str|ArrayRef[RegexpRef]',
     required => 1,
 );
 
@@ -21,14 +21,6 @@ has 'no_ors' => (
     isa => 'Bool',
     required => 0,
     default => 0,
-);
-
-has 'is_lazy' => (
-    is => 'ro',
-    isa => 'Bool',
-    required => 0,
-    default => 0,
-    init_arg => 'lazy',
 );
 
 has 'continuation' => (
@@ -59,6 +51,12 @@ has 'response_stash' => (
     required => 0,
 );
 
+has 'prompt_hit' => (
+    is => 'rw',
+    isa => 'RegexpRef',
+    required => 0,
+);
+
 sub BUILDARGS {
     my ($class, @rest) = @_;
     # accept single hash ref or naked hash
@@ -83,7 +81,7 @@ sub clone {
 # count the number of sprintf parameters used in the value
 sub num_params {
     my $self = shift;
-    return 0 if ref $self->value eq ref qr//;
+    return 0 if ref $self->value;
     # this tricksy little number comes from the Perl FAQ
     my $count = () = $self->value =~ m/(?<!%)%/g;
     return $count;
@@ -128,13 +126,6 @@ Only applies to the C<send> kind. Whether to skip appending the I<output
 record separator> (newline) to the C<send> command when sent to the connected
 device.
 
-=head2 is_lazy
-
-Only applies to the C<match> kind, and records whether the user specified this
-Match as a regular expression reference (false, the default), or the name of a
-Match defined elsewhere (true). In the latter case, it can trigger
-L<Net::CLI::Interact> to assume the Prompt value has permanently changed.
-
 =head2 continuation
 
 Only applies to the C<send> kind. When response output is likely to be paged,
@@ -166,6 +157,12 @@ A stash for the returned output following a C<send> command, but not including
 the matched prompt which ended the action. This slot is used by the C<match>
 action as it slurps output, but the content is then transferred over to the
 partner C<send> in the ActionSet.
+
+=head2 prompt_hit
+
+When a command is successfully issued, the response is terminated by a prompt.
+However that prompt can be one of a list, defined in the Action. This slot
+records the regular expression from that list which was actually matched.
 
 =head2 clone
 

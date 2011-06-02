@@ -4,6 +4,12 @@ use Moose;
 use Net::CLI::Interact::Action;
 with 'Net::CLI::Interact::Role::Iterator';
 
+use Moose::Util::TypeConstraints;
+subtype 'Net::CLI::Interact::ActionSet::CurrentMatchType'
+    => as 'Maybe[ArrayRef[RegexpRef]]';
+coerce 'Net::CLI::Interact::ActionSet::CurrentMatchType'
+    => from 'RegexpRef' => via { [$_] };
+
 has default_continuation => (
     is => 'rw',
     isa => 'Maybe[Net::CLI::Interact::ActionSet]',
@@ -12,8 +18,9 @@ has default_continuation => (
 
 has current_match => (
     is => 'rw',
-    isa => 'Maybe[RegexpRef|ArrayRef[RegexpRef]]',
+    isa => 'Net::CLI::Interact::ActionSet::CurrentMatchType',
     required => 0,
+    coerce => 1,
 );
 
 has '+_sequence' => (
@@ -22,6 +29,7 @@ has '+_sequence' => (
 
 sub BUILDARGS {
     my ($class, @rest) = @_;
+
     # accept single hash ref or naked hash
     my $params = (ref $rest[0] eq ref {} and scalar @rest == 1 ? $rest[0] : {@rest});
 
@@ -107,7 +115,6 @@ sub _pad_send_with_match {
     my $self = shift;
     my $match = Net::CLI::Interact::Action->new({
         type => 'match', value => $self->current_match,
-        is_lazy => (ref $self->current_match eq ref '' ? 1 : 0),
     });
 
     $self->reset;

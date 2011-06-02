@@ -19,10 +19,10 @@ ok(! eval { $s->cmd('TEST COMMAND', {timeout => 1} ) }, 'wrong prompt causes tim
 # need to reinit the connection
 ok($s->transport->disconnect, 'transport reinitialized');
 
-my $out = $s->cmd('TEST COMMAND', {match => 'TEST_PROMPT'});
+my $out = $s->cmd('TEST COMMAND', {match => ['TEST_PROMPT']});
 like($out, qr/^\d{10}$/, 'sent data with named custom match');
 
-my $out2 = $s->cmd('TEST COMMAND', {match => qr/PROMPT>/});
+my $out2 = $s->cmd('TEST COMMAND', {match => [qr/PROMPT>/]});
 like($out2, qr/^\d{10}$/, 'sent data with regexp custom match');
 
 my $out3 = $s->cmd('TEST COMMAND', {match => [qr/PROMPT>/, qr/ANOTHER PROMPT>/]});

@@ -72,45 +72,44 @@ sub macro {
 
 sub macro_names { return keys %{ (shift)->_macro } }
 
+# matches which are prompt names are resolved to RegexpRefs
+# and regexp provided by the user are inflated into RegexpRefs
+sub _resolve_matches {
+    my ($self, $actions) = @_;
+
+    foreach my $a (@$actions) {
+        next unless $a->{type} eq 'match';
+        next unless ref $a->{value} eq ref [];
+
+        my @newvals = ();
+        foreach my $v (@{ $a->{value} }) {
+            if ($v =~ m{^/} and $v =~ m{/$}) {
+                $v =~ s{^/}{}; $v =~ s{/$}{};
+                push @newvals, qr/$v/;
+            }
+            else {
+                push @newvals, @{ $self->prompt($v)->first->value };
+            }
+        }
+
+        $a->{value} = \@newvals;
+    }
+
+    return $actions;
+}
+
 # inflate the hashref into action objects
 sub _bake {
     my ($self, $data) = @_;
+
     return unless ref $data eq ref {} and keys %$data;
     $self->logger->log('phrasebook', 'debug', 'storing', $data->{type}, $data->{name});
 
     my $slot = '_'. lc $data->{type};
     $self->$slot->{$data->{name}}
         = Net::CLI::Interact::ActionSet->new({
-            actions => $data->{actions}
+            actions => $self->_resolve_matches($data->{actions})
         });
-}
-
-# matches which are prompt names are resolved to RegexpRefs
-sub _resolve_lazy_matches {
-    my $self = shift;
-
-    foreach my $name (keys %{$self->_macro}) {
-        my $set = $self->macro($name);
-        my $new_set = [];
-
-        $set->reset;
-        while ($set->has_next) {
-            my $item = $set->next;
-            if ($item->is_lazy) {
-                push @$new_set, $item->clone({ value =>
-                    $self->prompt($item->value)->first->value
-                });
-            }
-            else {
-                push @$new_set, $item;
-            }
-        }
-
-        # direct access to macros hash
-        $self->_macro->{$name} = Net::CLI::Interact::ActionSet->new({
-            actions => $new_set
-        });
-    }
 }
 
 sub BUILD {
@@ -160,23 +159,20 @@ sub load_phrasebooks {
                 next;
             }
 
-            if (m{^\s+match\s+prompt\s+(.+)\s*$}) {
-                push @{ $data->{actions} },
-                    {type => 'match', value => $1, lazy => 1};
-                next;
-            }
-
-            if (m{^\s+match\s+/(.+)/\s*$}) {
-                push @{ $data->{actions} },
-                    {type => 'match', value => qr/$1/};
-                next;
+            if (m{^\s+match\s+(.+)\s*$}) {
+                my @vals = split m/\s+or\s+/, $1;
+                if (scalar @vals) {
+                    push @{ $data->{actions} },
+                        {type => 'match', value => \@vals};
+                    next;
+                }
             }
 
             if (m{^\s+follow\s+/(.+)/\s+with\s+(.+)\s*$}) {
                 my ($match, $send) = ($1, $2);
                 $send =~ s/^["']//; $send =~ s/["']$//;
                 $data->{actions}->[-1]->{continuation} = [
-                    {type => 'match', value => qr/$match/},
+                    {type => 'match', value => [qr/$match/]},
                     {type => 'send',  value => eval "qq{$send}", no_ors => 1}
                 ];
                 next;
@@ -187,8 +183,6 @@ sub load_phrasebooks {
         # last entry in the file needs baking
         $self->_bake($data);
     }
-
-    $self->_resolve_lazy_matches;
 }
 
 # finds the path of Phrasebooks within the Library leading to Personality
@@ -439,10 +433,15 @@ instead:
      send enable
      match /[Pp]assword: ?$/
      send %s
-     match prompt priv_exec
+     match priv_exec
 
-As you can see, in the case of the last Match, we have the keywords C<match
-prompt> followed by the name of a defined Prompt.
+As you can see, in the case of the last Match, we have the keyword C<match>
+followed by the name of a defined Prompt. To match multiple defined Prompts
+use this syntax (with as many named references as you like):
+
+ macro to_privileged
+     send enable
+     match username_prompt or priv_exec
 
 =item Continuations
 

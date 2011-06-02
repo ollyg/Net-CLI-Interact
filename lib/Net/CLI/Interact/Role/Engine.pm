@@ -28,7 +28,7 @@ package Net::CLI::Interact::Role::Engine;
 
     has 'match' => (
         is => 'rw',
-        isa => 'Str|RegexpRef|ArrayRef[RegexpRef]',
+        isa => 'ArrayRef[RegexpRef|Str]',
         predicate => 'has_match',
         required => 0,
     );
@@ -85,11 +85,13 @@ sub cmd {
     $self->logger->log('engine', 'notice', 'running command', $command);
 
     if ($options->has_match) {
-        # convert prompt name from user into regexpref, or die
-        if (ref $options->match eq ref '') {
-            $options->match(
-                $self->phrasebook->prompt( $options->match )->first->value );
-        }
+        # convert prompt name(s) from name into regexpref, or die
+        $options->match([
+            map { ref $_ eq ref '' ? @{ $self->phrasebook->prompt($_)->first->value }
+                                   : $_ }
+                @{ $options->match }
+        ]);
+
         $self->logger->log('engine', 'info', 'to match',
             (ref $options->match eq ref [] ? (join '|', @{$options->match}) : $options->match));
     }
@@ -144,13 +146,9 @@ sub _execute_actions {
     $self->transport->timeout($timeout_bak);
     $self->last_actionset($set);
 
-    # if user used a match ref then we assume new prompt value
-    if ($self->last_actionset->last->is_lazy) {
-        $self->logger->log('prompt', 'info',
-            'last match was a prompt reference, setting new prompt');
-        # direct access to the slot
-        $self->_prompt($self->last_actionset->last->value);
-    }
+    $self->logger->log('prompt', 'info',
+        sprintf 'setting new prompt to %s', $self->last_actionset->last->prompt_hit);
+    $self->_prompt( $self->last_actionset->last->prompt_hit );
 
     return $self->last_response; # context sensitive
 }
@@ -188,12 +186,12 @@ overrides whatever is set in the Transport, or the default of 10 seconds.
 When passed a true value, a newline character (in fact the value of C<ors>)
 will not be appended to the statement sent to the device.
 
-=item C<< match => $name | $regexp  | \@regexps >> (optional)
+=item C<< match => \@prompts >> (optional)
 
-Allows this command only to complete with a custom match, which may either be
-the name of a loaded phrasebook Prompt, or one of more of your own regular
-expression references (C<< qr// >>). In the case of a named Prompt, the
-module updates the current prompt to be the same value on a successful match.
+Allows this command (only) to complete with a custom match, which must be one
+or more of either the name of a loaded phrasebook Prompt or your own regular
+expression reference (C<< qr// >>). The module updates the current prompt to
+be the same value on a successful match.
 
 =back
 

@@ -23,9 +23,9 @@ macro TEST_PROMPT_ONE
 
 macro TEST_PROMPT_TWO
     send TEST_PROMPT_TWO
-    match prompt TEST_PROMPT_TWO
+    match TEST_PROMPT_TWO
 
 macro TEST_MACRO_PARAMS
     send param %s param %s
-    match prompt MATCH_ANY
+    match MATCH_ANY
 
