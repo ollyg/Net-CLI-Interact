@@ -182,6 +182,7 @@ sub load_phrasebooks {
         }
         # last entry in the file needs baking
         $self->_bake($data);
+        $data = {};
     }
 }
 

@@ -2,6 +2,7 @@ package Net::CLI::Interact::Transport::Base;
 
 use Moose;
 use Moose::Util::TypeConstraints;
+with 'Net::CLI::Interact::Role::FindMatch';
 
 {
     package # hide from pause
@@ -95,17 +96,6 @@ sub buffer { _abc() }
 
 sub DEMOLISH { (shift)->disconnect }
 
-# see if any regexp in the arrayref match the response
-sub _first_match {
-    my ($text, $matches) = @_;
-    $matches = ((ref $matches eq ref qr//) ? [$matches] : $matches);
-    return undef unless
-        (scalar grep {ref $_ eq ref qr//} @$matches) == scalar @$matches;
-
-    use List::Util 'first';
-    return first { $text =~ $_ } @$matches;
-}
-
 sub do_action {
     my ($self, $action) = @_;
     $self->logger->log('transport', 'info', 'callback received for', $action->type);
@@ -121,12 +111,12 @@ sub do_action {
             my $maybe_stash = join $self->irs, @out_lines[0 .. ($#out_lines - 1)];
             my $last_out = $out_lines[-1];
 
-            if ($cont and $last_out =~ $cont->first->value) {
+            if ($cont and $self->find_match($last_out, $cont->first->value)) {
                 $self->logger->log('transport', 'debug', 'continuation matched');
                 $self->stash($self->flush);
                 $self->put($cont->last->value);
             }
-            elsif (my $hit = _first_match($last_out, $action->value)) {
+            elsif (my $hit = $self->find_match($last_out, $action->value)) {
                 $self->logger->log('transport', 'debug',
                     sprintf 'output matched %s, storing and returning', $hit);
                 $action->prompt_hit($hit);
@@ -139,7 +129,7 @@ sub do_action {
                 last;
             }
             else {
-                $self->logger->log('transport', 'debug', "nope, doesn't (yet) match", $action->value);
+                $self->logger->log('transport', 'debug', "nope, doesn't (yet) match");
                 # put back the partial output and try again
                 $self->stash( $self->stash . $maybe_stash );
                 $self->buffer($last_out);

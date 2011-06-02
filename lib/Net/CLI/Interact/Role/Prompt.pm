@@ -2,6 +2,7 @@ package Net::CLI::Interact::Role::Prompt;
 
 use Moose::Role;
 use Net::CLI::Interact::ActionSet;
+with 'Net::CLI::Interact::Role::FindMatch';
 
 has 'wake_up' => (
     is => 'rw',
@@ -41,8 +42,9 @@ sub last_prompt_re {
 
 sub prompt_looks_like {
     my ($self, $name) = @_;
-    return ( $self->last_prompt
-        =~ $self->phrasebook->prompt($name)->first->value->[0] );
+    return $self->find_match(
+        $self->last_prompt, $self->phrasebook->prompt($name)->first->value
+    );
 }
 
 # pump until any of the prompts matches the output buffer
@@ -56,10 +58,10 @@ sub find_prompt {
     eval {
         PUMPING: while (1) {
             $self->transport->pump;
+            $self->logger->log('dump', 'debug', "SEEN:\n". $self->transport->buffer);
             foreach my $prompt ($self->phrasebook->prompt_names) {
                 # prompts consist of only one match action
-                # FIXME for prompt deref
-                if ($self->transport->buffer =~ $self->phrasebook->prompt($prompt)->first->value->[0]) {
+                if ($self->find_match($self->transport->buffer, $self->phrasebook->prompt($prompt)->first->value)) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
                     $self->last_actionset(
                         Net::CLI::Interact::ActionSet->new({ actions => [
