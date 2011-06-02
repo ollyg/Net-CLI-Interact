@@ -61,7 +61,9 @@ sub find_prompt {
             $self->logger->log('dump', 'debug', "SEEN:\n". $self->transport->buffer);
             foreach my $prompt ($self->phrasebook->prompt_names) {
                 # prompts consist of only one match action
-                if ($self->find_match($self->transport->buffer, $self->phrasebook->prompt($prompt)->first->value)) {
+                if ($self->find_match(
+                        $self->transport->buffer,
+                        $self->phrasebook->prompt($prompt)->first->value)) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
                     $self->last_actionset(
                         Net::CLI::Interact::ActionSet->new({ actions => [
@@ -80,7 +82,8 @@ sub find_prompt {
     };
 
     if ($@ and $self->has_wake_up and $wake_up) {
-        $self->logger->log('prompt', 'info', "failed: [$@], sending WAKE_UP and trying again");
+        $self->logger->log('prompt', 'info',
+            "failed: [$@], sending WAKE_UP and trying again");
         $self->transport->put( $self->wake_up );
         $self->find_prompt;
     }

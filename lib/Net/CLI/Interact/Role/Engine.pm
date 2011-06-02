@@ -99,7 +99,8 @@ sub cmd {
         ]);
 
         $self->logger->log('engine', 'info', 'to match',
-            (ref $options->match eq ref [] ? (join '|', @{$options->match}) : $options->match));
+            (ref $options->match eq ref [] ? (join '|', @{$options->match})
+                                           : $options->match));
     }
 
     return $self->_execute_actions(
