@@ -129,7 +129,9 @@ sub do_action {
                 last;
             }
             else {
-                $self->logger->log('transport', 'debug', "nope, doesn't (yet) match");
+                $self->logger->log('transport', 'debug', "nope, doesn't (yet) match",
+                    (ref $action->value eq ref [] ? (join '|', @{$action->value})
+                                                : $action->value));
                 # put back the partial output and try again
                 $self->stash( $self->stash . $maybe_stash );
                 $self->buffer($last_out);
