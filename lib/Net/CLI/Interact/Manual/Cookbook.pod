@@ -16,7 +16,7 @@ I<will not work>. Here's an example:
  my $s = Net::CLI::Interact->new(
      personality => "cisco",
      transport => "Telnet",
-     (Net::CLI::Interact::Transport::is_win32 ?
+     (Net::CLI::Interact::Transport::is_win32() ?
          (app => '..\..\..\Desktop\plink.exe') : () ),
  );
 

@@ -1,5 +1,5 @@
-# prompt prompt
-#     match /[\/a-zA-Z0-9._-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
+prompt prompt
+    match /[\/a-zA-Z0-9._-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
 
 prompt basic
     match /> ?$/
@@ -16,14 +16,14 @@ prompt user
 prompt pass
     match /[Pp]assword: ?$/
 
-# prompt userpass
-#     match /(?:[Uu]sername|[Pp]assword): ?$/
+# MACROS
 
 macro begin_privileged
     send enable
 
-# macro begin_privileged_with_user
-#     send login
+
+macro begin_privileged_with_user
+    send login
 
 macro end_privileged
     send disable
