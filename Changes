@@ -1,6 +1,8 @@
 {{$NEXT}}
 
-  * Set is_lazy on cmd match which is a prompt name
+  * Support multi match in macros
+  * Remove is_lazy - always update the prompt
+  * Phrasebook fixes for Net::Appliance::Session
 
 1.111500  2011-05-30 16:00:03 Europe/London
 
