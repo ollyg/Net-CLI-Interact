@@ -25,6 +25,12 @@ like($out, qr/^\d{10}$/, 'sent data with named custom match');
 my $out2 = $s->cmd('TEST COMMAND', {match => [qr/PROMPT>/]});
 like($out2, qr/^\d{10}$/, 'sent data with regexp custom match');
 
+my $outa = $s->cmd('TEST COMMAND', {match => 'TEST_PROMPT'});
+like($outa, qr/^\d{10}$/, 'sent data with named custom match, coerced');
+
+my $out2a = $s->cmd('TEST COMMAND', {match => qr/PROMPT>/});
+like($out2a, qr/^\d{10}$/, 'sent data with regexp custom match, coerced');
+
 my $out3 = $s->cmd('TEST COMMAND', {match => [qr/PROMPT>/, qr/ANOTHER PROMPT>/]});
 like($out3, qr/^\d{10}$/, 'sent data with two regexp custom matches');
 

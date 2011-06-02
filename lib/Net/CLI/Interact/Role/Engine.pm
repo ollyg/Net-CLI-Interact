@@ -6,6 +6,11 @@ package Net::CLI::Interact::Role::Engine;
     use Moose;
     use Moose::Util::TypeConstraints;
 
+    subtype 'Net::CLI::Interact::Role::Engine::ExecuteOptions::MatchType'
+        => as 'ArrayRef[RegexpRef|Str]';
+    coerce 'Net::CLI::Interact::Role::Engine::ExecuteOptions::MatchType'
+        => from 'Str|RegexpRef' => via { [$_] };
+
     has 'no_ors' => (
         is => 'ro',
         isa => 'Bool',
@@ -28,9 +33,10 @@ package Net::CLI::Interact::Role::Engine;
 
     has 'match' => (
         is => 'rw',
-        isa => 'ArrayRef[RegexpRef|Str]',
+        isa => 'Net::CLI::Interact::Role::Engine::ExecuteOptions::MatchType',
         predicate => 'has_match',
         required => 0,
+        coerce => 1,
     );
 
     sub BUILDARGS {
@@ -186,7 +192,7 @@ overrides whatever is set in the Transport, or the default of 10 seconds.
 When passed a true value, a newline character (in fact the value of C<ors>)
 will not be appended to the statement sent to the device.
 
-=item C<< match => \@prompts >> (optional)
+=item C<< match => $name | $regexpref | \@names_and_regexprefs >> (optional)
 
 Allows this command (only) to complete with a custom match, which must be one
 or more of either the name of a loaded phrasebook Prompt or your own regular
