@@ -15,6 +15,27 @@ extends 'Net::CLI::Interact::Transport';
         required => 1,
     );
 
+    has 'username' => (
+        is => 'rw',
+        isa => 'Str',
+        required => 0,
+        predicate => 'has_username',
+    );
+
+    has 'shkc' => (
+        is => 'rw',
+        isa => 'Bool',
+        required => 0,
+        default => 1,
+    );
+
+    has 'opts' => (
+        is => 'rw',
+        isa => 'ArrayRef[Any]',
+        required => 0,
+        default => sub { [] },
+    );
+
     use Moose::Util::TypeConstraints;
     coerce 'Net::CLI::Interact::Transport::SSH::Options'
         => from 'HashRef[Any]'
@@ -38,10 +59,23 @@ sub _build_app {
 
 sub runtime_options {
     my $self = shift;
-    return (
-        ($self->is_win32 ? '-ssh' : ()),
-        $self->connect_options->host,
-    );
+    if ($self->is_win32) {
+        return (
+            '-ssh',
+            ($self->connect_options->has_username
+                ? ($self->connect_options->username . '@') : '')
+                . $self->connect_options->host,
+        );
+    }
+    else {
+        return (
+            ($self->connect_options->shkc ? () : ('-o', 'StrictHostKeyChecking=no')),
+            @{$self->connect_options->opts},
+            ($self->connect_options->has_username
+                ? ('-l', $self->connect_options->username) : ()),
+            $self->connect_options->host,
+        );
+    }
 }
 
 1;
@@ -72,7 +106,40 @@ command line. Supported attributes:
 =item host (required)
 
 Host name or IP address of the host to which the SSH application is to
-connect.
+connect. Alternatively you can pass a value of the form C<user@host>, but it's
+probably better to use the separate C<username> parameter instead.
+
+=item username
+
+Optionally pass in the username for the SSH connection, otherwise the SSH
+client defaults to the current user's username. When using this option, you
+should obviously I<only> pass the host name to C<host>.
+
+=item shkc
+
+Set to a false value to disable C<openssh>'s Strict Host Key Checking. See the
+openssh documentation for further details. This might be useful where you are
+connecting to appliances for which an entry does not yet exist in your
+C<known_hosts> file, and you don't wish to be prompted to add it.
+
+The default operation is to let openssh use its default setting for
+StrictHostKeyChecking.
+
+=item opts
+
+If you want to pass any other options to openssh on its command line, then use
+this option, which should be an array reference. Each item in the list will be
+passed to C<openssh>, separated by a singe space character. For example:
+
+ $s->new({
+     # ...other parameters to new()...
+     connect_options => {
+         opts => [
+             '-p', '222',            # connect to non-standard port on remote host
+             '-o', 'CheckHostIP=no', # don't check host IP in known_hosts file
+         ],
+     },
+ });
 
 =item reap
 

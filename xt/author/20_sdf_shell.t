@@ -9,7 +9,10 @@ my $s = Net::CLI::Interact->new(
     transport => 'SSH',
     ($^O eq 'MSWin32' ?
         (app => '..\..\..\Desktop\plink.exe') : () ),
-    connect_options => { host => 'ollyg@sdf.org' },
+    connect_options => {
+        host => 'sdf.org',
+        username => 'ollyg',
+    },
     personality => 'sdf',
 );
 
