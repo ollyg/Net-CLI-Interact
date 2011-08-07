@@ -32,7 +32,7 @@ sub _build_library {
 }
 
 has 'add_library' => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str|ArrayRef[Str]',
     default => sub { [] },
     required => 0,
@@ -187,12 +187,22 @@ sub load_phrasebooks {
 }
 
 # finds the path of Phrasebooks within the Library leading to Personality
-# FIXME: *sniff* *sniff* this code seems a bit whiffy
 use Path::Class;
 sub _find_phrasebooks {
     my $self = shift;
-    my @libs = (ref $self->add_library ? @{$self->add_library} : ($self->add_library));
-    push @libs, (ref $self->library ? @{$self->library} : ($self->library));
+    my @libs = (ref $self->library ? @{$self->library} : ($self->library));
+    my @alib = (ref $self->add_library ? @{$self->add_library} : ($self->add_library));
+
+    my @phrasebooks =
+        ( $self->_walk_find_files(@libs), $self->_walk_find_files(@alib) );
+
+    confess (sprintf "Personality [%s] contains no phrasebook files!\n",
+            $self->personality) unless scalar @phrasebooks;
+    return @phrasebooks;
+}
+
+sub _walk_find_files {
+    my ($self, @libs) = @_;
 
     my $target = undef;
     foreach my $l (@libs) {
@@ -202,22 +212,18 @@ sub _find_phrasebooks {
         });
         last if $target;
     }
-    confess (sprintf "couldn't find Personality '%s' within your Library\n",
-            $self->personality) unless $target;
+    return () unless defined $target;
 
-    my @phrasebooks = ();
+    my @files = ();
     my $root = Path::Class::Dir->new($target->is_absolute ? '' : ());
     foreach my $part ( $target->dir_list ) {
         $root = $root->subdir($part);
         next if scalar grep { $root->subsumes($_) } @libs;
-        push @phrasebooks,
+        push @files,
             sort {$a->basename cmp $b->basename}
             grep { not $_->is_dir } $root->children(no_hidden => 1);
     }
-
-    confess (sprintf "Personality [%s] contains no content!\n",
-            $self->personality) unless scalar @phrasebooks;
-    return @phrasebooks;
+    return @files;
 }
 
 1;
