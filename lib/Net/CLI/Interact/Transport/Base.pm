@@ -10,6 +10,12 @@ with 'Net::CLI::Interact::Role::FindMatch';
     use Moose;
 }
 
+has 'use_net_telnet_connection' => (
+    is => 'rw',
+    isa => 'Int',
+    default => 0,
+);
+
 has 'logger' => (
     is => 'ro',
     isa => 'Net::CLI::Interact::Logger',

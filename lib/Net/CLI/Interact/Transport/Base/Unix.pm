@@ -61,12 +61,6 @@ has '+wrapper' => (
     isa => 'Net::Telnet',
 );
 
-has 'use_net_telnet_connection' => (
-    is => 'rw',
-    isa => 'Int',
-    default => 0,
-);
-
 override '_build_wrapper' => sub {
     my $self = shift;
 

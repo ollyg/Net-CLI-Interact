@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * use_net_telnet_connection is checked even on Win32
+
 1.111590  2011-06-08 23:26:09 Europe/London
 
   * Support more SSH transport options, handle username
