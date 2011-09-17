@@ -135,7 +135,8 @@ sub do_action {
                     (ref $action->value eq ref [] ? (join '|', @{$action->value})
                                                 : $action->value));
                 # put back the partial output and try again
-                $self->stash($self->stash . $maybe_stash . $self->ors);
+                $maybe_stash .= $self->ors if length $maybe_stash;
+                $self->stash($self->stash . $maybe_stash);
                 $self->buffer($last_out);
             }
         }

@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Newline only added if there was a new *line* in output
+
 1.112601  2011-09-17 18:32:55 Europe/London
 
   * Fixes to handling of newlines in returned response.
