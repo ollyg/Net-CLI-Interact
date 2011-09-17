@@ -18,18 +18,6 @@ extends 'Net::CLI::Interact::Transport::Base';
     );
 }
 
-has '+irs' => (
-    trigger => sub {
-        (shift)->wrapper->input_record_separator(shift) if scalar @_ > 1;
-    },
-);
-
-has '+ors' => (
-    trigger => sub {
-        (shift)->wrapper->output_record_separator(shift) if scalar @_ > 1;
-    },
-);
-
 sub put { (shift)->wrapper->put( join '', @_ ) }
 
 has '_buffer' => (

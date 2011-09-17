@@ -63,7 +63,7 @@ sub last_response {
     my $self = shift;
     my $resp = $self->last_actionset->item_at(-2)->response;
     return (wantarray
-        ? (split $self->transport->irs, $resp)
+        ? (split $self->transport->irs_re, $resp)
         : $resp);
 }
 
