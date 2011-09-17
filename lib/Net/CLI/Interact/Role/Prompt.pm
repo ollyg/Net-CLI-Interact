@@ -1,4 +1,7 @@
 package Net::CLI::Interact::Role::Prompt;
+BEGIN {
+  $Net::CLI::Interact::Role::Prompt::VERSION = '1.112600';
+}
 
 use Moose::Role;
 use Net::CLI::Interact::ActionSet;
@@ -97,6 +100,18 @@ sub find_prompt {
 
 # ABSTRACT: Command-line prompt management
 
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact::Role::Prompt - Command-line prompt management
+
+=head1 VERSION
+
+version 1.112600
+
 =head1 DESCRIPTION
 
 This is another core component of L<Net::CLI::Interact>, and its role is to
@@ -191,4 +206,16 @@ Returns the text which was most recently matched and terminated gathering of
 output from the connected CLI, as a quote-escaped regular expression with line
 start and end anchors.
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

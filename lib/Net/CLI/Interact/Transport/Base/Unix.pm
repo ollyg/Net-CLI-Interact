@@ -1,4 +1,7 @@
 package Net::CLI::Interact::Transport::Base::Unix;
+BEGIN {
+  $Net::CLI::Interact::Transport::Base::Unix::VERSION = '1.112600';
+}
 
 use Moose;
 use Moose::Util::TypeConstraints;

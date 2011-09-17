@@ -1,4 +1,7 @@
 package Net::CLI::Interact::Transport::Telnet;
+BEGIN {
+  $Net::CLI::Interact::Transport::Telnet::VERSION = '1.112600';
+}
 
 use Moose;
 extends 'Net::CLI::Interact::Transport';
@@ -53,6 +56,18 @@ sub runtime_options {
 
 # ABSTRACT: TELNET based CLI connection
 
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact::Transport::Telnet - TELNET based CLI connection
+
+=head1 VERSION
+
+version 1.112600
+
 =head1 DECRIPTION
 
 This module provides a wrapped instance of a TELNET client for use by
@@ -99,4 +114,16 @@ L<Net::CLI::Interact::Transport>
 
 =back
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

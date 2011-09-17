@@ -1,4 +1,7 @@
 package Net::CLI::Interact::ActionSet;
+BEGIN {
+  $Net::CLI::Interact::ActionSet::VERSION = '1.112600';
+}
 
 use Moose;
 use Net::CLI::Interact::Action;
@@ -171,6 +174,18 @@ sub _marshall_responses {
 
 # ABSTRACT: Conversation of Send and Match Actions
 
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact::ActionSet - Conversation of Send and Match Actions
+
+=head1 VERSION
+
+version 1.112600
+
 =head1 DESCRIPTION
 
 This class is used internally by L<Net::CLI::Interact> and it's unlikely that
@@ -279,4 +294,16 @@ L<Net::CLI::Interact::Role::Iterator>
 
 =back
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

@@ -1,4 +1,7 @@
 package Net::CLI::Interact::Action;
+BEGIN {
+  $Net::CLI::Interact::Action::VERSION = '1.112600';
+}
 
 use Moose;
 use Moose::Util::TypeConstraints qw(enum);
@@ -91,6 +94,18 @@ sub num_params {
 
 # ABSTRACT: Sent data or matched response from connected device
 
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact::Action - Sent data or matched response from connected device
+
+=head1 VERSION
+
+version 1.112600
+
 =head1 DESCRIPTION
 
 This class is used internally by L<Net::CLI::Interact> and it's unlikely that
@@ -172,4 +187,16 @@ C<response> without affecting the original Action. Used when preparing to
 execute an Action which has been retrieved from the
 L<Phrasebook|Net::CLI::Interact::Phrasebook>.
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

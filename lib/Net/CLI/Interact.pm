@@ -1,4 +1,7 @@
 package Net::CLI::Interact;
+BEGIN {
+  $Net::CLI::Interact::VERSION = '1.112600';
+}
 
 {
     package # hide from pause
@@ -136,14 +139,22 @@ sub _build_transport {
 
 # ABSTRACT: Toolkit for CLI Automation
 
-=begin :prelude
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact - Toolkit for CLI Automation
+
+=head1 VERSION
+
+version 1.112600
 
 =head1 PURPOSE
 
 This module exists to support developers of applications and libraries which
 must interact with a command line interface.
-
-=end :prelude
 
 =head1 SYNOPSIS
 
@@ -344,4 +355,16 @@ L<Net::CLI::Interact::Role::Engine>
 
 =back
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

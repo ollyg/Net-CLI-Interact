@@ -1,4 +1,7 @@
 package Net::CLI::Interact::Role::Engine;
+BEGIN {
+  $Net::CLI::Interact::Role::Engine::VERSION = '1.112600';
+}
 
 {
     package # hide from pause
@@ -164,6 +167,18 @@ sub _execute_actions {
 
 # ABSTRACT: Statement execution engine
 
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact::Role::Engine - Statement execution engine
+
+=head1 VERSION
+
+version 1.112600
+
 =head1 DESCRIPTION
 
 This module is the core of L<Net::CLI::Interact>, and serves to take entries
@@ -276,4 +291,16 @@ L<Net::CLI::Interact::Role::Prompt>
 
 =back
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

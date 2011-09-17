@@ -1,4 +1,4 @@
-{{$NEXT}}
+1.112600  2011-09-17 14:17:44 Europe/London
 
   * Set quotemeta when stripping command from returned output (V. Foitzik)
 
