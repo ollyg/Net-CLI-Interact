@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport;
 BEGIN {
-  $Net::CLI::Interact::Transport::VERSION = '1.112601';
+  $Net::CLI::Interact::Transport::VERSION = '1.112602';
 }
 
 use Moose;
@@ -35,7 +35,7 @@ Net::CLI::Interact::Transport - Spawns an Interactive CLI Session
 
 =head1 VERSION
 
-version 1.112601
+version 1.112602
 
 =head1 DESCRIPTION
 
