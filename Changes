@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Set quotemeta when stripping command from returned output (V. Foitzik)
+
 1.112190  2011-08-07 21:33:07 Europe/London
 
   * use_net_telnet_connection is checked even on Win32

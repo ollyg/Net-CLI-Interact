@@ -161,7 +161,7 @@ sub _marshall_responses {
         next unless $match->type eq 'match';
 
         # remove echoed command from the beginning
-        my $cmd = $send->value;
+        my $cmd = quotemeta( $send->value );
         (my $output = $match->response_stash) =~ s/^$cmd\s*//;
         $send->response($output);
     }
