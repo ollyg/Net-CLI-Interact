@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base::Unix;
 BEGIN {
-  $Net::CLI::Interact::Transport::Base::Unix::VERSION = '1.112600';
+  $Net::CLI::Interact::Transport::Base::Unix::VERSION = '1.112601';
 }
 
 use Moose;
@@ -20,18 +20,6 @@ extends 'Net::CLI::Interact::Transport::Base';
         default => 0,
     );
 }
-
-has '+irs' => (
-    trigger => sub {
-        (shift)->wrapper->input_record_separator(shift) if scalar @_ > 1;
-    },
-);
-
-has '+ors' => (
-    trigger => sub {
-        (shift)->wrapper->output_record_separator(shift) if scalar @_ > 1;
-    },
-);
 
 sub put { (shift)->wrapper->put( join '', @_ ) }
 

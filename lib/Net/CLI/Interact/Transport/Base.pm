@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base;
 BEGIN {
-  $Net::CLI::Interact::Transport::Base::VERSION = '1.112600';
+  $Net::CLI::Interact::Transport::Base::VERSION = '1.112601';
 }
 
 use Moose;
@@ -25,18 +25,12 @@ has 'logger' => (
     required => 1,
 );
 
-has 'irs' => (
+has 'irs_re' => (
     is => 'ro',
-    isa => 'Str',
-    default => "\n",
+    isa => 'RegexpRef',
+    default => sub { qr/(?:\015\012|\015|\012)/ }, # first wins
     required => 0,
 );
-
-sub irs_re {
-    my $self = shift;
-    my $irs = $self->irs;
-    return qr/$irs/;
-}
 
 has 'ors' => (
     is => 'ro',
@@ -112,12 +106,14 @@ sub do_action {
     if ($action->type eq 'match') {
         my $cont = $action->continuation;
         while ($self->pump) {
-            $self->logger->log('dump', 'debug', "SEEN:\n". $self->buffer);
+            # remove control characters
+            (my $buffer = $self->buffer) =~ s/[\000-\010\013\014\016-\037]//g;
+            $self->logger->log('dump', 'debug', "SEEN:\n". $buffer);
 
-            my @out_lines = split $self->irs_re, $self->buffer;
+            my @out_lines = split $self->irs_re, $buffer;
             next if !defined $out_lines[-1];
 
-            my $maybe_stash = join $self->irs, @out_lines[0 .. ($#out_lines - 1)];
+            my $maybe_stash = join $self->ors, @out_lines[0 .. ($#out_lines - 1)];
             my $last_out = $out_lines[-1];
 
             if ($cont and $self->find_match($last_out, $cont->first->value)) {
@@ -133,7 +129,7 @@ sub do_action {
                 # prompt match is line oriented. want to split that off from
                 # rest of output which is marshalled into the 'send'.
                 my @output = split $self->irs_re, $self->flush;
-                $action->response_stash(join $self->irs, @output[0 .. ($#output - 1)]);
+                $action->response_stash(join $self->ors, @output[0 .. ($#output - 1)]);
                 $action->response($output[-1]);
                 last;
             }
@@ -142,7 +138,7 @@ sub do_action {
                     (ref $action->value eq ref [] ? (join '|', @{$action->value})
                                                 : $action->value));
                 # put back the partial output and try again
-                $self->stash( $self->stash . $maybe_stash );
+                $self->stash($self->stash . $maybe_stash . $self->ors);
                 $self->buffer($last_out);
             }
         }

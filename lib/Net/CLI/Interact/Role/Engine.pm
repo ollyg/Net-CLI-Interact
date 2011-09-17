@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 BEGIN {
-  $Net::CLI::Interact::Role::Engine::VERSION = '1.112600';
+  $Net::CLI::Interact::Role::Engine::VERSION = '1.112601';
 }
 
 {
@@ -66,7 +66,7 @@ sub last_response {
     my $self = shift;
     my $resp = $self->last_actionset->item_at(-2)->response;
     return (wantarray
-        ? (split $self->transport->irs, $resp)
+        ? (split $self->transport->irs_re, $resp)
         : $resp);
 }
 
@@ -177,7 +177,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 1.112600
+version 1.112601
 
 =head1 DESCRIPTION
 

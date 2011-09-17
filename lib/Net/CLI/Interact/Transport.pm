@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport;
 BEGIN {
-  $Net::CLI::Interact::Transport::VERSION = '1.112600';
+  $Net::CLI::Interact::Transport::VERSION = '1.112601';
 }
 
 use Moose;
@@ -35,7 +35,7 @@ Net::CLI::Interact::Transport - Spawns an Interactive CLI Session
 
 =head1 VERSION
 
-version 1.112600
+version 1.112601
 
 =head1 DESCRIPTION
 
@@ -116,16 +116,14 @@ and no more data arrives.
 The number of seconds to wait is set via this method, which will also return
 the current value of C<timeout>. The default value is 10 seconds.
 
-=head2 irs
-
-Line separator character(s) used when interpreting the data returned from the
-connected CLI. This defaults to a newline on the application's platform.
-
 =head2 irs_re
 
-Returns a Regular Expression reference comprising the content of C<irs>. With
-the default value, this will be C<< qr/\n/ >>. This is useful if you need to
-C<split> the content of your Action's C<response> into lines.
+Returns the Regular Expression reference used to split lines of reponse from
+the connected device. In the end, you will only receive data from this module
+separated by the C<ors> value (by default a newline character). The C<irs_re>
+is used internally by the module and is:
+
+ qr/(?:\015\012|\015|\012)/  # i.e. CRLF or CR or LF
 
 =head2 ors
 
