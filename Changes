@@ -1,6 +1,9 @@
 {{$NEXT}}
 
+1.112610  2011-09-18 10:41:37 Europe/London
+
   * Escape embedded % in cmd() commands (B. Hogden)
+  * Apply POD typo fixes patch (V. Foitzik)
 
 1.112602  2011-09-17 23:45:50 Europe/London
 
