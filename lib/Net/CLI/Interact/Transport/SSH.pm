@@ -144,7 +144,7 @@ StrictHostKeyChecking.
 
 If you want to pass any other options to openssh on its command line, then use
 this option, which should be an array reference. Each item in the list will be
-passed to C<openssh>, separated by a singe space character. For example:
+passed to C<openssh>, separated by a single space character. For example:
 
  $s->new({
      # ...other parameters to new()...
@@ -158,7 +158,7 @@ passed to C<openssh>, separated by a singe space character. For example:
 
 =item reap
 
-Only used on Unix platforms, this installs a signal handler which attemps to
+Only used on Unix platforms, this installs a signal handler which attempts to
 reap the C<ssh> child process. Pass a true value to enable this feature only
 if you notice zombie processes are being left behind after use.
 

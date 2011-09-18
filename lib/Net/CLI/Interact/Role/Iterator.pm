@@ -114,7 +114,7 @@ this class.
 
 =head1 USAGE
 
-The slot used for storing iterateor elements is named C<_sequence> and you
+The slot used for storing iterator elements is named C<_sequence> and you
 should write your consuming class to marshall data into this slot, perhaps via
 C<BUILD> or C<init_arg>. For example:
 

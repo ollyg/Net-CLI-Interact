@@ -259,7 +259,7 @@ I<input record separator> (newline).
 
 =head2 last_response
 
-Returns the gathered output after issueing the last recent C<send> command
+Returns the gathered output after issuing the last recent C<send> command
 within the most recent C<cmd> or C<prompt>. That is, you get the output from
 the last command sent to the connected device.
 

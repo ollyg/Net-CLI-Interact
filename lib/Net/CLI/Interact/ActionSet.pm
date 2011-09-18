@@ -270,7 +270,7 @@ configured.
 
 =item Callback(s)
 
-Here the registered callbacks are executed (i.e. data is setnt to the
+Here the registered callbacks are executed (i.e. data is sent to the
 Transport).
 
 =item Marshall Responses
