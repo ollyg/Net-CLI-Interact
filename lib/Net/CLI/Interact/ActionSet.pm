@@ -1,6 +1,6 @@
 package Net::CLI::Interact::ActionSet;
 BEGIN {
-  $Net::CLI::Interact::ActionSet::VERSION = '1.112602';
+  $Net::CLI::Interact::ActionSet::VERSION = '1.112610';
 }
 
 use Moose;
@@ -184,7 +184,7 @@ Net::CLI::Interact::ActionSet - Conversation of Send and Match Actions
 
 =head1 VERSION
 
-version 1.112602
+version 1.112610
 
 =head1 DESCRIPTION
 
@@ -270,7 +270,7 @@ configured.
 
 =item Callback(s)
 
-Here the registered callbacks are executed (i.e. data is setnt to the
+Here the registered callbacks are executed (i.e. data is sent to the
 Transport).
 
 =item Marshall Responses

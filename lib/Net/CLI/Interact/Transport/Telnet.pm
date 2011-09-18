@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Telnet;
 BEGIN {
-  $Net::CLI::Interact::Transport::Telnet::VERSION = '1.112602';
+  $Net::CLI::Interact::Transport::Telnet::VERSION = '1.112610';
 }
 
 use Moose;
@@ -66,7 +66,7 @@ Net::CLI::Interact::Transport::Telnet - TELNET based CLI connection
 
 =head1 VERSION
 
-version 1.112602
+version 1.112610
 
 =head1 DECRIPTION
 
@@ -96,7 +96,7 @@ connect.
 
 =item reap
 
-Only used on Unix platforms, this installs a signal handler which attemps to
+Only used on Unix platforms, this installs a signal handler which attempts to
 reap the C<ssh> child process. Pass a true value to enable this feature only
 if you notice zombie processes are being left behind after use.
 

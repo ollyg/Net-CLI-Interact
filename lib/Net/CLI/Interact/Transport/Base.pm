@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base;
 BEGIN {
-  $Net::CLI::Interact::Transport::Base::VERSION = '1.112602';
+  $Net::CLI::Interact::Transport::Base::VERSION = '1.112610';
 }
 
 use Moose;

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Iterator;
 BEGIN {
-  $Net::CLI::Interact::Role::Iterator::VERSION = '1.112602';
+  $Net::CLI::Interact::Role::Iterator::VERSION = '1.112610';
 }
 
 use Moose::Role;
@@ -92,7 +92,7 @@ Net::CLI::Interact::Role::Iterator - Array-based Iterator
 
 =head1 VERSION
 
-version 1.112602
+version 1.112610
 
 =head1 SYNOPSIS
 
@@ -114,7 +114,7 @@ this class.
 
 =head1 USAGE
 
-The slot used for storing iterateor elements is named C<_sequence> and you
+The slot used for storing iterator elements is named C<_sequence> and you
 should write your consuming class to marshall data into this slot, perhaps via
 C<BUILD> or C<init_arg>. For example:
 

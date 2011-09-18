@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Logger;
 BEGIN {
-  $Net::CLI::Interact::Logger::VERSION = '1.112602';
+  $Net::CLI::Interact::Logger::VERSION = '1.112610';
 }
 
 use Moose;
@@ -117,7 +117,7 @@ Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories
 
 =head1 VERSION
 
-version 1.112602
+version 1.112610
 
 =head1 SYNOPSIS
 
@@ -139,7 +139,7 @@ configuration is to print log messages to the screen (console), with a minimum
 level of C<debug>. Each category (see below) has its own log level as well.
 
 Note that categories, as discussed below, are arbitrary so if a category is
-not explicity enabled or disabled, it is assumed to be B<disabled>. If you
+not explicitely enabled or disabled, it is assumed to be B<disabled>. If you
 wish to invent a new category for your application, simply think of the name
 and begin to use it, with a C<$level> and C<@message> as above in the
 SYNOPSIS.

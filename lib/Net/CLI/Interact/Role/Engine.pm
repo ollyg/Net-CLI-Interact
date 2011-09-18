@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 BEGIN {
-  $Net::CLI::Interact::Role::Engine::VERSION = '1.112602';
+  $Net::CLI::Interact::Role::Engine::VERSION = '1.112610';
 }
 
 {
@@ -106,6 +106,11 @@ sub cmd {
                                            : $options->match));
     }
 
+    # command will be run through sprintf but without any params
+    # so convert any embedded % to literal %
+    ($command =~ s/%/%%/g) &&
+        $self->logger->log('engine', 'debug', 'command expanded to:', $command);
+
     return $self->_execute_actions(
         $options,
         Net::CLI::Interact::Action->new({
@@ -177,7 +182,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 1.112602
+version 1.112610
 
 =head1 DESCRIPTION
 
@@ -259,7 +264,7 @@ I<input record separator> (newline).
 
 =head2 last_response
 
-Returns the gathered output after issueing the last recent C<send> command
+Returns the gathered output after issuing the last recent C<send> command
 within the most recent C<cmd> or C<prompt>. That is, you get the output from
 the last command sent to the connected device.
 
