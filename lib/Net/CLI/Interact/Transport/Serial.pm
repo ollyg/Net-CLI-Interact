@@ -129,7 +129,7 @@ communication. The default is C<none>.
 =item nostop
 
 You can control whether to use C<XON/XOFF> handling for the serial
-communcation. The default is to disable this, so to enable it pass any True
+communication. The default is to disable this, so to enable it pass any True
 value.
 
 =item speed
@@ -139,7 +139,7 @@ to this named parameter. The default is C<9600>.
 
 =item reap
 
-Only used on Unix platforms, this installs a signal handler which attemps to
+Only used on Unix platforms, this installs a signal handler which attempts to
 reap the C<ssh> child process. Pass a true value to enable this feature only
 if you notice zombie processes are being left behind after use.
 
