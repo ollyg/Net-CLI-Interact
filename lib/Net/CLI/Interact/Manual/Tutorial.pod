@@ -20,7 +20,7 @@ Unix and Windows support
 
 =item *
 
-Reuseable device command phrasebooks
+Reusable device command phrasebooks
 
 =back
 
@@ -151,7 +151,7 @@ situations we have I<Macros> in the phrasebook.
 A macro is simply a sequence of commands we could issue using C<< $s->cmd()
 >>, bundled together and given a friendly name. Macros are also smart enough
 either to handle simple confirmation steps themselves, or to allow you to pass
-in parameters. Some examples proably help:
+in parameters. Some examples probably help:
 
  # saves config, accepting the default "startup-config" when prompted
  $s->macro('write_mem');
@@ -180,7 +180,7 @@ output, then set it like so:
 
 =head1 Disconnecting
 
-This is nothing more fancy than issueing the appropriate CLI commands to close
+This is nothing more fancy than issuing the appropriate CLI commands to close
 the network connection. In the case of the Serial line transport you can
 usually only log out, and not fully disconnect. Simply end your application
 and the library will tidy things up as best it can.

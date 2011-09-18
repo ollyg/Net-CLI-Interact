@@ -81,7 +81,7 @@ connect.
 
 =item reap
 
-Only used on Unix platforms, this installs a signal handler which attemps to
+Only used on Unix platforms, this installs a signal handler which attempts to
 reap the C<ssh> child process. Pass a true value to enable this feature only
 if you notice zombie processes are being left behind after use.
 

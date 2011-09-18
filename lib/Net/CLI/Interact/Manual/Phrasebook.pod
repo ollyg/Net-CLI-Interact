@@ -6,7 +6,7 @@ Net::CLI::Interact::Manual::Phrasebook - List of Supported CLIs
 
 The bundled phrasebook includes support for a variety of network device CLIs.
 Many were contributed by users of the module. If you set up a new CLI
-dictionary, please consider contributing it back! The phrasbook specification
+dictionary, please consider contributing it back! The phrasebook specification
 is given in L<Net::CLI::Interact::Phrasebook>.
 
 For each supported CLI, there is a name which must be passed in the
@@ -17,7 +17,7 @@ L<Tutorial|Net::CLI::Interact::Manual::Tutorial> and
 L<Cookbook|Net::CLI::Interact::Manual::Cookbook>.
 
 Below is a list of all current bundled CLI dictionaries. Each lists its name,
-the avilable Prompts, Macros and Continuations, and from which other CLI
+the available Prompts, Macros and Continuations, and from which other CLI
 dictionaries it inherits.
 
  IOS       # Cisco IOS
@@ -111,7 +111,7 @@ also used as a base for other dictionaries.
 This personality goes by the name of C<pixos7> and inherits from the C<pixos>
 dictionary.
 
-Additonally it provides the C<paging> Macro to set the terminal page size.
+Additionally it provides the C<paging> Macro to set the terminal page size.
 
 =head2 FWSM
 

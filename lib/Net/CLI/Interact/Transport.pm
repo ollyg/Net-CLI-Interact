@@ -70,7 +70,7 @@ matching (and slurping), and sending without an I<output record separator>.
 On failing to succeed with a Match, the module will time-out (see C<timeout>,
 below) and raise an exception.
 
-Output returned after issueing a command is stored within the Match Action's
+Output returned after issuing a command is stored within the Match Action's
 C<response> and C<response_stash> slots by this method, with the latter then
 marshalled into the correct C<send> Action by the
 L<ActionSet|Net::CLI::Interact::ActionSet>.
