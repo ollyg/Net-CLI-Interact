@@ -103,6 +103,11 @@ sub cmd {
                                            : $options->match));
     }
 
+    # command will be run through sprintf but without any params
+    # so convert any embedded % to literal %
+    ($command =~ s/%/%%/g) &&
+        $self->logger->log('engine', 'debug', 'command expanded to:', $command);
+
     return $self->_execute_actions(
         $options,
         Net::CLI::Interact::Action->new({

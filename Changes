@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Escape embedded % in cmd() commands (B. Hogden)
+
 1.112602  2011-09-17 23:45:50 Europe/London
 
   * Newline only added if there was a new *line* in output
