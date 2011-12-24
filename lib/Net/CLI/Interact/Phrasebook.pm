@@ -47,13 +47,18 @@ has '_prompt' => (
 
 sub prompt {
     my ($self, $name) = @_;
-    confess "missing prompt argument!" unless defined $name;
-    confess "unknown prompt [$name]"
-        unless length $name and exists $self->_prompt->{$name};
+    confess "unknown prompt [$name]" unless $self->has_prompt($name);
     return $self->_prompt->{$name};
 }
 
 sub prompt_names { return keys %{ (shift)->_prompt } }
+
+sub has_prompt {
+    my ($self, $name) = @_;
+    confess "missing prompt name!"
+        unless defined $name and length $name;
+    return exists $self->_prompt->{$name};
+}
 
 has '_macro' => (
     is => 'ro',
@@ -64,13 +69,18 @@ has '_macro' => (
 
 sub macro {
     my ($self, $name) = @_;
-    confess "missing macro argument!" unless defined $name;
-    confess "unknown macro [$name]"
-        unless length $name and exists $self->_macro->{$name};
+    confess "unknown macro [$name]" unless $self->has_macro($name);
     return $self->_macro->{$name};
 }
 
 sub macro_names { return keys %{ (shift)->_macro } }
+
+sub has_macro {
+    my ($self, $name) = @_;
+    confess "missing macro name!"
+        unless defined $name and length $name;
+    return exists $self->_macro->{$name};
+}
 
 # matches which are prompt names are resolved to RegexpRefs
 # and regexp provided by the user are inflated into RegexpRefs
@@ -324,6 +334,10 @@ Returns the Prompt associated to the given C<$name>, or throws an exception if
 no such prompt can be found. The returned object is an instance of
 L<Net::CLI::Interact::ActionSet>.
 
+=head2 has_prompt( $name )
+
+Returns true if a prompt of the given C<$name> exists in the loaded phrasebooks.
+
 =head2 prompt_names
 
 Returns a list of the names of the current loaded Prompts.
@@ -333,6 +347,10 @@ Returns a list of the names of the current loaded Prompts.
 Returns the Macro associated to the given C<$name>, or throws an exception if
 no such macro can be found. The returned object is an instance of
 L<Net::CLI::Interact::ActionSet>.
+
+=head2 has_macro( $name )
+
+Returns true if a macro of the given C<$name> exists in the loaded phrasebooks.
 
 =head2 macro_names
 
