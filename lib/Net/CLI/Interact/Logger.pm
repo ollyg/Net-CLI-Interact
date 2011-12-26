@@ -90,6 +90,8 @@ sub would_log {
 sub log {
     my ($self, $category, $level, @msgs) = @_;
     return unless $self->would_log($category, $level);
+    @msgs = grep {defined} @msgs;
+    return unless scalar @msgs;
 
     my $stamp = sprintf "%13s", ($self->log_stamps
         ? ('['. (sprintf "%.6f", (tv_interval $self->log_start, [gettimeofday])) .']')

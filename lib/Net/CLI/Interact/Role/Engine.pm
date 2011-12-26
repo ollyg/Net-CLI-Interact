@@ -160,10 +160,11 @@ sub _execute_actions {
     $self->last_actionset($set);
 
     $self->logger->log('prompt', 'info',
-        sprintf 'setting new prompt to %s', $self->last_actionset->last->prompt_hit);
+        sprintf 'setting new prompt to %s',
+            $self->last_actionset->last->prompt_hit || '<none>');
     $self->_prompt( $self->last_actionset->last->prompt_hit );
 
-    return $self->last_response; # context sensitive
+    return $self->last_response; # context sensitive
 }
 
 1;
