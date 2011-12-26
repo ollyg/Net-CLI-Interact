@@ -61,9 +61,10 @@ has 'last_actionset' => (
 
 sub last_response {
     my $self = shift;
-    my $resp = $self->last_actionset->item_at(-2)->response;
+    my $irs_re = $self->transport->irs_re;
+    (my $resp = $self->last_actionset->item_at(-2)->response) =~ s/$irs_re/\n/g;
     return (wantarray
-        ? (split $self->transport->irs_re, $resp)
+        ? (map {$_ .= "\n"} split m/\n/, $resp)
         : $resp);
 }
 

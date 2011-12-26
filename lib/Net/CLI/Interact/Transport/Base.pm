@@ -101,43 +101,37 @@ sub do_action {
     $self->logger->log('transport', 'info', 'callback received for', $action->type);
 
     if ($action->type eq 'match') {
+        my $irs_re = $self->irs_re;
         my $cont = $action->continuation;
+
         while ($self->pump) {
             # remove control characters
             (my $buffer = $self->buffer) =~ s/[\000-\010\013\014\016-\037]//g;
             $self->logger->log('dump', 'debug', "SEEN:\n". $buffer);
 
-            my @out_lines = split $self->irs_re, $buffer;
-            next if !defined $out_lines[-1];
+            if ($buffer =~ m/^(.*$irs_re)(.*)/s) {
+                $self->stash($self->stash . $1);
+                $self->buffer($2 || '');
+            }
 
-            my $maybe_stash = join $self->ors, @out_lines[0 .. ($#out_lines - 1)];
-            my $last_out = $out_lines[-1];
-
-            if ($cont and $self->find_match($last_out, $cont->first->value)) {
+            if ($cont and $self->find_match($self->buffer, $cont->first->value)) {
                 $self->logger->log('transport', 'debug', 'continuation matched');
-                $self->stash($self->flush);
+                $self->buffer('');
                 $self->put($cont->last->value);
             }
-            elsif (my $hit = $self->find_match($last_out, $action->value)) {
+            elsif (my $hit = $self->find_match($self->buffer, $action->value)) {
                 $self->logger->log('transport', 'debug',
                     sprintf 'output matched %s, storing and returning', $hit);
                 $action->prompt_hit($hit);
-
-                # prompt match is line oriented. want to split that off from
-                # rest of output which is marshalled into the 'send'.
-                my @output = split $self->irs_re, $self->flush;
-                $action->response_stash(join $self->ors, @output[0 .. ($#output - 1)]);
-                $action->response($output[-1]);
+                $action->response_stash($self->stash);
+                $action->response($self->buffer);
+                $self->flush;
                 last;
             }
             else {
                 $self->logger->log('transport', 'debug', "nope, doesn't (yet) match",
                     (ref $action->value eq ref [] ? (join '|', @{$action->value})
                                                 : $action->value));
-                # put back the partial output and try again
-                $maybe_stash .= $self->ors if length $maybe_stash;
-                $self->stash($self->stash . $maybe_stash);
-                $self->buffer($last_out);
             }
         }
     }
