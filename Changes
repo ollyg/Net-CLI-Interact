@@ -1,3 +1,8 @@
+1.113600  2011-12-26 16:35:32 Europe/London
+
+  * Add has_prompt and has_macro methods
+  * Add Foundry phrasebook (Vincent Magnin)
+
 1.112610  2011-09-18 10:41:37 Europe/London
 
   * Escape embedded % in cmd() commands (B. Hogden)

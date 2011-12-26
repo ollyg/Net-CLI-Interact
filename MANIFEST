@@ -27,6 +27,7 @@ lib/Net/CLI/Interact/Transport/Serial.pm
 lib/Net/CLI/Interact/Transport/Telnet.pm
 lib/Net/CLI/Interact/phrasebook/cisco/catos/pb
 lib/Net/CLI/Interact/phrasebook/cisco/extremexos/pb
+lib/Net/CLI/Interact/phrasebook/cisco/foundry/pb
 lib/Net/CLI/Interact/phrasebook/cisco/hp/pb
 lib/Net/CLI/Interact/phrasebook/cisco/ios/pb
 lib/Net/CLI/Interact/phrasebook/cisco/junos/pb

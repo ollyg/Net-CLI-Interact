@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base::Win32;
-BEGIN {
-  $Net::CLI::Interact::Transport::Base::Win32::VERSION = '1.112610';
+{
+  $Net::CLI::Interact::Transport::Base::Win32::VERSION = '1.113600';
 }
 
 use Moose;
