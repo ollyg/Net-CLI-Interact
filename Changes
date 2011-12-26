@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+1.113600  2011-12-26 16:35:32 Europe/London
+
   * Add has_prompt and has_macro methods
   * Add Foundry phrasebook (Vincent Magnin)
 
