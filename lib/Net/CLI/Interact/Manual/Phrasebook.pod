@@ -32,6 +32,7 @@ dictionaries it inherits.
  HP        # HP support
  Nortel    # Nortel support
  ExtremeOS # Extreme Networks support
+ Foundry   # Foundry/Brocade device support
 
 =head1 PERSONALITIES
 
@@ -65,6 +66,18 @@ C<pass>.
 
 Additional Macros are C<begin_privileged>, C<end_privileged>, and
 C<disconnect>.
+
+=head2 Foundry / Brocade
+
+This personality goes by the name of C<foundry> and inherits from the C<cisco>
+dictionary. Before connecting to the device you probably want to set the
+output separator to be:
+
+ $nci->transport->ors("\r\n");
+
+For users of L<Net::Appliance::Session> this should be:
+
+ $session_obj->nci->transport->ors("\r\n");
 
 =head2 IOS
 
