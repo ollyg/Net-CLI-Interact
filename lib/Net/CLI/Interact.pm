@@ -246,8 +246,8 @@ until there is a match with the current I<prompt>. The statement is executed
 verbatim on the device, with a newline appended.
 
 In scalar context the C<last_response> is returned (see below). In list
-context the gathered response is returned, only split into a list on the
-I<input record separator> (newline).
+context the gathered response is returned as a list of lines. In both cases
+your local platform's newline character will end all lines.
 
 =head2 macro( $name, \%options? )
 
@@ -256,14 +256,15 @@ from a Phrasebook. Options to control the output, including variables for
 substitution into the Macro, are passed in the C<%options> hash reference.
 
 In scalar context the C<last_response> is returned (see below). In list
-context the gathered response is returned, only split into a list on the
-I<input record separator> (newline).
+context the gathered response is returned as a list of lines. In both cases
+your local platform's newline character will end all lines.
 
 =head2 last_response
 
 Returns the gathered output after the most recent C<cmd> or C<macro>. In
 scalar context all data is returned. In list context the gathered response is
-returned, only split into a list on the I<input record separator> (newline).
+returned as a list of lines. In both cases your local platform's newline
+character will end all lines.
 
 =head2 transport
 

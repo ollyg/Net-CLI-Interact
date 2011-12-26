@@ -209,8 +209,8 @@ be the same value on a successful match.
 =back
 
 In scalar context the C<last_response> is returned (see below). In list
-context the gathered response is returned, only split into a list on the
-I<input record separator> (newline).
+context the gathered response is returned as a list of lines. In both cases
+your local platform's newline character will end all lines.
 
 =head2 macro( $macro_name, \%options? )
 
@@ -245,8 +245,8 @@ value of C<timeout>, which controls how long the module waits for matching
 output.
 
 In scalar context the C<last_response> is returned (see below). In list
-context the gathered response is returned, only split into a list on the
-I<input record separator> (newline).
+context the gathered response is returned as a list of lines. In both cases
+your local platform's newline character will end all lines.
 
 =head2 last_response
 
@@ -254,9 +254,9 @@ Returns the gathered output after issuing the last recent C<send> command
 within the most recent C<cmd> or C<prompt>. That is, you get the output from
 the last command sent to the connected device.
 
-In scalar context all data is returned. In list context the same gathered
-response is returned, only split into a list on the I<input record separator>
-(newline).
+In scalar context all data is returned. In list context the gathered response
+is returned as a list of lines. In both cases your local platform's newline
+character will end all lines.
 
 =head2 last_actionset
 
