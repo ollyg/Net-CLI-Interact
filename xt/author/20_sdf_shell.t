@@ -12,6 +12,7 @@ my $s = Net::CLI::Interact->new(
     connect_options => {
         host => 'sdf.org',
         username => 'ollyg',
+        shkc => 0,
     },
     personality => 'sdf',
 );
