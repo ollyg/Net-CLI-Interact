@@ -36,7 +36,7 @@ has 'connect_options' => (
 sub _build_app { return $^X }
 
 sub runtime_options {
-    return ('-ne', 'BEGIN { $| = 1 }; print $_, time, "\nPROMPT>\n";');
+    return ('-ne', 'BEGIN { $| = 1 }; print $_, time, "\nPROMPT> ";');
 }
 
 1;

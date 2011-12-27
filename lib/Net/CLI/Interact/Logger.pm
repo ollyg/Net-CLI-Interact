@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Logger;
 {
-  $Net::CLI::Interact::Logger::VERSION = '1.113600';
+  $Net::CLI::Interact::Logger::VERSION = '1.113610';
 }
 
 use Moose;
@@ -93,6 +93,8 @@ sub would_log {
 sub log {
     my ($self, $category, $level, @msgs) = @_;
     return unless $self->would_log($category, $level);
+    @msgs = grep {defined} @msgs;
+    return unless scalar @msgs;
 
     my $stamp = sprintf "%13s", ($self->log_stamps
         ? ('['. (sprintf "%.6f", (tv_interval $self->log_start, [gettimeofday])) .']')
@@ -117,7 +119,7 @@ Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories
 
 =head1 VERSION
 
-version 1.113600
+version 1.113610
 
 =head1 SYNOPSIS
 

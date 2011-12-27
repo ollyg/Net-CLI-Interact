@@ -2,7 +2,7 @@ NAME
     Net::CLI::Interact - Toolkit for CLI Automation
 
 VERSION
-    version 1.113600
+    version 1.113610
 
 PURPOSE
     This module exists to support developers of applications and libraries
@@ -84,8 +84,8 @@ INTERFACE
     is executed verbatim on the device, with a newline appended.
 
     In scalar context the "last_response" is returned (see below). In list
-    context the gathered response is returned, only split into a list on the
-    *input record separator* (newline).
+    context the gathered response is returned as a list of lines. In both
+    cases your local platform's newline character will end all lines.
 
   macro( $name, \%options? )
     Execute the commands contained within the named Macro, which must be
@@ -94,14 +94,14 @@ INTERFACE
     hash reference.
 
     In scalar context the "last_response" is returned (see below). In list
-    context the gathered response is returned, only split into a list on the
-    *input record separator* (newline).
+    context the gathered response is returned as a list of lines. In both
+    cases your local platform's newline character will end all lines.
 
   last_response
     Returns the gathered output after the most recent "cmd" or "macro". In
     scalar context all data is returned. In list context the gathered
-    response is returned, only split into a list on the *input record
-    separator* (newline).
+    response is returned as a list of lines. In both cases your local
+    platform's newline character will end all lines.
 
   transport
     Returns the Transport backend which was loaded based on the "transport"

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '1.113600';
+  $Net::CLI::Interact::Role::Engine::VERSION = '1.113610';
 }
 
 {
@@ -64,9 +64,10 @@ has 'last_actionset' => (
 
 sub last_response {
     my $self = shift;
-    my $resp = $self->last_actionset->item_at(-2)->response;
+    my $irs_re = $self->transport->irs_re;
+    (my $resp = $self->last_actionset->item_at(-2)->response) =~ s/$irs_re/\n/g;
     return (wantarray
-        ? (split $self->transport->irs_re, $resp)
+        ? (map {$_ .= "\n"} split m/\n/, $resp)
         : $resp);
 }
 
@@ -162,10 +163,11 @@ sub _execute_actions {
     $self->last_actionset($set);
 
     $self->logger->log('prompt', 'info',
-        sprintf 'setting new prompt to %s', $self->last_actionset->last->prompt_hit);
+        sprintf 'setting new prompt to %s',
+            $self->last_actionset->last->prompt_hit || '<none>');
     $self->_prompt( $self->last_actionset->last->prompt_hit );
 
-    return $self->last_response; # context sensitive
+    return $self->last_response; # context sensitive
 }
 
 1;
@@ -182,7 +184,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 1.113600
+version 1.113610
 
 =head1 DESCRIPTION
 
@@ -223,8 +225,8 @@ be the same value on a successful match.
 =back
 
 In scalar context the C<last_response> is returned (see below). In list
-context the gathered response is returned, only split into a list on the
-I<input record separator> (newline).
+context the gathered response is returned as a list of lines. In both cases
+your local platform's newline character will end all lines.
 
 =head2 macro( $macro_name, \%options? )
 
@@ -259,8 +261,8 @@ value of C<timeout>, which controls how long the module waits for matching
 output.
 
 In scalar context the C<last_response> is returned (see below). In list
-context the gathered response is returned, only split into a list on the
-I<input record separator> (newline).
+context the gathered response is returned as a list of lines. In both cases
+your local platform's newline character will end all lines.
 
 =head2 last_response
 
@@ -268,9 +270,9 @@ Returns the gathered output after issuing the last recent C<send> command
 within the most recent C<cmd> or C<prompt>. That is, you get the output from
 the last command sent to the connected device.
 
-In scalar context all data is returned. In list context the same gathered
-response is returned, only split into a list on the I<input record separator>
-(newline).
+In scalar context all data is returned. In list context the gathered response
+is returned as a list of lines. In both cases your local platform's newline
+character will end all lines.
 
 =head2 last_actionset
 
