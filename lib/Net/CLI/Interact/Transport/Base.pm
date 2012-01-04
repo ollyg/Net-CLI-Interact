@@ -30,7 +30,7 @@ has 'irs_re' => (
 );
 
 has 'ors' => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str',
     default => "\n",
     required => 0,
