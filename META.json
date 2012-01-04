@@ -4,7 +4,7 @@
       "Oliver Gorwits <oliver@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300005, CPAN::Meta::Converter version 2.112621",
+   "generated_by" : "Dist::Zilla version 4.200013, CPAN::Meta::Converter version 2.112150",
    "license" : [
       "perl_5"
    ],
@@ -41,9 +41,7 @@
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.88",
-            "strict" : 0,
-            "warnings" : 0
+            "Test::More" : "0.88"
          }
       }
    },
@@ -59,6 +57,6 @@
          "web" : "https://github.com/ollyg/Net-CLI-Interact"
       }
    },
-   "version" : "1.113610"
+   "version" : "1.120042"
 }
 

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base;
 {
-  $Net::CLI::Interact::Transport::Base::VERSION = '1.113610';
+  $Net::CLI::Interact::Transport::Base::VERSION = '1.120042';
 }
 
 use Moose;
@@ -33,7 +33,7 @@ has 'irs_re' => (
 );
 
 has 'ors' => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str',
     default => "\n",
     required => 0,
