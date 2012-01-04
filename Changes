@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+1.120042  2012-01-04 21:08:07 Europe/London
+
+ * test release process
+
 1.120040  2012-01-04 20:58:57 Europe/London
 
   * ors attribute should be writeable (V. Magnin)
