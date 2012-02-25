@@ -17,7 +17,7 @@ I<will not work>. Here's an example:
      personality => "cisco",
      transport => "Telnet",
      (Net::CLI::Interact::Transport::is_win32() ?
-         (app => '..\..\..\Desktop\plink.exe') : () ),
+         (app => "$ENV{HOMEPATH}\\Desktop\\plink.exe") : () ),
  );
 
 =head1 Unix Support
