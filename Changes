@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+1.120560  2012-02-25 16:52:07 Europe/London
+
  * fix typo (C. Vicente)
  * fix Win32 path to locate plink.exe
 
