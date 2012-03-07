@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '1.120042';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '1.120670';
 }
 
 use Moose::Role;
@@ -110,7 +110,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 1.120042
+version 1.120670
 
 =head1 DESCRIPTION
 
