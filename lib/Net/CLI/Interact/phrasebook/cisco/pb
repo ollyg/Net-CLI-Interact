@@ -1,5 +1,5 @@
 prompt prompt
-    match /[\/a-zA-Z0-9._-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
+    match /[\/a-zA-Z0-9._\[\]-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
 
 prompt basic
     match /> ?$/

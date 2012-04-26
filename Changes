@@ -1,4 +1,5 @@
 {{$NEXT}}
+ * Fix Cisco prompt detection when containing [] characters (Alexander Hartmaier)
 
 1.120670  2012-03-07 20:20:06 Europe/London
 
