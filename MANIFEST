@@ -40,6 +40,9 @@ lib/Net/CLI/Interact/phrasebook/unix/csh/pb
 lib/Net/CLI/Interact/phrasebook/unix/csh/sdf/pb
 t/10_construct.t
 t/author-10_route_server.t
+t/author-11_ssh_unknown_host.t
+t/author-12_ssh_no_route.t
+t/author-13_ssh_timeout.t
 t/author-20_sdf_shell.t
 t/lib/Net/CLI/Interact/Transport/Test.pm
 t/phrasebook/testing/phrases

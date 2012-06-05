@@ -1,3 +1,8 @@
+1.121570  2012-06-05 19:37:11 Europe/London
+
+ * Fix Cisco prompt detection when containing [] characters (Alexander Hartmaier)
+ * Detect connection failures and die with buffered transport error
+
 1.120670  2012-03-07 20:20:06 Europe/London
 
  * Fix IO::Pty dependency only to appear on non-Win32. This has required a
