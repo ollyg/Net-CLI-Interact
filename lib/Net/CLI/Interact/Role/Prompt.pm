@@ -84,12 +84,27 @@ sub find_prompt {
     if ($@ and $self->has_wake_up and $wake_up) {
         $self->logger->log('prompt', 'info',
             "failed: [$@], sending WAKE_UP and trying again");
-        $self->transport->put( $self->wake_up );
-        $self->find_prompt;
+
+        eval {
+            $self->transport->put( $self->wake_up );
+            $self->find_prompt;
+        };
+        if ($@) {
+            # really died, so this time bail out - with possible transport err
+            my $output = $self->transport->flush;
+            $self->transport->disconnect;
+            die $output;
+        }
     }
     else {
-        $self->logger->log('prompt', 'notice', 'failed to find prompt!')
-            if not $self->has_set_prompt;
+        if (not $self->has_set_prompt) {
+            # trouble... we were asked to find a prompt but failed :-(
+            $self->logger->log('prompt', 'critical', 'failed to find prompt! wrong phrasebook?');
+            # bail out with what we have...
+            my $output = $self->transport->flush;
+            $self->transport->disconnect;
+            die $output;
+        }
     }
 }
 

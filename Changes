@@ -1,5 +1,7 @@
 {{$NEXT}}
+
  * Fix Cisco prompt detection when containing [] characters (Alexander Hartmaier)
+ * Detect connection failures and die with buffered transport error
 
 1.120670  2012-03-07 20:20:06 Europe/London
 
