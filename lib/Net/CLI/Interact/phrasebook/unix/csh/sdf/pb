@@ -1,6 +1,7 @@
 macro sdf_login
     send %s\n
+    follow /\(continue\)/ with "\n"
     match /BACKSPACE key: ?$/
     send ''
-    follow /\(continue\)/ with "\n"
+    follow /\[CONTINUE\]/ with "\n"
     match shell
