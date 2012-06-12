@@ -1,6 +1,6 @@
 package Net::CLI::Interact;
 {
-  $Net::CLI::Interact::VERSION = '1.121570';
+  $Net::CLI::Interact::VERSION = '1.121640';
 }
 
 {
@@ -88,7 +88,12 @@ sub set_global_log_at {
     });
 }
 
-sub BUILD { my $self = shift; $self->set_global_log_at($self->log_at); }
+sub BUILD {
+    my $self = shift;
+    $self->set_global_log_at($self->log_at);
+    $self->logger->log('engine', 'notice',
+        sprintf "NCI loaded, version %s", ($Net::CLI::Interact::VERSION || 'devel'));
+}
 
 has 'phrasebook' => (
     is => 'ro',
@@ -149,7 +154,7 @@ Net::CLI::Interact - Toolkit for CLI Automation
 
 =head1 VERSION
 
-version 1.121570
+version 1.121640
 
 =head1 PURPOSE
 

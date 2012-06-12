@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::SSH;
 {
-  $Net::CLI::Interact::Transport::SSH::VERSION = '1.121570';
+  $Net::CLI::Interact::Transport::SSH::VERSION = '1.121640';
 }
 
 use Moose;
@@ -26,6 +26,13 @@ extends 'Net::CLI::Interact::Transport';
     );
 
     has 'shkc' => (
+        is => 'rw',
+        isa => 'Bool',
+        required => 0,
+        default => 0,
+    );
+
+    has 'ignore_host_checks' => (
         is => 'rw',
         isa => 'Bool',
         required => 0,
@@ -72,7 +79,12 @@ sub runtime_options {
     }
     else {
         return (
-            ($self->connect_options->shkc ? () : ('-o', 'StrictHostKeyChecking=no')),
+            (($self->connect_options->ignore_host_checks and not $self->connect_options->shkc)
+                ? (
+                    '-o', 'StrictHostKeyChecking=no',
+                    '-o', 'UserKnownHostsFile=/dev/null',
+                    '-o', 'CheckHostIP=no',
+                ) : ()),
             @{$self->connect_options->opts},
             ($self->connect_options->has_username
                 ? ('-l', $self->connect_options->username) : ()),
@@ -95,7 +107,7 @@ Net::CLI::Interact::Transport::SSH - SSH based CLI connection
 
 =head1 VERSION
 
-version 1.121570
+version 1.121640
 
 =head1 DECRIPTION
 
@@ -130,15 +142,22 @@ Optionally pass in the username for the SSH connection, otherwise the SSH
 client defaults to the current user's username. When using this option, you
 should obviously I<only> pass the host name to C<host>.
 
-=item shkc
+=item ignore_host_checks
 
-Set to a false value to disable C<openssh>'s Strict Host Key Checking. See the
-openssh documentation for further details. This might be useful where you are
-connecting to appliances for which an entry does not yet exist in your
-C<known_hosts> file, and you don't wish to be prompted to add it.
+Under normal interactive use C<openssh> tracks the identity of connected hosts
+and verifies these identities upon each connection. In automation this behaviour
+can be irritating because it is interactive.
 
-The default operation is to let openssh use its default setting for
-StrictHostKeyChecking.
+This option, enabled by default, causes C<openssh> to skip or ignore this host
+identity verification. This means the default setting is less secure, but also
+less likely to trip you up. It is equivalent to the following:
+
+ StrictHostKeyChecking=no
+ UserKnownHostsFile=/dev/null
+ CheckHostIP=no
+
+Pass a false value to this option to disable the above and return C<openssh> to
+its default configured settings.
 
 =item opts
 

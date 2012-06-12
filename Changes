@@ -1,3 +1,11 @@
+1.121640  2012-06-12 23:22:19 Europe/London
+
+ * NCI library version number is logged at instatiation.
+ * New ignore_host_checks option for SSH to replace shkc. Note the following:
+
+ This option defaults to ENABLED meaning that openssh no longer checks host IDs.
+ See documentation in Net::CLI::Interact::Transport::SSH for details.
+
 1.121570  2012-06-05 19:37:11 Europe/London
 
  * Fix Cisco prompt detection when containing [] characters (Alexander Hartmaier)

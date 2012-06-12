@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Action;
 {
-  $Net::CLI::Interact::Action::VERSION = '1.121570';
+  $Net::CLI::Interact::Action::VERSION = '1.121640';
 }
 
 use Moose;
@@ -104,7 +104,7 @@ Net::CLI::Interact::Action - Sent data or matched response from connected device
 
 =head1 VERSION
 
-version 1.121570
+version 1.121640
 
 =head1 DESCRIPTION
 

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::ActionSet;
 {
-  $Net::CLI::Interact::ActionSet::VERSION = '1.121570';
+  $Net::CLI::Interact::ActionSet::VERSION = '1.121640';
 }
 
 use Moose;
@@ -184,7 +184,7 @@ Net::CLI::Interact::ActionSet - Conversation of Send and Match Actions
 
 =head1 VERSION
 
-version 1.121570
+version 1.121640
 
 =head1 DESCRIPTION
 
