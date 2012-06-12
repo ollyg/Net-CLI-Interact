@@ -85,7 +85,12 @@ sub set_global_log_at {
     });
 }
 
-sub BUILD { my $self = shift; $self->set_global_log_at($self->log_at); }
+sub BUILD {
+    my $self = shift;
+    $self->set_global_log_at($self->log_at);
+    $self->logger->log('engine', 'notice',
+        sprintf "NCI loaded, version %s", ($Net::CLI::Interact::VERSION || 'devel'));
+}
 
 has 'phrasebook' => (
     is => 'ro',

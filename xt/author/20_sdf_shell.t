@@ -12,7 +12,7 @@ my $s = Net::CLI::Interact->new(
     connect_options => {
         host => 'sdfeu.org',
         username => 'ollyg',
-        shkc => 0,
+        # shkc => 0,
     },
     personality => 'sdf',
 );
@@ -22,9 +22,9 @@ ok($s->macro('sdf_login', { params => [$ENV{SDF_PASS} || 'letmein'] }),
 
 ok( $s->cmd('ls -la'), 'ran ls -la' );
 
-like( $s->last_prompt, qr{:/udd/o/ollyg> $}, 'command ran and prompt looks ok' );
+like( $s->last_prompt, qr{^\$}, 'command ran and prompt looks ok' );
 
 my @out = $s->last_response;
-cmp_ok( scalar @out, '==', 6, 'sensible number of lines in the command output');
+cmp_ok( scalar @out, '==', 7, 'sensible number of lines in the command output');
 
 done_testing;
