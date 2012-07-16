@@ -15,6 +15,20 @@ extends 'Net::CLI::Interact::Transport';
         required => 1,
     );
 
+    has 'port' => (
+        is => 'rw',
+        isa => 'Int',
+        required => 0,
+        default => 23,
+    );
+
+    has 'opts' => (
+        is => 'rw',
+        isa => 'ArrayRef[Any]',
+        required => 0,
+        default => sub { [] },
+    );
+
     use Moose::Util::TypeConstraints;
     coerce 'Net::CLI::Interact::Transport::Telnet::Options'
         => from 'HashRef[Any]'
@@ -23,7 +37,7 @@ extends 'Net::CLI::Interact::Transport';
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # allow native use of Net::Telnet on Unix
-if (Net::CLI::Interact::Transport::is_win32()) {
+if (not Net::CLI::Interact::Transport::is_win32()) {
     has '+use_net_telnet_connection' => ( default => 1 );
 }
 
@@ -38,15 +52,26 @@ sub _build_app {
     my $self = shift;
     confess "please pass location of plink.exe in 'app' parameter to new()\n"
         if $self->is_win32;
-    return 'telnet'; # unix
+    return 'Net::Telnet'; # unix, but unused
 }
 
 sub runtime_options {
     my $self = shift;
-    return (
-        ($self->is_win32 ? '-telnet' : ()),
-        $self->connect_options->host,
-    );
+    if ($self->is_win32) {
+        return (
+            '-telnet',
+            '-P', $self->connect_options->port,
+            @{$self->connect_options->opts},
+            $self->connect_options->host,
+        );
+    }
+    else {
+        return (
+            Host => $self->connect_options->host,
+            Port => $self->connect_options->port,
+            @{$self->connect_options->opts},
+        );
+    }
 }
 
 1;
@@ -79,11 +104,26 @@ command line. Supported attributes:
 Host name or IP address of the host to which the TELNET application is to
 connect.
 
+=item port
+
+Port number on the host which is listening for the TELNET connection.
+Defaults to 23.
+
 =item reap
 
 Only used on Unix platforms, this installs a signal handler which attempts to
 reap the C<ssh> child process. Pass a true value to enable this feature only
 if you notice zombie processes are being left behind after use.
+
+=item opts
+
+If you want to pass any other options to the Telnet application, then use
+this option, which should be an array reference.
+
+On Windows platforms, each item on the list will be passed to the C<plink.exe>
+application, separated by a single space character. On Unix platforms, the
+L<Net::Telnet library is used for TELNET connections, so the list can be any
+option taken by its C<new()> constructor.
 
 =back
 

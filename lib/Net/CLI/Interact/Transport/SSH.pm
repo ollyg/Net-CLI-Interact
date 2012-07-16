@@ -69,6 +69,7 @@ sub runtime_options {
     if ($self->is_win32) {
         return (
             '-ssh',
+            @{$self->connect_options->opts},
             ($self->connect_options->has_username
                 ? ($self->connect_options->username . '@') : '')
                 . $self->connect_options->host,

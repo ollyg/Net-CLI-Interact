@@ -8,6 +8,7 @@ sub connect_core {
     my $self = shift;
 
     if ($self->use_net_telnet_connection) {
+        my $app = shift; # unused
         return $self->_via_native(@_);
     }
     else {
@@ -17,8 +18,8 @@ sub connect_core {
 
 sub _via_native {
     my $self = shift;
-    my $t = Net::Telnet->new(Cmd_remove_mode => 1);
-    $t->open(Host => $self->runtime_options)
+    my $t = Net::Telnet->new(Cmd_remove_mode => 1, @_);
+    $t->open()
         or confess "failed to open Net::Telnet connection to target device.";
     return $t;
 }
