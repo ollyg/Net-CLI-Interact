@@ -17,8 +17,12 @@ my $s = Net::CLI::Interact->new(
     transport => "SSH",
     ($^O eq 'MSWin32' ?
         (app => "$ENV{HOMEPATH}\\Desktop\\plink.exe") : () ),
-    connect_options => { host => "route-server.bb.pipex.net" },
+    connect_options => {
+        host => "route-server.bb.pipex.net",
+        opts => [qw/-o ConnectTimeout=4/],
+    },
     personality => "cisco",
+
 );
 
 # should fail

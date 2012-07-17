@@ -8,6 +8,13 @@ BEGIN {
 }
 
 
+BEGIN {
+  if ($ENV{AT_HOME}) {
+    require Test::More;
+    Test::More::plan(skip_all => 'these tests do not work at home');
+  }
+}
+
 use strict; use warnings FATAL => 'all';
 use Test::More 0.88;
 

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base::Unix;
 {
-  $Net::CLI::Interact::Transport::Base::Unix::VERSION = '1.121640';
+  $Net::CLI::Interact::Transport::Base::Unix::VERSION = '1.121990_002';
 }
 
 use Moose;
@@ -39,7 +39,7 @@ sub buffer {
 sub pump {
     my $self = shift;
     my $content = $self->wrapper->get;
-    $self->_buffer($self->_buffer . $content);
+    $self->_buffer($self->_buffer . $content) if defined $content;
 }
 
 has '+timeout' => (

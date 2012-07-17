@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Serial;
 {
-  $Net::CLI::Interact::Transport::Serial::VERSION = '1.121640';
+  $Net::CLI::Interact::Transport::Serial::VERSION = '1.121990_002';
 }
 
 use Moose;
@@ -91,7 +91,7 @@ Net::CLI::Interact::Transport::Serial - Serial-line based CLI connection
 
 =head1 VERSION
 
-version 1.121640
+version 1.121990_002
 
 =head1 DECRIPTION
 

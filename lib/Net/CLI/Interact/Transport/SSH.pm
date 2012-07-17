@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::SSH;
 {
-  $Net::CLI::Interact::Transport::SSH::VERSION = '1.121640';
+  $Net::CLI::Interact::Transport::SSH::VERSION = '1.121990_002';
 }
 
 use Moose;
@@ -72,6 +72,7 @@ sub runtime_options {
     if ($self->is_win32) {
         return (
             '-ssh',
+            @{$self->connect_options->opts},
             ($self->connect_options->has_username
                 ? ($self->connect_options->username . '@') : '')
                 . $self->connect_options->host,
@@ -107,7 +108,7 @@ Net::CLI::Interact::Transport::SSH - SSH based CLI connection
 
 =head1 VERSION
 
-version 1.121640
+version 1.121990_002
 
 =head1 DECRIPTION
 
