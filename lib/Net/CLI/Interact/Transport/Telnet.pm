@@ -109,12 +109,6 @@ connect.
 Port number on the host which is listening for the TELNET connection.
 Defaults to 23.
 
-=item reap
-
-Only used on Unix platforms, this installs a signal handler which attempts to
-reap the C<ssh> child process. Pass a true value to enable this feature only
-if you notice zombie processes are being left behind after use.
-
 =item opts
 
 If you want to pass any other options to the Telnet application, then use
