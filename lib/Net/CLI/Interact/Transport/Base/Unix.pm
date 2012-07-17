@@ -36,7 +36,7 @@ sub buffer {
 sub pump {
     my $self = shift;
     my $content = $self->wrapper->get;
-    $self->_buffer($self->_buffer . $content);
+    $self->_buffer($self->_buffer . $content) if defined $content;
 }
 
 has '+timeout' => (
