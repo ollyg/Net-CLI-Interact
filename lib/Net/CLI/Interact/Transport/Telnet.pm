@@ -122,8 +122,8 @@ this option, which should be an array reference.
 
 On Windows platforms, each item on the list will be passed to the C<plink.exe>
 application, separated by a single space character. On Unix platforms, the
-L<Net::Telnet library is used for TELNET connections, so the list can be any
-option taken by its C<new()> constructor.
+L<Net::Telnet> library is used for TELNET connections, so the list can be any
+options taken by its C<new()> constructor.
 
 =back
 
