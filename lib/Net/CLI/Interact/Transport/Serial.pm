@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Serial;
 {
-  $Net::CLI::Interact::Transport::Serial::VERSION = '1.121990_002';
+  $Net::CLI::Interact::Transport::Serial::VERSION = '1.122010';
 }
 
 use Moose;
@@ -91,7 +91,7 @@ Net::CLI::Interact::Transport::Serial - Serial-line based CLI connection
 
 =head1 VERSION
 
-version 1.121990_002
+version 1.122010
 
 =head1 DECRIPTION
 
@@ -140,7 +140,7 @@ to this named parameter. The default is C<9600>.
 =item reap
 
 Only used on Unix platforms, this installs a signal handler which attempts to
-reap the C<ssh> child process. Pass a true value to enable this feature only
+reap the child process. Pass a true value to enable this feature only
 if you notice zombie processes are being left behind after use.
 
 =back

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Telnet;
 {
-  $Net::CLI::Interact::Transport::Telnet::VERSION = '1.121990_002';
+  $Net::CLI::Interact::Transport::Telnet::VERSION = '1.122010';
 }
 
 use Moose;
@@ -91,7 +91,7 @@ Net::CLI::Interact::Transport::Telnet - TELNET based CLI connection
 
 =head1 VERSION
 
-version 1.121990_002
+version 1.122010
 
 =head1 DECRIPTION
 
@@ -124,12 +124,6 @@ connect.
 Port number on the host which is listening for the TELNET connection.
 Defaults to 23.
 
-=item reap
-
-Only used on Unix platforms, this installs a signal handler which attempts to
-reap the C<ssh> child process. Pass a true value to enable this feature only
-if you notice zombie processes are being left behind after use.
-
 =item opts
 
 If you want to pass any other options to the Telnet application, then use
@@ -137,8 +131,8 @@ this option, which should be an array reference.
 
 On Windows platforms, each item on the list will be passed to the C<plink.exe>
 application, separated by a single space character. On Unix platforms, the
-L<Net::Telnet library is used for TELNET connections, so the list can be any
-option taken by its C<new()> constructor.
+L<Net::Telnet> library is used for TELNET connections, so the list can be any
+options taken by its C<new()> constructor.
 
 =back
 
