@@ -6,3 +6,9 @@ prompt basic
 
 prompt user
     match /login as: ?$/
+
+macro enable_paging
+    page
+
+macro disable_paging
+    no page
