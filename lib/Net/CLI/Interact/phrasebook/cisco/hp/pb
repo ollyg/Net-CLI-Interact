@@ -8,7 +8,7 @@ prompt user
     match /login as: ?$/
 
 macro enable_paging
-    page
+    send page
 
 macro disable_paging
-    no page
+    send no page
