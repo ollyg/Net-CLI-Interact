@@ -87,7 +87,7 @@ sub find_prompt {
 
         eval {
             $self->transport->put( $self->wake_up );
-            $self->find_prompt;
+            $self->find_prompt(--$wake_up);
         };
         if ($@) {
             # really died, so this time bail out - with possible transport err
