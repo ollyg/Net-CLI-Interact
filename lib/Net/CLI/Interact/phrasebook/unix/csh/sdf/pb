@@ -1,3 +1,6 @@
+prompt prompt
+    match /\$ $/
+
 prompt shell
     match /^\$/
 

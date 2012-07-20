@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '1.122011_001';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '1.122020_002';
 }
 
 use Moose::Role;
@@ -90,7 +90,7 @@ sub find_prompt {
 
         eval {
             $self->transport->put( $self->wake_up );
-            $self->find_prompt;
+            $self->find_prompt(--$wake_up);
         };
         if ($@) {
             # really died, so this time bail out - with possible transport err
@@ -125,7 +125,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 1.122011_001
+version 1.122020_002
 
 =head1 DESCRIPTION
 

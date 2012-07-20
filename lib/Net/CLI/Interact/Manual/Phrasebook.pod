@@ -93,6 +93,8 @@ dictionary.
 
 Additionally it provides the C<basic> and C<user> Prompts.
 
+Additionally it provides C<enable_paging> and C<disable_paging> Macros.
+
 =head2 JunOS
 
 This personality goes by the name of C<junos> and inherits from the C<cisco>
