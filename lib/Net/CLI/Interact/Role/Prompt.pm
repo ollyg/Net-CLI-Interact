@@ -1,17 +1,17 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '1.122020_002';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '1.122100';
 }
 
 use Moose::Role;
 use Net::CLI::Interact::ActionSet;
 with 'Net::CLI::Interact::Role::FindMatch';
 
-has 'wake_up' => (
+has 'wake_up_msg' => (
     is => 'rw',
     isa => 'Str',
     default => sub { (shift)->transport->ors },
-    predicate => 'has_wake_up',
+    predicate => 'has_wake_up_msg',
     required => 0,
 );
 
@@ -84,12 +84,12 @@ sub find_prompt {
         }
     };
 
-    if ($@ and $self->has_wake_up and $wake_up) {
+    if ($@ and $self->has_wake_up_msg and $wake_up) {
         $self->logger->log('prompt', 'info',
             "failed: [$@], sending WAKE_UP and trying again");
 
         eval {
-            $self->transport->put( $self->wake_up );
+            $self->transport->put( $self->wake_up_msg );
             $self->find_prompt(--$wake_up);
         };
         if ($@) {
@@ -125,7 +125,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 1.122020_002
+version 1.122100
 
 =head1 DESCRIPTION
 
@@ -199,12 +199,14 @@ automatically for you if you call a C<cmd> or C<macro> before any interaction
 with the CLI.
 
 The current device output will be scanned against all known named Prompts. If
-nothing is found, the default behaviour is then to send the content of our
-C<wake_up> slot (see below), and try to match again. The idea is that by
-sending one carriage return, we might be sent a new prompt. If you wish to
-disable this behaviour, pass a I<false> value into this method.
+nothing is found, the default behaviour is to die. Passing a positive number
+to the method (as C<$wake_up>) will instead send the content of our
+C<wake_up_msg> slot (see below), typically a carriage return, and try to match
+again. The idea is that by sending one carriage return, the connected device
+will print its CLI prompt. This "send and try to match" process will be
+repeated up to "C<$wake_up>" times.
 
-=head2 wake_up
+=head2 wake_up_msg
 
 Text sent to a device within the C<find_prompt> method if no output has so far
 matched any known named Prompt. Default is the value of the I<output record

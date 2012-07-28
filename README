@@ -2,7 +2,7 @@ NAME
     Net::CLI::Interact - Toolkit for CLI Automation
 
 VERSION
-    version 1.122020_002
+    version 1.122100
 
 PURPOSE
     This module exists to support developers of applications and libraries
