@@ -125,11 +125,14 @@ However if you need to set it manually, do the following:
 Sometimes you might not know what state the CLI is in; typically this applies
 to Serial lines. In that case you can ask to find the matching prompt:
 
- $s->find_prompt('wake_up');
+ $s->find_prompt($wake_up);
 
-The option C<wake_up> asks to "hit the Return key", to make the device spit
-out its prompt. That is only done if needed, and you can remove C<wake_up> to
-skip this step.
+This method gets some output from the connected session and then tries to
+match it against any loaded prompts, returning if successful. If not
+successful, and the C<$wake_up> value is non-zero, then C<find_prompt> will
+"hit the return key" to try to get some output. This process is retried
+according to the value of C<$wake_up> (i.e. 1, 2, 3, etc), and of not
+successful will die.
 
 =head2 Literal Commands
 
