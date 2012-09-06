@@ -120,7 +120,7 @@ sub do_action {
                 $self->put($cont->last->value);
             }
             elsif (my $hit = $self->find_match($self->buffer, $action->value)) {
-                $self->logger->log('transport', 'debug',
+                $self->logger->log('transport', 'info',
                     sprintf 'output matched %s, storing and returning', $hit);
                 $action->prompt_hit($hit);
                 $action->response_stash($self->stash);
@@ -137,7 +137,7 @@ sub do_action {
     }
     if ($action->type eq 'send') {
         my $command = sprintf $action->value, $action->params;
-        $self->logger->log('transport', 'debug', 'queueing data for send: "'. $command .'"');
+        $self->logger->log('transport', 'notice', 'queueing data for send: "'. $command .'"');
         $self->put( $command, ($action->no_ors ? () : $self->ors) );
     }
 }
