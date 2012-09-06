@@ -66,7 +66,7 @@ has 'wrapper' => (
 
 sub _build_wrapper {
     my $self = shift;
-    $self->logger->log('transport', 'debug', 'command expands to: ',
+    $self->logger->log('transport', 'notice', 'connecting with: ',
         $self->app, (join ' ', map {($_ =~ m/\s/) ? ("'". $_ ."'") : $_}
                                    $self->runtime_options));
     # this better be wrapped otherwise it'll blow up
