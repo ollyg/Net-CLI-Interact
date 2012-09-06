@@ -57,6 +57,10 @@ has 'last_actionset' => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
     required => 0,
+    trigger => sub {
+        (shift)->logger->log('prompt', 'notice',
+            sprintf ('prompt matched was "%s"', (shift)->item_at(-1)->response));
+    },
 );
 
 sub last_response {
