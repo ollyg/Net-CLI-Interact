@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '1.122100';
+  $Net::CLI::Interact::Role::Engine::VERSION = '1.122530';
 }
 
 {
@@ -60,6 +60,10 @@ has 'last_actionset' => (
     is => 'rw',
     isa => 'Net::CLI::Interact::ActionSet',
     required => 0,
+    trigger => sub {
+        (shift)->logger->log('prompt', 'notice',
+            sprintf ('prompt matched was "%s"', (shift)->item_at(-1)->response));
+    },
 );
 
 sub last_response {
@@ -184,7 +188,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 1.122100
+version 1.122530
 
 =head1 DESCRIPTION
 

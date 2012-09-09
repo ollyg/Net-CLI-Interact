@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base;
 {
-  $Net::CLI::Interact::Transport::Base::VERSION = '1.122100';
+  $Net::CLI::Interact::Transport::Base::VERSION = '1.122530';
 }
 
 use Moose;
@@ -69,7 +69,7 @@ has 'wrapper' => (
 
 sub _build_wrapper {
     my $self = shift;
-    $self->logger->log('transport', 'debug', 'command expands to: ',
+    $self->logger->log('transport', 'notice', 'connecting with: ',
         $self->app, (join ' ', map {($_ =~ m/\s/) ? ("'". $_ ."'") : $_}
                                    $self->runtime_options));
     # this better be wrapped otherwise it'll blow up
@@ -89,6 +89,7 @@ sub disconnect {
     my $self = shift;
     $self->clear_wrapper;
     $self->flush;
+    delete $SIG{CHLD};
 }
 
 sub _abc { confess "not implemented." }
@@ -123,7 +124,7 @@ sub do_action {
                 $self->put($cont->last->value);
             }
             elsif (my $hit = $self->find_match($self->buffer, $action->value)) {
-                $self->logger->log('transport', 'debug',
+                $self->logger->log('transport', 'info',
                     sprintf 'output matched %s, storing and returning', $hit);
                 $action->prompt_hit($hit);
                 $action->response_stash($self->stash);
@@ -140,7 +141,7 @@ sub do_action {
     }
     if ($action->type eq 'send') {
         my $command = sprintf $action->value, $action->params;
-        $self->logger->log('transport', 'debug', 'queueing data for send: "'. $command .'"');
+        $self->logger->log('transport', 'notice', 'queueing data for send: "'. $command .'"');
         $self->put( $command, ($action->no_ors ? () : $self->ors) );
     }
 }

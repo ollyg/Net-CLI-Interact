@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::FindMatch;
 {
-  $Net::CLI::Interact::Role::FindMatch::VERSION = '1.122100';
+  $Net::CLI::Interact::Role::FindMatch::VERSION = '1.122530';
 }
 
 use Moose::Role;
