@@ -86,6 +86,7 @@ sub disconnect {
     my $self = shift;
     $self->clear_wrapper;
     $self->flush;
+    delete $SIG{CHLD};
 }
 
 sub _abc { confess "not implemented." }

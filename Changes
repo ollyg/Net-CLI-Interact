@@ -1,11 +1,13 @@
 {{$NEXT}}
 
+  * Alter log messages so that notice is a more useful default
+  * Delete SIGCHLD after close (rt.cpan#79450)
+
 1.122100  2012-07-29 00:33:51 Europe/London
 
 1.122020_002 2012-07-20 15:56:04 Europe/London
 
-1.122011_001 2012-07-19 20:58:16 Europe/London
-
+  * change docs for wake_up to formalise integer
   * Add macros for paging for HP (C. Tucker)
 
 1.122010  2012-07-19 20:52:28 Europe/London
