@@ -17,7 +17,7 @@ ok(! eval { $s->cmd('TEST COMMAND', {timeout => 0} ) }, 'timeout of zero not acc
 ok(! eval { $s->cmd('TEST COMMAND', {timeout => 1} ) }, 'wrong prompt causes timeout');
 
 # need to reinit the connection
-ok($s->transport->disconnect, 'transport reinitialized');
+ok(eval{$s->transport->disconnect;1}, 'transport reinitialized');
 
 my $out = $s->cmd('TEST COMMAND', {match => ['TEST_PROMPT']});
 like($out, qr/^\d{10}$/, 'sent data with named custom match');
