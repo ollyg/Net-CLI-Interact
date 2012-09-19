@@ -3,6 +3,7 @@ package Net::CLI::Interact::Role::Engine;
 {
     package # hide from pause
         Net::CLI::Interact::Role::Engine::ExecuteOptions;
+
     use Moo;
     use Sub::Quote;
     use MooX::Types::MooseLike::Base qw(Bool ArrayRef Str Any);
@@ -76,7 +77,7 @@ sub set_default_continuation {
 
 sub cmd {
     my ($self, $command, $options) = @_;
-    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options);
+    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options || {});
 
     $self->logger->log('engine', 'notice', 'running command', $command);
 
@@ -110,7 +111,7 @@ sub cmd {
 
 sub macro {
     my ($self, $name, $options) = @_;
-    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options);
+    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options || {});
 
     $self->logger->log('engine', 'notice', 'running macro', $name);
     $self->logger->log('engine', 'info', 'macro params are:',
