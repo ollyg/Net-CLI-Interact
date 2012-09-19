@@ -3,7 +3,7 @@ package Net::CLI::Interact;
 use Moo;
 use Sub::Quote;
 use Class::Load ();
-use MooX::Types::MooseLike::Base qw(InstanceOf Maybe Str HashRef);
+use MooX::Types::MooseLike::Base qw(InstanceOf Str HashRef);
 
 with 'Net::CLI::Interact::Role::Engine';
 
@@ -24,7 +24,7 @@ sub BUILDARGS {
 
 has 'log_at' => (
     is => 'rw',
-    isa => Maybe[Str],
+    isa => Str,
     default => quote_sub(q[ $ENV{'NCI_LOG_AT'} ]),
     trigger => \&set_global_log_at,
 );
