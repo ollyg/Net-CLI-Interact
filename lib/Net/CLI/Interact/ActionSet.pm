@@ -21,7 +21,7 @@ sub BUILDARGS {
     my ($class, @rest) = @_;
 
     # accept single hash ref or naked hash
-    my $params = (ref $rest[0] eq ref {} and scalar @rest == 1 ? $rest[0] : {@rest});
+    my $params = (ref {} eq ref $rest[0] ? $rest[0] : {@rest});
 
     if (exists $params->{actions} and ref $params->{actions} eq ref []) {
         foreach my $a (@{$params->{actions}}) {

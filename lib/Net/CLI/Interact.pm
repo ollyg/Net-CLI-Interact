@@ -15,7 +15,11 @@ has 'my_args' => (
 # stash all args in my_args
 sub BUILDARGS {
     my ($class, @args) = @_;
-    return { my_args => { @args }};
+
+    # accept single hash ref or naked hash
+    my $params = (ref {} eq ref $args[0] ? $args[0] : {@args});
+
+    return { my_args => $params };
 }
 
 has 'log_at' => (
@@ -79,15 +83,15 @@ sub set_phrasebook {
 
 has 'transport' => (
     is => 'lazy',
-    isa => InstanceOf['Net::CLI::Interact::Transport'],
+    isa => quote_sub(q{ $_[0]->isa('Net::CLI::Interact::Transport') }),
     predicate => 1,
     clearer => 1,
 );
 
 sub _build_transport {
     my $self = shift;
-    die 'missing transport' unless exists $self->args->{transport};
-    my $tpt = 'Net::CLI::Interact::Transport::'. $self->args->{transport};
+    die 'missing transport' unless exists $self->my_args->{transport};
+    my $tpt = 'Net::CLI::Interact::Transport::'. $self->my_args->{transport};
     Class::Load::load_class($tpt);
     return $tpt->new({
         %{ $self->my_args },

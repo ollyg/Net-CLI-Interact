@@ -29,6 +29,7 @@ has _logger => (
     is => 'ro',
     isa => InstanceOf['Log::Dispatch::Config'],
     builder => 1,
+    lazy => 1,
 );
 
 {

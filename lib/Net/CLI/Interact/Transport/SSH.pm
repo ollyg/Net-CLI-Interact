@@ -3,7 +3,6 @@ package Net::CLI::Interact::Transport::SSH;
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
-use Scalar::Util qw(blessed);
 
 extends 'Net::CLI::Interact::Transport';
 
@@ -53,7 +52,7 @@ has 'connect_options' => (
     is => 'ro',
     isa => InstanceOf['Net::CLI::Interact::Transport::SSH::Options'],
     coerce => quote_sub(
-        q{ Net::CLI::Interact::Transport::SSH::Options->new(@_) unless blessed $_[0] }),
+        q{ Net::CLI::Interact::Transport::SSH::Options->new(@_) if ref '' ne ref $_[0] }),
     required => 1,
 );
 

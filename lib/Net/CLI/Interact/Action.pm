@@ -54,8 +54,9 @@ has 'prompt_hit' => (
 
 sub BUILDARGS {
     my ($class, @rest) = @_;
+
     # accept single hash ref or naked hash
-    my $params = (ref $rest[0] eq ref {} and scalar @rest == 1 ? $rest[0] : {@rest});
+    my $params = (ref {} eq ref $rest[0] ? $rest[0] : {@rest});
 
     if (exists $params->{continuation} and ref [] eq ref $params->{continuation}) {
         $params->{continuation} = Net::CLI::Interact::ActionSet->new({

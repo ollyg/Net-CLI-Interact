@@ -3,6 +3,7 @@ package Net::CLI::Interact::Transport::Test;
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
+
 extends 'Net::CLI::Interact::Transport';
 
 {
@@ -19,7 +20,7 @@ has 'connect_options' => (
     isa => InstanceOf['Net::CLI::Interact::Transport::Test::Options'],
     default => sub { {} },
     coerce => quote_sub(
-        q{ Net::CLI::Interact::Transport::Test::Options->new(@_) unless blessed $_[0] }),
+        q{ Net::CLI::Interact::Transport::Test::Options->new(@_) if ref '' ne ref $_[0] }),
     required => 1,
 );
 
