@@ -1,25 +1,24 @@
 package Net::CLI::Interact::Phrasebook;
 
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(InstanceOf Str Any HashRef);
 use Net::CLI::Interact::ActionSet;
 
 has 'logger' => (
     is => 'ro',
-    isa => 'Net::CLI::Interact::Logger',
+    isa => InstanceOf['Net::CLI::Interact::Logger'],
     required => 1,
 );
 
 has 'personality' => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
     required => 1,
 );
 
 has 'library' => (
-    is => 'ro',
-    isa => 'Str|ArrayRef[Str]',
-    lazy_build => 1,
-    required => 0,
+    is => 'lazy',
+    isa => Any, # FIXME 'Str|ArrayRef[Str]',
 );
 
 sub _build_library {
@@ -33,21 +32,19 @@ sub _build_library {
 
 has 'add_library' => (
     is => 'rw',
-    isa => 'Str|ArrayRef[Str]',
+    isa => Any, # FIXME 'Str|ArrayRef[Str]',
     default => sub { [] },
-    required => 0,
 );
 
 has '_prompt' => (
     is => 'ro',
-    isa => 'HashRef[Net::CLI::Interact::ActionSet]',
+    isa => HashRef[InstanceOf['Net::CLI::Interact::ActionSet']],
     default => sub { {} },
-    required => 0,
 );
 
 sub prompt {
     my ($self, $name) = @_;
-    confess "unknown prompt [$name]" unless $self->has_prompt($name);
+    die "unknown prompt [$name]" unless $self->has_prompt($name);
     return $self->_prompt->{$name};
 }
 
@@ -55,21 +52,20 @@ sub prompt_names { return keys %{ (shift)->_prompt } }
 
 sub has_prompt {
     my ($self, $name) = @_;
-    confess "missing prompt name!"
+    die "missing prompt name!"
         unless defined $name and length $name;
     return exists $self->_prompt->{$name};
 }
 
 has '_macro' => (
     is => 'ro',
-    isa => 'HashRef[Net::CLI::Interact::ActionSet]',
+    isa => HashRef[InstanceOf['Net::CLI::Interact::ActionSet']],
     default => sub { {} },
-    required => 0,
 );
 
 sub macro {
     my ($self, $name) = @_;
-    confess "unknown macro [$name]" unless $self->has_macro($name);
+    die "unknown macro [$name]" unless $self->has_macro($name);
     return $self->_macro->{$name};
 }
 
@@ -77,7 +73,7 @@ sub macro_names { return keys %{ (shift)->_macro } }
 
 sub has_macro {
     my ($self, $name) = @_;
-    confess "missing macro name!"
+    die "missing macro name!"
         unless defined $name and length $name;
     return exists $self->_macro->{$name};
 }
@@ -188,7 +184,7 @@ sub load_phrasebooks {
                 next;
             }
 
-            confess "don't know what to do with this phrasebook line:\n", $_;
+            die "don't know what to do with this phrasebook line:\n", $_;
         }
         # last entry in the file needs baking
         $self->_bake($data);
@@ -206,7 +202,7 @@ sub _find_phrasebooks {
     my @phrasebooks =
         ( $self->_walk_find_files(@libs), $self->_walk_find_files(@alib) );
 
-    confess (sprintf "Personality [%s] contains no phrasebook files!\n",
+    die (sprintf "Personality [%s] contains no phrasebook files!\n",
             $self->personality) unless scalar @phrasebooks;
     return @phrasebooks;
 }

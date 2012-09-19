@@ -1,79 +1,28 @@
 package Net::CLI::Interact;
 
-{
-    package # hide from pause
-        Net::CLI::Interact::Meta::Attribute::Trait::Mediated;
-    use Moose::Role;
+use Moo;
+use Sub::Quote;
+use Class::Load ();
+use MooX::Types::MooseLike::Base qw(InstanceOf Maybe Str HashRef);
 
-    package # hide from pause
-        Moose::Meta::Attribute::Custom::Trait::Mediated;
-    sub register_implementation {
-        return 'Net::CLI::Interact::Meta::Attribute::Trait::Mediated';
-    }
-}
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use Moose;
 with 'Net::CLI::Interact::Role::Engine';
 
-has '__mediator_params' => (
-    is => 'ro',
-    isa => 'HashRef[Any]',
-    auto_deref => 1,
-    required => 1,
+has 'my_args' => (
+    is => 'rwp',
+    isa => HashRef,
+    required => 0,
 );
 
-# takes the params hash and returns two hashes, the params
-# hash and a new hash of the current class's attribute slots
-sub _filter_my_attribute_list {
-    my ($class, $params) = @_;
-    my $our_params = {};
-    my $meta = $class->meta;
-
-    foreach my $slot (keys %$params) {
-        my $attr = $class->meta->get_attribute($slot);
-
-        if ($attr and
-            not $attr->does('Net::CLI::Interact::Meta::Attribute::Trait::Mediated')) {
-
-            $our_params->{$slot} = delete $params->{$slot};
-        }
-    }
-
-    return $params, $our_params;
-}
-
+# stash all args in my_args
 sub BUILDARGS {
-    my ($class, @params) = @_;
-    return { __mediator_params => {} } unless scalar @params > 0;
-    my %stuff = ((scalar @params > 1) ? @params : %{$params[0]});
-
-    my ($m_params, $our_params) = $class->_filter_my_attribute_list(\%stuff);
-
-    return {
-        __mediator_params => { %$m_params },
-        %$our_params,
-    };
-}
-
-has 'logger' => (
-    is => 'ro',
-    isa => 'Net::CLI::Interact::Logger',
-    lazy_build => 1,
-    traits => ['Mediated'],
-);
-
-sub _build_logger {
-    my $self = shift;
-    use Net::CLI::Interact::Logger;
-    return Net::CLI::Interact::Logger->new({$self->__mediator_params});
+    my ($class, @args) = @_;
+    return { my_args => { @args }};
 }
 
 has 'log_at' => (
     is => 'rw',
-    isa => 'Maybe[Str]',
-    required => 0,
-    default => $ENV{'NCI_LOG_AT'},
+    isa => Maybe[Str],
+    default => quote_sub(q[ $ENV{'NCI_LOG_AT'} ]),
     trigger => \&set_global_log_at,
 );
 
@@ -92,48 +41,58 @@ sub BUILD {
         sprintf "NCI loaded, version %s", ($Net::CLI::Interact::VERSION || 'devel'));
 }
 
+has 'logger' => (
+    is => 'lazy',
+    isa => InstanceOf['Net::CLI::Interact::Logger'],
+    predicate => 1,
+    clearer => 1,
+);
+
+sub _build_logger {
+    my $self = shift;
+    use Net::CLI::Interact::Logger;
+    return Net::CLI::Interact::Logger->new($self->my_args);
+}
+
 has 'phrasebook' => (
-    is => 'ro',
-    isa => 'Net::CLI::Interact::Phrasebook',
-    lazy_build => 1,
-    traits => ['Mediated'],
+    is => 'lazy',
+    isa => InstanceOf['Net::CLI::Interact::Phrasebook'],
+    predicate => 1,
+    clearer => 1,
 );
 
 sub _build_phrasebook {
     my $self = shift;
     use Net::CLI::Interact::Phrasebook;
     return Net::CLI::Interact::Phrasebook->new({
+        %{ $self->my_args },
         logger => $self->logger,
-        $self->__mediator_params,
     });
 }
 
 # does not really *change* the phrasebook, just reconfig and nuke
 sub set_phrasebook {
     my ($self, $args) = @_;
-    return unless defined $args and ref $args eq ref {};
-    foreach my $k (keys %$args) {
-        $self->__mediator_params->{$k} = $args->{$k};
-    }
+    return unless defined $args and ref {} eq ref $args;
+    $self->my_args->{$_} = $args->{$_} for keys %$args;
     $self->clear_phrasebook;
 }
 
 has 'transport' => (
-    is => 'ro',
-    isa => 'Net::CLI::Interact::Transport',
-    lazy_build => 1,
-    traits => ['Mediated'],
+    is => 'lazy',
+    isa => InstanceOf['Net::CLI::Interact::Transport'],
+    predicate => 1,
+    clearer => 1,
 );
 
 sub _build_transport {
     my $self = shift;
-    confess 'missing transport' unless exists $self->__mediator_params->{transport};
-    my $tpt = 'Net::CLI::Interact::Transport::'. $self->__mediator_params->{transport};
-    use Class::MOP;
-    Class::MOP::load_class($tpt);
+    die 'missing transport' unless exists $self->args->{transport};
+    my $tpt = 'Net::CLI::Interact::Transport::'. $self->args->{transport};
+    Class::Load::load_class($tpt);
     return $tpt->new({
+        %{ $self->my_args },
         logger => $self->logger,
-        $self->__mediator_params,
     });
 }
 

@@ -1,30 +1,20 @@
 package Net::CLI::Interact::ActionSet;
 
-use Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(InstanceOf Maybe ArrayRef CodeRef RegexpRef);
 use Net::CLI::Interact::Action;
-with 'Net::CLI::Interact::Role::Iterator';
 
-use Moose::Util::TypeConstraints;
-subtype 'Net::CLI::Interact::ActionSet::CurrentMatchType'
-    => as 'Maybe[ArrayRef[RegexpRef]]';
-coerce 'Net::CLI::Interact::ActionSet::CurrentMatchType'
-    => from 'RegexpRef' => via { [$_] };
+with 'Net::CLI::Interact::Role::Iterator';
 
 has default_continuation => (
     is => 'rw',
-    isa => 'Maybe[Net::CLI::Interact::ActionSet]',
-    required => 0,
+    isa => Maybe[InstanceOf['Net::CLI::Interact::ActionSet']],
 );
 
 has current_match => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet::CurrentMatchType',
-    required => 0,
-    coerce => 1,
-);
-
-has '+_sequence' => (
-    isa => 'ArrayRef[Net::CLI::Interact::Action]',
+    isa => Maybe[ArrayRef[RegexpRef]],
+    coerce => sub { [$_[0]] if ref qr// eq ref $_[0] },
 );
 
 sub BUILDARGS {
@@ -51,7 +41,7 @@ sub BUILDARGS {
                 next;
             }
 
-            confess "don't know what to do with a: '$a'\n";
+            die "don't know what to do with a: '$a'\n";
         }
         delete $params->{actions};
     }
@@ -82,7 +72,7 @@ sub apply_params {
 
 has _callbacks => (
     is => 'rw',
-    isa => 'ArrayRef[CodeRef]',
+    isa => ArrayRef[CodeRef],
     required => 0,
     default => sub { [] },
 );

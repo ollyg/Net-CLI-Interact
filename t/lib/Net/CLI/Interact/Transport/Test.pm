@@ -1,26 +1,25 @@
 package Net::CLI::Interact::Transport::Test;
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
 extends 'Net::CLI::Interact::Transport';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Test::Options;
-    use Moose;
-    extends 'Net::CLI::Interact::Transport::Options';
 
-    use Moose::Util::TypeConstraints;
-    coerce 'Net::CLI::Interact::Transport::Test::Options'
-        => from 'HashRef[Any]'
-            => via { Net::CLI::Interact::Transport::Test::Options->new($_) };
+    use Moo;
+    extends 'Net::CLI::Interact::Transport::Options';
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 has 'connect_options' => (
     is => 'ro',
-    isa => 'Net::CLI::Interact::Transport::Test::Options',
+    isa => InstanceOf['Net::CLI::Interact::Transport::Test::Options'],
     default => sub { {} },
-    coerce => 1,
+    coerce => quote_sub(
+        q{ Net::CLI::Interact::Transport::Test::Options->new(@_) unless blessed $_[0] }),
     required => 1,
 );
 

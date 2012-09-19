@@ -1,60 +1,55 @@
 package Net::CLI::Interact::Action;
 
-use Moose;
-use Moose::Util::TypeConstraints qw(enum);
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(Any Bool Str ArrayRef InstanceOf RegexpRef);
 use Net::CLI::Interact::ActionSet;
 
 has 'type' => (
     is => 'ro',
-    isa => enum([qw/send match/]),
+    isa => quote_sub(
+        q{ die "$_[0] not send/match" unless $_[0] =~ m/^(?:send|match)$/ }),
     required => 1,
 );
 
 has 'value' => (
     is => 'ro',
-    isa => 'Str|ArrayRef[RegexpRef]',
+    isa => Any, # FIXME 'Str|ArrayRef[RegexpRef]',
     required => 1,
 );
 
 has 'no_ors' => (
     is => 'ro',
-    isa => 'Bool',
-    required => 0,
-    default => 0,
+    isa => Bool,
+    default => quote_sub('0'),
 );
 
 has 'continuation' => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet',
-    required => 0,
+    isa => InstanceOf['Net::CLI::Interact::ActionSet'],
 );
 
 has 'params' => (
     is => 'rw',
-    isa => 'ArrayRef',
+    isa => ArrayRef,
     default => sub { [] },
-    auto_deref => 1,
-    required => 0,
 );
 
 has 'response' => (
     is => 'rw',
-    isa => 'Str',
-    default => '',
-    required => 0,
+    isa => Str,
+    default => quote_sub(q{''}),
 );
 
 has 'response_stash' => (
     is => 'rw',
-    isa => 'Str',
-    default => '',
-    required => 0,
+    isa => Str,
+    default => quote_sub(q{''}),
 );
 
 has 'prompt_hit' => (
     is => 'rw',
-    isa => 'RegexpRef',
-    required => 0,
+    isa => RegexpRef,
 );
 
 sub BUILDARGS {
@@ -62,7 +57,7 @@ sub BUILDARGS {
     # accept single hash ref or naked hash
     my $params = (ref $rest[0] eq ref {} and scalar @rest == 1 ? $rest[0] : {@rest});
 
-    if (exists $params->{continuation} and ref $params->{continuation} eq ref []) {
+    if (exists $params->{continuation} and ref [] eq ref $params->{continuation}) {
         $params->{continuation} = Net::CLI::Interact::ActionSet->new({
             actions => $params->{continuation},
         });
@@ -71,11 +66,14 @@ sub BUILDARGS {
     return $params;
 }
 
-# only a shallow copy so all the reference based slots still
-# share data with the original Action's slots
+# Only a shallow copy so all the reference based slots still
+# share data with the original Action's slots.
+# 
+# I asked in #web-simple and was told that if the object is more magical than
+# a simple hashref, then someone is trying to be far too clever. agreed!
 sub clone {
     my $self = shift;
-    $self->meta->clone_object($self, %{(shift) || {}});
+    bless({ %{$self}, %{(shift) || {}} }, ref $self)
 }
 
 # count the number of sprintf parameters used in the value

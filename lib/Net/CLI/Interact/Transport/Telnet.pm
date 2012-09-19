@@ -1,38 +1,39 @@
 package Net::CLI::Interact::Transport::Telnet;
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
+use Scalar::Util qw(blessed);
+
 extends 'Net::CLI::Interact::Transport';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Telnet::Options;
-    use Moose;
+
+    use Moo;
+    use Sub::Quote;
+    use MooX::Types::MooseLike::Base qw(Str Int ArrayRef Any);
+
     extends 'Net::CLI::Interact::Transport::Options';
 
     has 'host' => (
         is => 'rw',
-        isa => 'Str',
+        isa => Str,
         required => 1,
     );
 
     has 'port' => (
         is => 'rw',
-        isa => 'Int',
-        required => 0,
-        default => 23,
+        isa => Int,
+        default => quote_sub('23'),
     );
 
     has 'opts' => (
         is => 'rw',
-        isa => 'ArrayRef[Any]',
-        required => 0,
+        isa => ArrayRef[Any],
         default => sub { [] },
     );
-
-    use Moose::Util::TypeConstraints;
-    coerce 'Net::CLI::Interact::Transport::Telnet::Options'
-        => from 'HashRef[Any]'
-            => via { Net::CLI::Interact::Transport::Telnet::Options->new($_) };
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -43,14 +44,15 @@ if (not Net::CLI::Interact::Transport::is_win32()) {
 
 has 'connect_options' => (
     is => 'ro',
-    isa => 'Net::CLI::Interact::Transport::Telnet::Options',
-    coerce => 1,
+    isa => InstanceOf['Net::CLI::Interact::Transport::Telnet::Options'],
+    coerce => quote_sub(
+        q{ Net::CLI::Interact::Transport::Telnet::Options->new(@_) unless blessed $_[0] }),
     required => 1,
 );
 
 sub _build_app {
     my $self = shift;
-    confess "please pass location of plink.exe in 'app' parameter to new()\n"
+    die "please pass location of plink.exe in 'app' parameter to new()\n"
         if $self->is_win32;
     return 'Net::Telnet'; # unix, but unused
 }

@@ -1,14 +1,18 @@
 package Net::CLI::Interact::Logger;
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(HashRef InstanceOf Bool ArrayRef Any);
+
+use Class::Inner;
 use Time::HiRes qw(gettimeofday tv_interval);
 use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;
 
 has log_config => (
-    is => 'rw',
-    isa => 'HashRef',
-    lazy_build => 1,
+    is => 'ro',
+    isa => HashRef,
+    builder => 1,
 );
 
 sub _build_log_config {
@@ -23,42 +27,47 @@ sub _build_log_config {
 
 has _logger => (
     is => 'ro',
-    isa => 'Log::Dispatch::Config',
-    lazy_build => 1,
+    isa => InstanceOf['Log::Dispatch::Config'],
+    builder => 1,
 );
+
+{
+    # monkeypatch due to Class::Inner bug ignoring "constructor" arg
+    no strict 'refs';
+    *{"Log::Dispatch::Config::new"} = sub {
+        goto "Log::Dispatch::Config::configure";
+    };
+}
 
 # this allows each instance of this module to have its own
 # wrapped logger with different configuration.
 sub _build__logger {
     my $self = shift;
 
-    use Class::MOP::Class;
-    my $meta = Class::MOP::Class->create_anon_class(
-        superclasses => ['Moose::Object', 'Log::Dispatch::Config'],
+    my $config = Log::Dispatch::Configurator::Any->new($self->log_config);
+    my $anon_logger = Class::Inner->new(
+        parent => 'Log::Dispatch::Config',
+        args => [$config],
     );
 
-    my $config = Log::Dispatch::Configurator::Any->new($self->log_config);
-    $meta->name->configure($config);
-    return $meta->name->instance;
+    return $anon_logger->instance;
 }
 
 has 'log_stamps' => (
     is => 'rw',
-    isa => 'Bool',
-    required => 0,
-    default => 1,
+    isa => Bool,
+    default => quote_sub('1'),
 );
 
 has 'log_start' => (
     is => 'ro',
-    isa => 'ArrayRef',
-    required => 0,
+    isa => ArrayRef,
     default => sub{ [gettimeofday] },
 );
 
 has 'log_flags' => (
     is => 'rw',
-    isa => 'ArrayRef|HashRef[Str]',
+    isa => Any, # FIXME 'ArrayRef|HashRef[Str]',
     default => sub { {} },
 );
 
