@@ -17,6 +17,7 @@ package Net::CLI::Interact::Role::Engine;
     has 'params' => (
         is => 'ro',
         isa => ArrayRef[Str],
+        predicate => 1,
     );
 
     has 'timeout' => (
@@ -117,10 +118,10 @@ sub macro {
 
     $self->logger->log('engine', 'notice', 'running macro', $name);
     $self->logger->log('engine', 'info', 'macro params are:',
-        join ', ', @{ $options->params });
+        join ', ', @{ $options->params }) if $options->has_params;
 
     my $set = $self->phrasebook->macro($name)->clone;
-    $set->apply_params(@{ $options->params });
+    $set->apply_params(@{ $options->params }) if $options->has_params;
 
     return $self->_execute_actions($options, $set);
 }
