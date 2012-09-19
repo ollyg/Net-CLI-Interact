@@ -26,11 +26,12 @@ package Net::CLI::Interact::Role::Engine;
 
     has 'match' => (
         is => 'rw',
-        isa => ArrayRef[Any], # FIXME ArrayRef[RegexpRef|Str]
+        isa => ArrayRef, # FIXME ArrayRef[RegexpRef|Str]
         predicate => 1,
-        coerce => quote_sub(q{ [$_[0]] if ref [] ne ref $_[0] }),
+        coerce => quote_sub(q{ (ref [] ne ref $_[0]) ? [$_[0]] : $_[0] }),
     );
 }
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use Moo::Role;

@@ -1,6 +1,7 @@
 package Net::CLI::Interact::ActionSet;
 
 use Moo;
+use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf ArrayRef CodeRef RegexpRef);
 use Net::CLI::Interact::Action;
 
@@ -16,7 +17,7 @@ has current_match => (
     is => 'rw',
     isa => ArrayRef[RegexpRef],
     predicate => 1,
-    coerce => sub { [$_[0]] if ref qr// eq ref $_[0] },
+    coerce => quote_sub(q{ (ref qr// eq ref $_[0]) ? [$_[0]] : $_[0] }),
 );
 
 sub BUILDARGS {
