@@ -63,6 +63,7 @@ has 'default_continuation' => (
     is => 'rw',
     isa => InstanceOf['Net::CLI::Interact::ActionSet'],
     writer => '_default_continuation',
+    predicate => 1,
     clearer => 1,
 );
 
@@ -137,7 +138,7 @@ sub _execute_actions {
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@actions],
         current_match => ($options->match || $self->prompt_re || $self->last_prompt_re),
-        default_continuation => $self->default_continuation,
+        ($self->has_default_continuation ? (default_continuation => $self->default_continuation) : ()),
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
 

@@ -1,19 +1,21 @@
 package Net::CLI::Interact::ActionSet;
 
 use Moo;
-use MooX::Types::MooseLike::Base qw(InstanceOf Maybe ArrayRef CodeRef RegexpRef);
+use MooX::Types::MooseLike::Base qw(InstanceOf ArrayRef CodeRef RegexpRef);
 use Net::CLI::Interact::Action;
 
 with 'Net::CLI::Interact::Role::Iterator';
 
 has default_continuation => (
     is => 'rw',
-    isa => Maybe[InstanceOf['Net::CLI::Interact::ActionSet']],
+    isa => InstanceOf['Net::CLI::Interact::ActionSet'],
+    predicate => 1,
 );
 
 has current_match => (
     is => 'rw',
-    isa => Maybe[ArrayRef[RegexpRef]],
+    isa => ArrayRef[RegexpRef],
+    predicate => 1,
     coerce => sub { [$_[0]] if ref qr// eq ref $_[0] },
 );
 
@@ -53,9 +55,9 @@ sub clone {
     my $self = shift;
     return Net::CLI::Interact::ActionSet->new({
         actions => [ map { $_->clone } @{ $self->_sequence } ],
-        _callbacks => $self->_callbacks,
-        default_continuation => $self->default_continuation,
-        current_match => $self->current_match,
+        ($self->_has_callbacks ? (_callbacks => $self->_callbacks) : ()),
+        ($self->has_default_continuation ? (default_continuation => $self->default_continuation) : ()),
+        ($self->has_current_match ? (current_match => $self->current_match) : ()),
     });
 }
 
@@ -73,8 +75,8 @@ sub apply_params {
 has _callbacks => (
     is => 'rw',
     isa => ArrayRef[CodeRef],
-    required => 0,
     default => sub { [] },
+    predicate => 1,
 );
 
 sub register_callback {
