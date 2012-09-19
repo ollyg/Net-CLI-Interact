@@ -46,8 +46,8 @@ extends 'Net::CLI::Interact::Transport';
 has 'connect_options' => (
     is => 'ro',
     isa => InstanceOf['Net::CLI::Interact::Transport::Serial::Options'],
-    coerce => quote_sub(
-        q{ Net::CLI::Interact::Transport::Serial::Options->new(@_) if ref '' ne ref $_[0] }),
+    coerce => quote_sub(q{ (ref '' eq ref $_[0]) ? $_[0] :
+        Net::CLI::Interact::Transport::Serial::Options->new(@_) }),
     required => 1,
 );
 

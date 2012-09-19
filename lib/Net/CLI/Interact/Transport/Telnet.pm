@@ -44,8 +44,8 @@ if (not Net::CLI::Interact::Transport::is_win32()) {
 has 'connect_options' => (
     is => 'ro',
     isa => InstanceOf['Net::CLI::Interact::Transport::Telnet::Options'],
-    coerce => quote_sub(
-        q{ Net::CLI::Interact::Transport::Telnet::Options->new(@_) if ref '' ne ref $_[0] }),
+    coerce => quote_sub(q{ (ref '' eq ref $_[0]) ? $_[0] :
+        Net::CLI::Interact::Transport::Telnet::Options->new(@_) }),
     required => 1,
 );
 
