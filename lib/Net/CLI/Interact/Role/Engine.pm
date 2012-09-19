@@ -3,51 +3,41 @@ package Net::CLI::Interact::Role::Engine;
 {
     package # hide from pause
         Net::CLI::Interact::Role::Engine::ExecuteOptions;
-    use Moose;
-    use Moose::Util::TypeConstraints;
 
-    subtype 'Net::CLI::Interact::Role::Engine::ExecuteOptions::MatchType'
-        => as 'ArrayRef[RegexpRef|Str]';
-    coerce 'Net::CLI::Interact::Role::Engine::ExecuteOptions::MatchType'
-        => from 'Str|RegexpRef' => via { [$_] };
+    use Moo;
+    use Sub::Quote;
+    use MooX::Types::MooseLike::Base qw(Bool ArrayRef Str Any);
 
     has 'no_ors' => (
         is => 'ro',
-        isa => 'Bool',
-        default => 0,
-        required => 0,
+        isa => Bool,
+        default => quote_sub('0'),
     );
 
     has 'params' => (
         is => 'ro',
-        isa => 'ArrayRef[Str]',
-        auto_deref => 1,
-        required => 0,
+        isa => ArrayRef[Str],
+        predicate => 1,
     );
 
     has 'timeout' => (
         is => 'ro',
-        isa => subtype( 'Int' => where { $_ > 0 } ),
-        required => 0,
+        isa => quote_sub(q{die "$_[0] is not a posint!" unless $_[0] > 0 }),
     );
 
     has 'match' => (
         is => 'rw',
-        isa => 'Net::CLI::Interact::Role::Engine::ExecuteOptions::MatchType',
-        predicate => 'has_match',
-        required => 0,
-        coerce => 1,
+        isa => ArrayRef, # FIXME ArrayRef[RegexpRef|Str]
+        predicate => 1,
+        coerce => quote_sub(q{ (ref [] ne ref $_[0]) ? [$_[0]] : $_[0] }),
     );
-
-    sub BUILDARGS {
-        my ($class, @params) = @_;
-        return {} unless scalar @params > 0 and ref $params[0] eq ref {};
-        return $params[0];
-    }
 }
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use Moose::Role;
+use Moo::Role;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
+
 with 'Net::CLI::Interact::Role::Prompt';
 
 use Net::CLI::Interact::Action;
@@ -55,8 +45,7 @@ use Net::CLI::Interact::ActionSet;
 
 has 'last_actionset' => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet',
-    required => 0,
+    isa => InstanceOf['Net::CLI::Interact::ActionSet'],
     trigger => sub {
         (shift)->logger->log('prompt', 'notice',
             sprintf ('prompt matched was "%s"', (shift)->item_at(-1)->response));
@@ -74,16 +63,16 @@ sub last_response {
 
 has 'default_continuation' => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet',
+    isa => InstanceOf['Net::CLI::Interact::ActionSet'],
     writer => '_default_continuation',
-    clearer => 'clear_default_continuation',
-    required => 0,
+    predicate => 1,
+    clearer => 1,
 );
 
 sub set_default_continuation {
     my ($self, $cont) = @_;
-    confess "missing continuation" unless $cont;
-    confess "unknown continuation [$cont]" unless
+    die "missing continuation" unless $cont;
+    die "unknown continuation [$cont]" unless
         eval{ $self->phrasebook->macro($cont) };
     $self->_default_continuation( $self->phrasebook->macro($cont) );
     $self->logger->log('engine', 'info', 'default continuation set to', $cont);
@@ -91,7 +80,7 @@ sub set_default_continuation {
 
 sub cmd {
     my ($self, $command, $options) = @_;
-    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options);
+    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options || {});
 
     $self->logger->log('engine', 'notice', 'running command', $command);
 
@@ -125,14 +114,14 @@ sub cmd {
 
 sub macro {
     my ($self, $name, $options) = @_;
-    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options);
+    $options = Net::CLI::Interact::Role::Engine::ExecuteOptions->new($options || {});
 
     $self->logger->log('engine', 'notice', 'running macro', $name);
     $self->logger->log('engine', 'info', 'macro params are:',
-        join ', ', $options->params);
+        join ', ', @{ $options->params }) if $options->has_params;
 
     my $set = $self->phrasebook->macro($name)->clone;
-    $set->apply_params($options->params);
+    $set->apply_params(@{ $options->params }) if $options->has_params;
 
     return $self->_execute_actions($options, $set);
 }
@@ -151,7 +140,7 @@ sub _execute_actions {
     my $set = Net::CLI::Interact::ActionSet->new({
         actions => [@actions],
         current_match => ($options->match || $self->prompt_re || $self->last_prompt_re),
-        default_continuation => $self->default_continuation,
+        ($self->has_default_continuation ? (default_continuation => $self->default_continuation) : ()),
     });
     $set->register_callback(sub { $self->transport->do_action(@_) });
 

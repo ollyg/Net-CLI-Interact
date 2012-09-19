@@ -1,49 +1,50 @@
 package Net::CLI::Interact::Role::Iterator;
 
-use Moose::Role;
+use Moo::Role;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(ArrayRef Any Int);
 
 has '_sequence' => (
     is => 'rw',
-    isa  => 'ArrayRef[Any]',
-    auto_deref => 1,
+    isa  => ArrayRef[Any],
     required => 1,
 );
 
 # fiddly only in case of auto_deref
-sub count { return scalar @{ scalar (shift)->_sequence } }
+sub count { return scalar @{ (shift)->_sequence } }
 
 sub first { return (shift)->_sequence->[0]  }
 sub last  { return (shift)->_sequence->[-1] }
 
 sub item_at {
     my ($self, $pos) = @_;
-    confess "position is past the end of sequence\n"
+    die "position is past the end of sequence\n"
         if $pos >= $self->count;
     return $self->_sequence->[$pos];
 }
 
 sub insert_at {
     my ($self, $pos, @rest) = @_;
-    my @seq = $self->_sequence;
+    my @seq = @{ $self->_sequence };
     splice @seq, $pos, 0, @rest;
     $self->_sequence( \@seq );
 }
 
 sub append {
     my $self = shift;
-    $self->insert_at( $self->count, (shift)->clone->_sequence );
+    $self->insert_at( $self->count, @{ (shift)->_sequence } );
 }
 
 has '_position' => (
     is => 'rw',
-    isa => 'Int',
-    default => -1,
+    isa => Int,
+    default => quote_sub('-1'),
 );
 
 sub idx {
     my $self = shift;
     my $pos = $self->_position;
-    confess "attempt to read iter index before pulling a value\n"
+    die "attempt to read iter index before pulling a value\n"
         if scalar @_ == 0 and $pos == -1;
     $self->_position(shift) if scalar @_;
     return $pos;
@@ -51,11 +52,11 @@ sub idx {
 
 sub next {
     my $self = shift;
-    confess "er, please check has_next before next\n"
+    die "er, please check has_next before next\n"
         if not $self->has_next;
 
     my $position = $self->_position;
-    confess "fell off end of iterator\n"
+    die "fell off end of iterator\n"
         if ++$position == $self->count;
 
     $self->_position($position);

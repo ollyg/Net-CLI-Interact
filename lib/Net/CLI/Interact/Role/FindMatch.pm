@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::FindMatch;
 
-use Moose::Role;
+use Moo::Role;
 
 # see if any regexp in the arrayref match the response
 sub find_match {

@@ -1,14 +1,15 @@
 package Net::CLI::Interact::Transport::Base::Win32;
 
-use Moose;
-use Moose::Util::TypeConstraints;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(ScalarRef InstanceOf);
 
 extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Platform::Options;
-    use Moose;
+    use Moo;
     extends 'Net::CLI::Interact::Transport::Base::Options';
 }
 
@@ -16,9 +17,8 @@ use IPC::Run ();
 
 has '_in' => (
     is => 'rw',
-    isa => 'ScalarRef',
+    isa => ScalarRef,
     default => sub { \eval "''" },
-    required => 0,
 );
 
 # writer for the _in slot
@@ -26,9 +26,8 @@ sub put { ${ (shift)->_in } .= join '', @_ }
 
 has '_out' => (
     is => 'ro',
-    isa => 'ScalarRef',
+    isa => ScalarRef,
     default => sub { \eval "''" },
-    required => 0,
 );
 
 sub buffer {
@@ -40,36 +39,31 @@ sub buffer {
 # clearer for the _out slot
 has '_err' => (
     is => 'ro',
-    isa => 'ScalarRef',
+    isa => ScalarRef,
     default => sub { \eval "''" },
-    required => 0,
 );
 
 has '_timeout_obj' => (
-    is => 'ro',
-    isa => 'IPC::Run::Timer',
-    lazy_build => 1,
-    required => 0,
+    is => 'lazy',
+    isa => InstanceOf['IPC::Run::Timer'],
 );
 
 sub _build__timeout_obj { return IPC::Run::timeout((shift)->timeout) }
 
 has '+timeout' => (
-    trigger => sub {
-        (shift)->_timeout_obj->start(shift) if scalar @_ > 1;
-    },
+    trigger => quote_sub(q{(shift)->_timeout_obj->start(shift) if scalar @_ > 1}),
 );
 
 has '+wrapper' => (
-    isa => 'IPC::Run',
+    isa => InstanceOf['IPC::Run'],
     handles => ['pump'],
 );
 
-override '_build_wrapper' => sub {
-    my $self = shift;
+around '_build_wrapper' => sub {
+    my ($orig, $self) = (shift, shift);
 
     $self->logger->log('transport', 'notice', 'booting IPC::Run harness for', $self->app);
-    super();
+    $self->$orig(@_);
 
     return IPC::Run::harness(
         [$self->app, $self->runtime_options],

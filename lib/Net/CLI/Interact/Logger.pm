@@ -1,14 +1,18 @@
 package Net::CLI::Interact::Logger;
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(HashRef Bool ArrayRef Any);
+
+use Class::Mix qw(genpkg);
 use Time::HiRes qw(gettimeofday tv_interval);
 use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;
 
 has log_config => (
-    is => 'rw',
-    isa => 'HashRef',
-    lazy_build => 1,
+    is => 'ro',
+    isa => HashRef,
+    builder => 1,
 );
 
 sub _build_log_config {
@@ -23,8 +27,9 @@ sub _build_log_config {
 
 has _logger => (
     is => 'ro',
-    isa => 'Log::Dispatch::Config',
-    lazy_build => 1,
+    isa => quote_sub(q{ $_[0]->isa('Log::Dispatch::Config') }),
+    builder => 1,
+    lazy => 1,
 );
 
 # this allows each instance of this module to have its own
@@ -32,33 +37,33 @@ has _logger => (
 sub _build__logger {
     my $self = shift;
 
-    use Class::MOP::Class;
-    my $meta = Class::MOP::Class->create_anon_class(
-        superclasses => ['Moose::Object', 'Log::Dispatch::Config'],
-    );
+    my $anon_logger = genpkg();
+    {
+        no strict 'refs';
+        @{"$anon_logger\::ISA"} = 'Log::Dispatch::Config';
+    }
 
     my $config = Log::Dispatch::Configurator::Any->new($self->log_config);
-    $meta->name->configure($config);
-    return $meta->name->instance;
+    $anon_logger->configure($config);
+
+    return $anon_logger->instance;
 }
 
 has 'log_stamps' => (
     is => 'rw',
-    isa => 'Bool',
-    required => 0,
-    default => 1,
+    isa => Bool,
+    default => quote_sub('1'),
 );
 
 has 'log_start' => (
     is => 'ro',
-    isa => 'ArrayRef',
-    required => 0,
+    isa => ArrayRef,
     default => sub{ [gettimeofday] },
 );
 
 has 'log_flags' => (
     is => 'rw',
-    isa => 'ArrayRef|HashRef[Str]',
+    isa => Any, # FIXME 'ArrayRef|HashRef[Str]',
     default => sub { {} },
 );
 

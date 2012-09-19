@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport;
 
-use Moose;
+use Moo;
 
 BEGIN {
     sub is_win32 { return ($^O eq 'MSWin32') }
@@ -13,7 +13,7 @@ BEGIN {
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Options;
-    use Moose;
+    use Moo;
     extends 'Net::CLI::Interact::Transport::Platform::Options';
 }
 

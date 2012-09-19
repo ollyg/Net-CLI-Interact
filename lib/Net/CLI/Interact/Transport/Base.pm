@@ -1,67 +1,65 @@
 package Net::CLI::Interact::Transport::Base;
 
-use Moose;
-use Moose::Util::TypeConstraints;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(Int InstanceOf RegexpRef Str Object);
+
 with 'Net::CLI::Interact::Role::FindMatch';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Base::Options;
-    use Moose;
+    use Moo;
 }
 
 has 'use_net_telnet_connection' => (
     is => 'rw',
-    isa => 'Int',
-    default => 0,
+    isa => Int,
+    default => quote_sub('0'),
 );
 
 has 'logger' => (
     is => 'ro',
-    isa => 'Net::CLI::Interact::Logger',
+    isa => InstanceOf['Net::CLI::Interact::Logger'],
     required => 1,
 );
 
 has 'irs_re' => (
     is => 'ro',
-    isa => 'RegexpRef',
-    default => sub { qr/(?:\015\012|\015|\012)/ }, # first wins
-    required => 0,
+    isa => RegexpRef,
+    default => quote_sub(q{ qr/(?:\015\012|\015|\012)/ }), # first wins
 );
 
 has 'ors' => (
     is => 'rw',
-    isa => 'Str',
-    default => "\n",
-    required => 0,
+    isa => Str,
+    default => quote_sub(q{"\n"}),
 );
 
 has 'timeout' => (
     is => 'rw',
-    isa => subtype( 'Int' => where { $_ > 0 } ),
-    required => 0,
-    default => 10,
+    isa => quote_sub(q{ die "$_[0] is not a posint!" unless $_[0] > 0 }),
+    default => quote_sub('10'),
 );
 
 has 'app' => (
-    is => 'ro',
-    isa => 'Str',
-    lazy_build => 1,
+    is => 'lazy',
+    isa => Str,
+    predicate => 1,
+    clearer => 1,
 );
 
 has 'stash' => (
     is => 'rw',
-    isa => 'Str',
-    default => '',
-    required => 0,
+    isa => Str,
+    default => quote_sub(q{''}),
 );
 
 has 'wrapper' => (
-    is => 'rw',
-    isa => 'Object',
-    lazy_build => 1,
-    required => 0,
+    is => 'lazy',
+    isa => Object,
     predicate => 'connect_ready',
+    clearer => 1,
 );
 
 sub _build_wrapper {
@@ -89,7 +87,7 @@ sub disconnect {
     delete $SIG{CHLD};
 }
 
-sub _abc { confess "not implemented." }
+sub _abc { die "not implemented." }
 
 sub put { _abc() }
 sub pump { _abc() }
@@ -137,7 +135,7 @@ sub do_action {
         }
     }
     if ($action->type eq 'send') {
-        my $command = sprintf $action->value, $action->params;
+        my $command = sprintf $action->value, @{ $action->params };
         $self->logger->log('transport', 'notice', 'queueing data for send: "'. $command .'"');
         $self->put( $command, ($action->no_ors ? () : $self->ors) );
     }

@@ -1,42 +1,35 @@
 package Net::CLI::Interact::ActionSet;
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(InstanceOf ArrayRef CodeRef RegexpRef);
 use Net::CLI::Interact::Action;
-with 'Net::CLI::Interact::Role::Iterator';
 
-use Moose::Util::TypeConstraints;
-subtype 'Net::CLI::Interact::ActionSet::CurrentMatchType'
-    => as 'Maybe[ArrayRef[RegexpRef]]';
-coerce 'Net::CLI::Interact::ActionSet::CurrentMatchType'
-    => from 'RegexpRef' => via { [$_] };
+with 'Net::CLI::Interact::Role::Iterator';
 
 has default_continuation => (
     is => 'rw',
-    isa => 'Maybe[Net::CLI::Interact::ActionSet]',
-    required => 0,
+    isa => InstanceOf['Net::CLI::Interact::ActionSet'],
+    predicate => 1,
 );
 
 has current_match => (
     is => 'rw',
-    isa => 'Net::CLI::Interact::ActionSet::CurrentMatchType',
-    required => 0,
-    coerce => 1,
-);
-
-has '+_sequence' => (
-    isa => 'ArrayRef[Net::CLI::Interact::Action]',
+    isa => ArrayRef[RegexpRef],
+    predicate => 1,
+    coerce => quote_sub(q{ (ref qr// eq ref $_[0]) ? [$_[0]] : $_[0] }),
 );
 
 sub BUILDARGS {
     my ($class, @rest) = @_;
 
     # accept single hash ref or naked hash
-    my $params = (ref $rest[0] eq ref {} and scalar @rest == 1 ? $rest[0] : {@rest});
+    my $params = (ref {} eq ref $rest[0] ? $rest[0] : {@rest});
 
     if (exists $params->{actions} and ref $params->{actions} eq ref []) {
         foreach my $a (@{$params->{actions}}) {
             if (ref $a eq 'Net::CLI::Interact::ActionSet') {
-                push @{$params->{_sequence}}, $a->_sequence;
+                push @{$params->{_sequence}}, @{ $a->_sequence };
                 next;
             }
 
@@ -51,7 +44,7 @@ sub BUILDARGS {
                 next;
             }
 
-            confess "don't know what to do with a: '$a'\n";
+            die "don't know what to do with a: '$a'\n";
         }
         delete $params->{actions};
     }
@@ -62,10 +55,10 @@ sub BUILDARGS {
 sub clone {
     my $self = shift;
     return Net::CLI::Interact::ActionSet->new({
-        actions => [ map { $_->clone } $self->_sequence ],
-        _callbacks => $self->_callbacks,
-        default_continuation => $self->default_continuation,
-        current_match => $self->current_match,
+        actions => [ map { $_->clone } @{ $self->_sequence } ],
+        ($self->_has_callbacks ? (_callbacks => $self->_callbacks) : ()),
+        ($self->has_default_continuation ? (default_continuation => $self->default_continuation) : ()),
+        ($self->has_current_match ? (current_match => $self->current_match) : ()),
     });
 }
 
@@ -82,9 +75,9 @@ sub apply_params {
 
 has _callbacks => (
     is => 'rw',
-    isa => 'ArrayRef[CodeRef]',
-    required => 0,
+    isa => ArrayRef[CodeRef],
     default => sub { [] },
+    predicate => 1,
 );
 
 sub register_callback {

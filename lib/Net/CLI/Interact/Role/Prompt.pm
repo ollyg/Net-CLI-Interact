@@ -1,21 +1,21 @@
 package Net::CLI::Interact::Role::Prompt;
 
-use Moose::Role;
+use Moo::Role;
+use MooX::Types::MooseLike::Base qw(Str RegexpRef);
 use Net::CLI::Interact::ActionSet;
+
 with 'Net::CLI::Interact::Role::FindMatch';
 
 has 'wake_up_msg' => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
     default => sub { (shift)->transport->ors },
-    predicate => 'has_wake_up_msg',
-    required => 0,
+    predicate => 1,
 );
 
 has '_prompt' => (
     is => 'rw',
-    isa => 'Maybe[RegexpRef]',
-    required => 0,
+    isa => RegexpRef,
     reader => 'prompt_re',
     predicate => 'has_set_prompt',
     clearer => 'unset_prompt',
