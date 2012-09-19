@@ -1,68 +1,67 @@
 package Net::CLI::Interact::Transport::SSH;
 {
-  $Net::CLI::Interact::Transport::SSH::VERSION = '1.122530';
+  $Net::CLI::Interact::Transport::SSH::VERSION = '2.122630';
 }
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
+
 extends 'Net::CLI::Interact::Transport';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::SSH::Options;
-    use Moose;
+
+    use Moo;
+    use Sub::Quote;
+    use MooX::Types::MooseLike::Base qw(Str Bool ArrayRef Any);
+
     extends 'Net::CLI::Interact::Transport::Options';
 
     has 'host' => (
         is => 'rw',
-        isa => 'Str',
+        isa => Str,
         required => 1,
     );
 
     has 'username' => (
         is => 'rw',
-        isa => 'Str',
-        required => 0,
-        predicate => 'has_username',
+        isa => Str,
+        predicate => 1,
     );
 
     has 'shkc' => (
         is => 'rw',
-        isa => 'Bool',
-        required => 0,
-        default => 0,
+        isa => Bool,
+        default => quote_sub('0'),
     );
 
     has 'ignore_host_checks' => (
         is => 'rw',
-        isa => 'Bool',
-        required => 0,
-        default => 1,
+        isa => Bool,
+        default => quote_sub('1'),
     );
 
     has 'opts' => (
         is => 'rw',
-        isa => 'ArrayRef[Any]',
-        required => 0,
+        isa => ArrayRef[Any],
         default => sub { [] },
     );
-
-    use Moose::Util::TypeConstraints;
-    coerce 'Net::CLI::Interact::Transport::SSH::Options'
-        => from 'HashRef[Any]'
-            => via { Net::CLI::Interact::Transport::SSH::Options->new($_) };
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 has 'connect_options' => (
     is => 'ro',
-    isa => 'Net::CLI::Interact::Transport::SSH::Options',
-    coerce => 1,
+    isa => InstanceOf['Net::CLI::Interact::Transport::SSH::Options'],
+    coerce => quote_sub(q{ (ref '' eq ref $_[0]) ? $_[0] :
+        Net::CLI::Interact::Transport::SSH::Options->new(@_) }),
     required => 1,
 );
 
 sub _build_app {
     my $self = shift;
-    confess "please pass location of plink.exe in 'app' parameter to new()\n"
+    die "please pass location of plink.exe in 'app' parameter to new()\n"
         if $self->is_win32;
     return 'ssh';
 }
@@ -108,7 +107,7 @@ Net::CLI::Interact::Transport::SSH - SSH based CLI connection
 
 =head1 VERSION
 
-version 1.122530
+version 2.122630
 
 =head1 DECRIPTION
 

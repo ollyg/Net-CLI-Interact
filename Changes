@@ -1,3 +1,7 @@
+2.122630  2012-09-19 17:21:30 Europe/London
+
+  * Port from Moose to Moo
+
 1.122530  2012-09-09 15:52:07 Europe/London
 
   * Alter log messages so that notice is a more useful default

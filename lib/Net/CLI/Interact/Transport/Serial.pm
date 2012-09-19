@@ -1,62 +1,62 @@
 package Net::CLI::Interact::Transport::Serial;
 {
-  $Net::CLI::Interact::Transport::Serial::VERSION = '1.122530';
+  $Net::CLI::Interact::Transport::Serial::VERSION = '2.122630';
 }
 
-use Moose;
+use Moo;
+use Sub::Quote;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
+
 extends 'Net::CLI::Interact::Transport';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Serial::Options;
-    use Moose;
-    use Moose::Util::TypeConstraints qw(enum);
+
+    use Moo;
+    use Sub::Quote;
+    use MooX::Types::MooseLike::Base qw(Str Bool Int);
+
     extends 'Net::CLI::Interact::Transport::Options';
 
     has 'device' => (
         is => 'rw',
-        isa => 'Str',
+        isa => Str,
         required => 1,
     );
 
     has 'parity' => (
         is => 'rw',
-        isa => enum([qw/none even odd/]);
-        default => 'none',
-        required => 0,
+        isa => quote_sub(
+            q{ die "$_[0] not none/even/odd" unless $_[0] =~ m/^(?:none|even|odd)$/ }),
+        default => quote_sub(q{'none'}),
     );
 
     has 'nostop' => (
         is => 'rw',
-        isa => 'Bool',
-        default => 0,
-        required => 0,
+        isa => Bool,
+        default => quote_sub('0'),
     );
 
     has 'speed' => (
         is => 'rw',
-        isa => 'Int',
-        default => 9600,
-        required => 0,
+        isa => Int,
+        default => quote_sub('9600'),
     );
-
-    use Moose::Util::TypeConstraints;
-    coerce 'Net::CLI::Interact::Transport::Serial::Options'
-        => from 'HashRef[Any]'
-            => via { Net::CLI::Interact::Transport::Serial::Options->new($_) };
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 has 'connect_options' => (
     is => 'ro',
-    isa => 'Net::CLI::Interact::Transport::Serial::Options',
-    coerce => 1,
+    isa => InstanceOf['Net::CLI::Interact::Transport::Serial::Options'],
+    coerce => quote_sub(q{ (ref '' eq ref $_[0]) ? $_[0] :
+        Net::CLI::Interact::Transport::Serial::Options->new(@_) }),
     required => 1,
 );
 
 sub _build_app {
     my $self = shift;
-    confess "please pass location of plink.exe in 'app' parameter to new()\n"
+    die "please pass location of plink.exe in 'app' parameter to new()\n"
         if $self->is_win32;
     return 'cu'; # unix
 }
@@ -91,7 +91,7 @@ Net::CLI::Interact::Transport::Serial - Serial-line based CLI connection
 
 =head1 VERSION
 
-version 1.122530
+version 2.122630
 
 =head1 DECRIPTION
 

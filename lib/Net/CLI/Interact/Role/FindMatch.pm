@@ -1,9 +1,9 @@
 package Net::CLI::Interact::Role::FindMatch;
 {
-  $Net::CLI::Interact::Role::FindMatch::VERSION = '1.122530';
+  $Net::CLI::Interact::Role::FindMatch::VERSION = '2.122630';
 }
 
-use Moose::Role;
+use Moo::Role;
 
 # see if any regexp in the arrayref match the response
 sub find_match {

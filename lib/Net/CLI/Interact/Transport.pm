@@ -1,9 +1,9 @@
 package Net::CLI::Interact::Transport;
 {
-  $Net::CLI::Interact::Transport::VERSION = '1.122530';
+  $Net::CLI::Interact::Transport::VERSION = '2.122630';
 }
 
-use Moose;
+use Moo;
 
 BEGIN {
     sub is_win32 { return ($^O eq 'MSWin32') }
@@ -16,7 +16,7 @@ BEGIN {
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Options;
-    use Moose;
+    use Moo;
     extends 'Net::CLI::Interact::Transport::Platform::Options';
 }
 
@@ -35,7 +35,7 @@ Net::CLI::Interact::Transport - Spawns an Interactive CLI Session
 
 =head1 VERSION
 
-version 1.122530
+version 2.122630
 
 =head1 DESCRIPTION
 

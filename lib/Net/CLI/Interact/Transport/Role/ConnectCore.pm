@@ -1,9 +1,10 @@
 package Net::CLI::Interact::Transport::Role::ConnectCore;
 {
-  $Net::CLI::Interact::Transport::Role::ConnectCore::VERSION = '1.122530';
+  $Net::CLI::Interact::Transport::Role::ConnectCore::VERSION = '2.122630';
 }
 
-use Moose::Role;
+use Moo::Role;
+use MooX::Types::MooseLike::Base qw(Int);
 
 use Net::Telnet ();
 
@@ -23,7 +24,7 @@ sub _via_native {
     my $self = shift;
     my $t = Net::Telnet->new(Cmd_remove_mode => 1, @_);
     $t->open()
-        or confess "failed to open Net::Telnet connection to target device.";
+        or die "failed to open Net::Telnet connection to target device.";
     return $t;
 }
 
@@ -36,12 +37,12 @@ sub _via_spawn {
     );
 
     $t->fhopen( $self->_spawn_command(@_) )
-        or confess "failed to spawn connection to target device.";
+        or die "failed to spawn connection to target device.";
     return $t;
 }
 
 # this code is based on that in Expect.pm, and found to be the most reliable.
-# minor alterations to use CORE::close and confess, and to reap child.
+# minor alterations to use CORE::close and die, and to reap child.
 
 use FileHandle;
 use IO::Pty;
@@ -49,7 +50,7 @@ use POSIX qw(WNOHANG);
 
 has 'childpid' => (
     is => 'rw',
-    isa => 'Int',
+    isa => Int,
 );
 
 sub REAPER {
@@ -69,7 +70,7 @@ sub _spawn_command {
         if !defined $SIG{CHLD};
 
     # set up pipe to detect childs exec error
-    pipe(STAT_RDR, STAT_WTR) or confess "Cannot open pipe: $!";
+    pipe(STAT_RDR, STAT_WTR) or die "Cannot open pipe: $!";
     STAT_WTR->autoflush(1);
     eval {
         fcntl(STAT_WTR, F_SETFD, FD_CLOEXEC);
@@ -78,7 +79,7 @@ sub _spawn_command {
     my $pid = fork;
 
     if (! defined ($pid)) {
-        confess "Cannot fork: $!" if $^W;
+        die "Cannot fork: $!" if $^W;
         return undef;
     }
 
@@ -91,12 +92,12 @@ sub _spawn_command {
 
         # now wait for child exec (eof due to close-on-exit) or exec error
         my $errstatus = sysread(STAT_RDR, $errno, 256);
-        confess "Cannot sync with child: $!" if not defined $errstatus;
+        die "Cannot sync with child: $!" if not defined $errstatus;
         CORE::close STAT_RDR;
 
         if ($errstatus) {
             $! = $errno+0;
-            confess "Cannot exec(@command): $!\n" if $^W;
+            die "Cannot exec(@command): $!\n" if $^W;
             return undef;
         }
 
@@ -108,7 +109,7 @@ sub _spawn_command {
 
         $pty->make_slave_controlling_terminal();
         my $slv = $pty->slave()
-            or confess "Cannot get slave: $!";
+            or die "Cannot get slave: $!";
 
         $slv->set_raw();
 
@@ -116,19 +117,19 @@ sub _spawn_command {
 
         CORE::close(STDIN);
         open(STDIN,"<&". $slv->fileno())
-            or confess "Couldn't reopen STDIN for reading, $!\n";
+            or die "Couldn't reopen STDIN for reading, $!\n";
  
         CORE::close(STDOUT);
         open(STDOUT,">&". $slv->fileno())
-            or confess "Couldn't reopen STDOUT for writing, $!\n";
+            or die "Couldn't reopen STDOUT for writing, $!\n";
 
         CORE::close(STDERR);
         open(STDERR,">&". $slv->fileno())
-            or confess "Couldn't reopen STDERR for writing, $!\n";
+            or die "Couldn't reopen STDERR for writing, $!\n";
 
         { exec(@command) };
         print STAT_WTR $!+0;
-        confess "Cannot exec(@command): $!\n";
+        die "Cannot exec(@command): $!\n";
     }
 
     return $pty;

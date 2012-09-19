@@ -25,7 +25,7 @@ $s->set_prompt('TEST_PROMPT');
 my $out = $s->cmd('TEST COMMAND');
 like($out, qr/^\d{10}$/, 'sent data and command response issued');
 
-ok(! $s->transport->disconnect, 'transport reinitialized');
+ok(eval{$s->transport->disconnect;1}, 'transport reinitialized');
 
 my $out2 = $s->cmd('TEST COMMAND');
 like($out2, qr/^\d{10}$/, 'more sent data and command response issued');
