@@ -38,7 +38,7 @@ extends 'Net::CLI::Interact::Transport';
 
 # allow native use of Net::Telnet on Unix
 if (not Net::CLI::Interact::Transport::is_win32()) {
-    has '+use_net_telnet_connection' => ( default => 1 );
+    has '+use_net_telnet_connection' => ( default => quote_sub('1') );
 }
 
 has 'connect_options' => (

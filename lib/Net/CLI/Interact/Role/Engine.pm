@@ -20,7 +20,7 @@ package Net::CLI::Interact::Role::Engine;
 
     has 'timeout' => (
         is => 'ro',
-        isa => quote_sub(q{die "$_[0] is not a posint!" unless $_[0] > 0 q}),
+        isa => quote_sub(q{die "$_[0] is not a posint!" unless $_[0] > 0 }),
     );
 
     has 'match' => (
