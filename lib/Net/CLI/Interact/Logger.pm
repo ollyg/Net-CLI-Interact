@@ -2,9 +2,9 @@ package Net::CLI::Interact::Logger;
 
 use Moo;
 use Sub::Quote;
-use MooX::Types::MooseLike::Base qw(HashRef InstanceOf Bool ArrayRef Any);
+use MooX::Types::MooseLike::Base qw(HashRef Bool ArrayRef Any);
 
-use Class::Inner;
+use Class::Mix qw(genpkg);
 use Time::HiRes qw(gettimeofday tv_interval);
 use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;
@@ -27,29 +27,24 @@ sub _build_log_config {
 
 has _logger => (
     is => 'ro',
-    isa => InstanceOf['Log::Dispatch::Config'],
+    isa => quote_sub(q{ $_[0]->isa('Log::Dispatch::Config') }),
     builder => 1,
     lazy => 1,
 );
-
-{
-    # monkeypatch due to Class::Inner bug ignoring "constructor" arg
-    no strict 'refs';
-    *{"Log::Dispatch::Config::new"} = sub {
-        goto "Log::Dispatch::Config::configure";
-    };
-}
 
 # this allows each instance of this module to have its own
 # wrapped logger with different configuration.
 sub _build__logger {
     my $self = shift;
 
+    my $anon_logger = genpkg();
+    {
+        no strict 'refs';
+        @{"$anon_logger\::ISA"} = 'Log::Dispatch::Config';
+    }
+
     my $config = Log::Dispatch::Configurator::Any->new($self->log_config);
-    my $anon_logger = Class::Inner->new(
-        parent => 'Log::Dispatch::Config',
-        args => [$config],
-    );
+    $anon_logger->configure($config);
 
     return $anon_logger->instance;
 }
