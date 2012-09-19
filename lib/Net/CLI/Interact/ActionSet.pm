@@ -52,7 +52,7 @@ sub BUILDARGS {
 sub clone {
     my $self = shift;
     return Net::CLI::Interact::ActionSet->new({
-        actions => [ map { $_->clone } $self->_sequence ],
+        actions => [ map { $_->clone } @{ $self->_sequence } ],
         _callbacks => $self->_callbacks,
         default_continuation => $self->default_continuation,
         current_match => $self->current_match,

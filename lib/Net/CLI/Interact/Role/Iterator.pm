@@ -11,7 +11,7 @@ has '_sequence' => (
 );
 
 # fiddly only in case of auto_deref
-sub count { return scalar @{ scalar (shift)->_sequence } }
+sub count { return scalar @{ scalar @{ (shift)->_sequence } } }
 
 sub first { return (shift)->_sequence->[0]  }
 sub last  { return (shift)->_sequence->[-1] }
@@ -25,14 +25,14 @@ sub item_at {
 
 sub insert_at {
     my ($self, $pos, @rest) = @_;
-    my @seq = $self->_sequence;
+    my @seq = @{ $self->_sequence };
     splice @seq, $pos, 0, @rest;
     $self->_sequence( \@seq );
 }
 
 sub append {
     my $self = shift;
-    $self->insert_at( $self->count, (shift)->clone->_sequence );
+    $self->insert_at( $self->count, @{ (shift)->_sequence } );
 }
 
 has '_position' => (

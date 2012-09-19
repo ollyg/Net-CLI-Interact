@@ -10,7 +10,6 @@ with 'Net::CLI::Interact::Role::Engine';
 has 'my_args' => (
     is => 'rwp',
     isa => HashRef,
-    required => 0,
 );
 
 # stash all args in my_args

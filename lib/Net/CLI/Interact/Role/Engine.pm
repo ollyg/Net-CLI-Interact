@@ -114,10 +114,10 @@ sub macro {
 
     $self->logger->log('engine', 'notice', 'running macro', $name);
     $self->logger->log('engine', 'info', 'macro params are:',
-        join ', ', $options->params);
+        join ', ', @{ $options->params });
 
     my $set = $self->phrasebook->macro($name)->clone;
-    $set->apply_params($options->params);
+    $set->apply_params(@{ $options->params });
 
     return $self->_execute_actions($options, $set);
 }
