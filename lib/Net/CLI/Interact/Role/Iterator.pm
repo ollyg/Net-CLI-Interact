@@ -11,7 +11,7 @@ has '_sequence' => (
 );
 
 # fiddly only in case of auto_deref
-sub count { return scalar @{ scalar @{ (shift)->_sequence } } }
+sub count { return scalar @{ (shift)->_sequence } }
 
 sub first { return (shift)->_sequence->[0]  }
 sub last  { return (shift)->_sequence->[-1] }

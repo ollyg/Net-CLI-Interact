@@ -26,7 +26,7 @@ sub BUILDARGS {
     if (exists $params->{actions} and ref $params->{actions} eq ref []) {
         foreach my $a (@{$params->{actions}}) {
             if (ref $a eq 'Net::CLI::Interact::ActionSet') {
-                push @{$params->{_sequence}}, $a->_sequence;
+                push @{$params->{_sequence}}, @{ $a->_sequence };
                 next;
             }
 
