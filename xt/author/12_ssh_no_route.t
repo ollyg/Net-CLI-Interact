@@ -22,6 +22,6 @@ my $s = Net::CLI::Interact->new(
 
 # should fail
 eval { $s->cmd('show clock') };
-like( $@, qr/No route to host|Connection timed out/i, 'No Route' );
+like( $@, qr/No route to host|Connection timed out|read timed-out/i, 'No Route' );
 
 done_testing;
