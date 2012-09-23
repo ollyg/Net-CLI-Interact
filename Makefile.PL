@@ -24,7 +24,15 @@ delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
   unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
 
 if ( $^O =~ m/^(?!Win32)/ ) {
-  $WriteMakefileArgs{PREREQ_PM}{'IO::Pty'} = '0';
+  $WriteMakefileArgs{CONFIGURE_REQUIRES}{'ExtUtils::CBuilder'} = 0;
+
+  eval 'require ExtUtils::CBuilder;';
+  if (not $@) {
+    my $builder = ExtUtils::CBuilder->new( quiet => 1 );
+    if ($builder->have_compiler) {
+        $WriteMakefileArgs{PREREQ_PM}{'IO::Pty'} = '0';
+    }
+  }
 }
 
 WriteMakefile(%WriteMakefileArgs);

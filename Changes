@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Make IO::Pty dependency based on compiler availability
+
 2.122630  2012-09-19 17:21:30 Europe/London
 
   * Port from Moose to Moo
