@@ -1,7 +1,7 @@
 # if using Net::Appliance::Session, call this before connect():
 #   $session_obj->nci->transport->ors("\r\n");
 
-prompt prompt
+prompt generic
     match /[\/a-zA-Z0-9._-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
 
 prompt basic
@@ -28,4 +28,8 @@ macro paging
 
 macro disconnect
     send exit
-    match prompt
+    match generic
+
+# legacy support
+prompt prompt
+    match /[\/a-zA-Z0-9._-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/

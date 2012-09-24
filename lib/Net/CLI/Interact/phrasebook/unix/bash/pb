@@ -4,7 +4,7 @@ prompt user
 prompt pass
     match /password(?: for \w+)?: $/
 
-prompt prompt
+prompt generic
     match /\w+@.+\$ $/
 
 prompt privileged
@@ -16,7 +16,7 @@ macro begin_privileged
 
 macro end_privileged
     send exit
-    match prompt
+    match generic
 
 macro disconnect
     send logout

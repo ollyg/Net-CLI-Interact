@@ -1,4 +1,4 @@
-prompt prompt
+prompt generic
     match /[\/a-zA-Z0-9._:-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
 
 prompt basic
@@ -12,3 +12,7 @@ macro enable_paging
 
 macro disable_paging
     send no page
+
+# legacy support
+prompt prompt
+    match /[\/a-zA-Z0-9._:-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/

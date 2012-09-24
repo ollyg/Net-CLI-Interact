@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+  * IMPORTANT: the prompts named "prompt" are now called "generic"
+    If you have written macros depending on these, please update your phrasebooks.
+
   * Make IO::Pty dependency based on compiler availability
   * Refactor to provide unix IPC::Run support where there is no IO::Pty
   * Add opts support to Serial Transport

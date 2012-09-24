@@ -1,4 +1,4 @@
-prompt prompt
+prompt generic
     match /[\/a-zA-Z0-9._\[\]-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
 
 prompt basic
@@ -36,7 +36,11 @@ macro end_configure
 
 macro disconnect
     send exit
-    match prompt
+    match generic
 
 # macro completion
 #     send ?
+
+# legacy support
+prompt prompt
+    match /[\/a-zA-Z0-9._\[\]-]+ ?(?:\(config[^)]*\))? ?[#>] ?$/
