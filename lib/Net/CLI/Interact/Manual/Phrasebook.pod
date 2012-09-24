@@ -155,12 +155,12 @@ dictionary.
 
 Additionally it provides the C<paging> Macro to set the terminal page size.
 
-=head1 GUIDANCE FOR NEW DEVICE SUPPORT
+=head1 SUPPORTING A NEW DEVICE
 
 In order to support a new device, particularly for the L<Net::Appliance::Session>
 module, there is a basic set of prompts and macros you must create.
 
-=head2 Essential
+=head2 Required Prompts
 
 With SSH, no C<user> prompt is required, but for other transports you should
 include a prompt named C<user> which matches the "C<Username:>" prompt
@@ -184,7 +184,7 @@ this should be named C<generic>.
  prompt generic
      match /> ?$/
 
-=head2 Desirable
+=head2 Desirable Prompt and Macros
 
 To cleanly disconnect from your device session, you might want to include a
 macro named C<disconnect> with the relevant command. Note there is no need for
