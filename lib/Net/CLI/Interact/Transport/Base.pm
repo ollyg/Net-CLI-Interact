@@ -30,12 +30,13 @@ has 'logger' => (
 
 =head1 DESCRIPTION
 
-This module provides a generic cross-platform interface with
-the purpose of interacting with a command line interface. On Windows the
-L<IPC::Run> module is used and on Unix when L<IO::Pty> is available (it
-requires a compiler) L<Net::Telnet>, else C<IPC::Run>. In all cases, a
-program such as openssh is started and methods provided to send and receive
-data from the interactive session.
+This module provides a generic cross-platform API with the purpose of
+interacting with a command line interface.
+
+On Windows the L<IPC::Run> module is used and on Unix when L<IO::Pty> is
+available (it requires a compiler) L<Net::Telnet>, else C<IPC::Run>. In all
+cases, a program such as openssh is started and methods provided to send and
+receive data from the interactive session.
 
 You should not use this class directly, but instead inherit from it in
 specific Transport that will set the application command line name, and
@@ -161,6 +162,12 @@ During long sections of output, this slot allows more efficient detection of
 matches. Older data is placed here, and only the most recent line of data is
 stored in the C<buffer>. That's why C<flush> is the only way to ensure you get
 all the output data in one go.
+
+=head1 NOTES
+
+B<FIXME>: On Unix, when the Telnet transport is selected but C<IP::Pty> is
+unavailable, C<Net::Telnet> can still be used, but currently C<IPC::Run> is
+used instead.
 
 =cut
 
