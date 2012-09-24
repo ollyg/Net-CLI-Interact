@@ -27,7 +27,7 @@ ok(! eval { $pb->macro('TEST_MACRO_XXX') }, 'macro does not exist');
 my $m = $pb->macro('TEST_MACRO_ONE');
 isa_ok($m, 'Net::CLI::Interact::ActionSet');
 
-ok($s->set_phrasebook({ personality => 'cisco' }), 'new phrasebook loaded');
+ok($s->set_phrasebook({ personality => 'fwsm3' }), 'new phrasebook loaded');
 $pb = $s->phrasebook;
 
 ok(eval { $pb->prompt('basic') }, 'prompt exists');

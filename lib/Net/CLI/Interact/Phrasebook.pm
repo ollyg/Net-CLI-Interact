@@ -2,6 +2,8 @@ package Net::CLI::Interact::Phrasebook;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(InstanceOf Str Any HashRef);
+
+use Path::Class;
 use Net::CLI::Interact::ActionSet;
 
 has 'logger' => (
@@ -127,6 +129,7 @@ sub BUILD {
 sub load_phrasebooks {
     my $self = shift;
     my $data = {};
+    my $stash = { prompt => [], macro => [] };
 
     foreach my $file ($self->_find_phrasebooks) {
         $self->logger->log('phrasebook', 'info', 'reading phrasebook', $file);
@@ -136,7 +139,9 @@ sub load_phrasebooks {
             next if m/^(?:#|\s*$)/;
 
             if (m{^(prompt|macro)\s+(\w+)\s*$}) {
-                $self->_bake($data);
+                if (scalar keys %$data) {
+                    push @{ $stash->{$data->{type}} }, $data;
+                }
                 $data = {type => $1, name => $2};
                 next;
             }
@@ -187,48 +192,61 @@ sub load_phrasebooks {
             die "don't know what to do with this phrasebook line:\n", $_;
         }
         # last entry in the file needs baking
-        $self->_bake($data);
+        push @{ $stash->{$data->{type}} }, $data;
         $data = {};
+    }
+
+    # bake the prompts before the macros, to allow macros to reference
+    # prompts which appear later in the same file.
+    foreach my $t (qw/prompt macro/) {
+        foreach my $d (@{ $stash->{$t} }) {
+            $self->_bake($d);
+        }
     }
 }
 
 # finds the path of Phrasebooks within the Library leading to Personality
-use Path::Class;
 sub _find_phrasebooks {
     my $self = shift;
     my @libs = (ref $self->library ? @{$self->library} : ($self->library));
     my @alib = (ref $self->add_library ? @{$self->add_library} : ($self->add_library));
 
-    my @phrasebooks =
-        ( $self->_walk_find_files(@libs), $self->_walk_find_files(@alib) );
+    my @phrasebooks = $self->_gather_phrasebooks_from( @libs, @alib );
 
     die (sprintf "Personality [%s] contains no phrasebook files!\n",
             $self->personality) unless scalar @phrasebooks;
     return @phrasebooks;
 }
 
-sub _walk_find_files {
+sub _gather_phrasebooks_from {
     my ($self, @libs) = @_;
+    my @files = ();
 
-    my $target = undef;
     foreach my $l (@libs) {
+        # if there is a dir named same as personality in this lib,
+        # gather files from lib down to that dir, inclusive
+
+        my $target = undef;
         Path::Class::Dir->new($l)->recurse(callback => sub {
             return unless $_[0]->is_dir;
             $target = $_[0] if $_[0]->dir_list(-1) eq $self->personality
         });
-        last if $target;
-    }
-    return () unless defined $target;
+        next if not defined $target;
 
-    my @files = ();
-    my $root = Path::Class::Dir->new($target->is_absolute ? '' : ());
-    foreach my $part ( $target->dir_list ) {
-        $root = $root->subdir($part);
-        next if scalar grep { $root->subsumes($_) } @libs;
-        push @files,
-            sort {$a->basename cmp $b->basename}
-            grep { not $_->is_dir } $root->children(no_hidden => 1);
+        #$self->logger->log('phrasebook', 'debug',
+        #    sprintf 'found pb for personality [%s] at [%s] in lib [%s]',
+        #    $self->personality, $target->stringify, $l);
+
+        my $root = Path::Class::Dir->new($target->is_absolute ? '' : ());
+        foreach my $part ( $target->dir_list ) {
+            $root = $root->subdir($part);
+            next if $root->subsumes($l); # skip until $root is $l
+            push @files,
+                sort {$a->basename cmp $b->basename}
+                grep { not $_->is_dir } $root->children(no_hidden => 1);
+        }
     }
+
     return @files;
 }
 
@@ -291,8 +309,10 @@ later definitions with the same name and type override earlier ones.
 
 When this module is loaded, a I<personality> key is required. This locates a
 directory on disk, and then the files in that directory and all its ancestors
-in the hierarchy are loaded. The directory root is specified by two I<Library>
-options.
+in the hierarchy are loaded. The directories to search are specified by two
+I<Library> options (see below). All phrasebooks matching the given
+I<personality> are loaded, allowing a user to override or augment the default,
+shipped phrasebooks.
 
 =head1 INTERFACE
 

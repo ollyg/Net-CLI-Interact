@@ -31,7 +31,7 @@ document.
 
 =head1 Getting Started
 
-Like many other Perl modules, you need to load the library and then create a
+Like many other Perl modules, you need to load the module and then create a
 new Net::CLI::Interact instance (which is C<$s> in the example, below):
 
  use Net::CLI::Interact;
@@ -46,7 +46,7 @@ different devices at the same time); simply repeat the above example more
 times for variables other than C<$s>.
 
 Note that at the time you create the instance, as in the example above, the
-library I<does not> connect to the device. That comes later.
+module I<does not> connect to the device. That comes later.
 
 There were two options provided to the C<new> call, above, both of which are
 required for all new instances. Let's look at them in turn:
@@ -59,7 +59,7 @@ How do you want to connect to your CLI? The current choices are
 L<Telnet|Net::CLI::Interact::Transport::Telnet>,
 L<SSH|Net::CLI::Interact::Transport::SSH> and a
 L<Serial|Net::CLI::Interact::Transport::Serial> line (that is, a console
-cable). In this option you need to tell the library which underlying transport
+cable). In this option you need to tell the module which underlying transport
 is to be used.
 
 Some of the transports have additional options that are either required, or
@@ -78,10 +78,10 @@ See the manual page of the transport module for the option details.
 
 =item personality
 
-What language does the connected device speak? For instance one common format
-is Cisco's IOS, which is widely cloned on other vendor equipment CLIs. In this
-option you need to pass the name of a personality that's used to load a
-I<Phrasebook>.
+What language does the connected device speak?  In this option you need to
+pass the name of a personality that's used to load a I<Phrasebook>.  For
+instance one common format is Cisco's IOS, which is widely cloned on other
+vendor equipment CLIs.
 
 A phrasebook is simply a library, or dictionary, of pre-configured phrases you
 can use on the CLI. This makes life simple, because Net::CLI::Interact then
@@ -90,8 +90,13 @@ command and the output is "paged" so you hit Space or Return to see the next
 page, the phrasebook can tell Net::CLI::Interact how to slurp all these pages
 into one body of output before returning it to you.
 
-See the L<Phrasebook|Net::CLI::Interact::Manual::Phrasebook> user guide for a
-list of the possible values for the C<personality> option.
+This module ships with many phrasebooks which have been contributed by other
+users over the years. You can also write and use your own phrasebooks, which
+might replace, or add to, those shipped with the module. See the
+L<Phrasebook|Net::CLI::Interact::Manual::Phrasebook> user guide for a list of
+phrasebooks shipped with this distribution, and their corresponding
+C<personality> names. See also the C<add_library> option to C<new()> for
+specifying a path to your own phrasebooks.
 
 =back
 
@@ -106,7 +111,7 @@ device, so skip this step and move on!
 
 The idea of sending a command is, usually, to see some output. The most
 important part of this process is knowing when the output has all been sent,
-otherwise the library would sit forever, waiting to gather more text!
+otherwise the module would sit forever, waiting to gather more text!
 
 Between each command sent, the connected device prints a CLI I<Prompt>. This
 prompt is where you type commands, and it's what tells us that all the output
@@ -186,6 +191,6 @@ output, then set it like so:
 This is nothing more fancy than issuing the appropriate CLI commands to close
 the network connection. In the case of the Serial line transport you can
 usually only log out, and not fully disconnect. Simply end your application
-and the library will tidy things up as best it can.
+and the module will tidy things up as best it can.
 
 =cut

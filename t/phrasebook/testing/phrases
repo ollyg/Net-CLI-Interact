@@ -4,9 +4,6 @@ prompt TEST_PROMPT_ONE
 prompt TEST_PROMPT_TWO
     match /TEST_PROMPT_TWO$/
 
-prompt MATCH_ANY
-    match /^.+$/
-
 prompt TEST_PROMPT
     match /PROMPT>/
 
@@ -28,4 +25,7 @@ macro TEST_PROMPT_TWO
 macro TEST_MACRO_PARAMS
     send param %s param %s
     match MATCH_ANY
+
+prompt MATCH_ANY
+    match /^.+$/
 
