@@ -1,6 +1,12 @@
 {{$NEXT}}
 
   * Make IO::Pty dependency based on compiler availability
+  * Refactor to provide unix IPC::Run support where there is no IO::Pty
+  * Add opts support to Serial Transport
+  * Fix phrasebook loading to use all library and add_library paths
+  * Support out of order entries in phrasebooks (macro/prompt refs)
+  * New phrasebook for Bash shell
+  * Improve documentation on how to create new phrasebooks
 
 2.122630  2012-09-19 17:21:30 Europe/London
 
