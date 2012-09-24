@@ -33,8 +33,20 @@ dictionaries it inherits.
  Nortel    # Nortel support
  ExtremeOS # Extreme Networks support
  Foundry   # Foundry/Brocade device support
+ 
+ Bash      # GNU Bourne-Again SHell (i.e. most linux systems)
 
 =head1 PERSONALITIES
+
+=head2 Bash
+
+This personality goes by the name of C<bash>.
+
+Prompts are C<prompt>, C<privileged>, C<user> and C<pass>. The C<pass>
+prompt works either for an initial SSH connection, or a C<sudo> request.
+
+Macros are C<begin_privileged>, C<end_privileged>, and C<disconnect>. The
+C<begin_privileged> macro issues a C<sudo> request to become the root user.
 
 =head2 Cisco
 
