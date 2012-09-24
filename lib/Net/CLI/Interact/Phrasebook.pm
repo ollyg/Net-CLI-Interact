@@ -129,6 +129,7 @@ sub BUILD {
 sub load_phrasebooks {
     my $self = shift;
     my $data = {};
+    my $stash = { prompt => [], macro => [] };
 
     foreach my $file ($self->_find_phrasebooks) {
         $self->logger->log('phrasebook', 'info', 'reading phrasebook', $file);
@@ -138,7 +139,9 @@ sub load_phrasebooks {
             next if m/^(?:#|\s*$)/;
 
             if (m{^(prompt|macro)\s+(\w+)\s*$}) {
-                $self->_bake($data);
+                if (scalar keys %$data) {
+                    push @{ $stash->{$data->{type}} }, $data;
+                }
                 $data = {type => $1, name => $2};
                 next;
             }
@@ -189,8 +192,16 @@ sub load_phrasebooks {
             die "don't know what to do with this phrasebook line:\n", $_;
         }
         # last entry in the file needs baking
-        $self->_bake($data);
+        push @{ $stash->{$data->{type}} }, $data;
         $data = {};
+    }
+
+    # bake the prompts before the macros, to allow macros to reference
+    # prompts which appear later in the same file.
+    foreach my $t (qw/prompt macro/) {
+        foreach my $d (@{ $stash->{$t} }) {
+            $self->_bake($d);
+        }
     }
 }
 
