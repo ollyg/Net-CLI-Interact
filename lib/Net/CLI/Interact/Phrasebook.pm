@@ -298,8 +298,10 @@ later definitions with the same name and type override earlier ones.
 
 When this module is loaded, a I<personality> key is required. This locates a
 directory on disk, and then the files in that directory and all its ancestors
-in the hierarchy are loaded. The directory root is specified by two I<Library>
-options.
+in the hierarchy are loaded. The directories to search are specified by two
+I<Library> options (see below). All phrasebooks matching the given
+I<personality> are loaded, allowing a user to override or augment the default,
+shipped phrasebooks.
 
 =head1 INTERFACE
 
