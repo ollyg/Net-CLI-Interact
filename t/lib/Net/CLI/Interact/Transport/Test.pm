@@ -4,7 +4,7 @@ use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
@@ -13,6 +13,7 @@ extends 'Net::CLI::Interact::Transport';
     use Moo;
     extends 'Net::CLI::Interact::Transport::Options';
 }
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 has 'connect_options' => (
@@ -78,7 +79,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 
