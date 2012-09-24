@@ -4,7 +4,7 @@ use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
@@ -53,7 +53,7 @@ sub _build_app {
     my $self = shift;
     die "please pass location of plink.exe in 'app' parameter to new()\n"
         if $self->is_win32;
-    return 'Net::Telnet'; # unix, but unused
+    return 'telnet';
 }
 
 sub runtime_options {
@@ -66,11 +66,18 @@ sub runtime_options {
             $self->connect_options->host,
         );
     }
-    else {
+    elsif ($self->can_use_pty) {
         return (
             Host => $self->connect_options->host,
             Port => $self->connect_options->port,
             @{$self->connect_options->opts},
+        );
+    }
+    else {
+        return (
+            @{$self->connect_options->opts},
+            $self->connect_options->host,
+            $self->connect_options->port,
         );
     }
 }
@@ -79,7 +86,7 @@ sub runtime_options {
 
 # ABSTRACT: TELNET based CLI connection
 
-=head1 DECRIPTION
+=head1 DESCRIPTION
 
 This module provides a wrapped instance of a TELNET client for use by
 L<Net::CLI::Interact>.

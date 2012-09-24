@@ -1,16 +1,16 @@
-package Net::CLI::Interact::Transport::Base::Win32;
+package Net::CLI::Interact::Transport::Wrapper::IPC_Run;
 
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(ScalarRef InstanceOf);
 
-extends 'Net::CLI::Interact::Transport::Base';
+extends 'Net::CLI::Interact::Transport::Wrapper::Base';
 
 {
     package # hide from pause
-        Net::CLI::Interact::Transport::Platform::Options;
+        Net::CLI::Interact::Transport::Wrapper::Options;
     use Moo;
-    extends 'Net::CLI::Interact::Transport::Base::Options';
+    extends 'Net::CLI::Interact::Transport::Wrapper::Base::Options';
 }
 
 use IPC::Run ();

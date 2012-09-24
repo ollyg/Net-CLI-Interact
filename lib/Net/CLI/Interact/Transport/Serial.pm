@@ -4,7 +4,7 @@ use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
@@ -78,7 +78,7 @@ sub runtime_options {
 
 # ABSTRACT: Serial-line based CLI connection
 
-=head1 DECRIPTION
+=head1 DESCRIPTION
 
 This module provides a wrapped instance of a Serial-line client for use by
 L<Net::CLI::Interact>.
