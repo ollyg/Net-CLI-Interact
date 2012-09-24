@@ -46,11 +46,15 @@ use Net::CLI::Interact::ActionSet;
 has 'last_actionset' => (
     is => 'rw',
     isa => InstanceOf['Net::CLI::Interact::ActionSet'],
-    trigger => sub {
-        (shift)->logger->log('prompt', 'notice',
-            sprintf ('prompt matched was "%s"', (shift)->item_at(-1)->response));
-    },
+    trigger => 1,
 );
+
+sub _trigger_last_actionset {
+    my ($self, $new) = @_;
+    my $irs_re = $self->transport->irs_re;
+    $new->item_at(-1)->response =~ m/^(?:.*$irs_re)?(.*)/s;
+    $self->logger->log('prompt', 'notice', qq{output matching prompt was "$1"}) if $1;
+}
 
 sub last_response {
     my $self = shift;
@@ -152,7 +156,7 @@ sub _execute_actions {
     $self->transport->timeout($timeout_bak);
     $self->last_actionset($set);
 
-    $self->logger->log('prompt', 'info',
+    $self->logger->log('prompt', 'debug',
         sprintf 'setting new prompt to %s',
             $self->last_actionset->last->prompt_hit || '<none>');
     $self->_prompt( $self->last_actionset->last->prompt_hit );
