@@ -1,6 +1,7 @@
 package Net::CLI::Interact::Transport::Base;
 
 use Moo;
+use MooX::Types::MooseLike::Base qw(InstanceOf);
 
 BEGIN {
     sub is_win32 { return ($^O eq 'MSWin32') }

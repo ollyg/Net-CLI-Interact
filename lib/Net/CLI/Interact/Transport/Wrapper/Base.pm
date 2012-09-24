@@ -2,13 +2,14 @@ package Net::CLI::Interact::Transport::Wrapper::Base;
 
 use Moo;
 use Sub::Quote;
-use MooX::Types::MooseLike::Base qw(Int InstanceOf RegexpRef Str Object);
+use MooX::Types::MooseLike::Base qw(Int RegexpRef Str Object);
 
 with 'Net::CLI::Interact::Role::FindMatch';
 
 {
     package # hide from pause
         Net::CLI::Interact::Transport::Wrapper::Base::Options;
+    use Moo;
 }
 
 has 'use_net_telnet_connection' => (
