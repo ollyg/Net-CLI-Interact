@@ -4,7 +4,7 @@ use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
@@ -94,7 +94,7 @@ sub runtime_options {
 
 # ABSTRACT: SSH based CLI connection
 
-=head1 DECRIPTION
+=head1 DESCRIPTION
 
 This module provides a wrapped instance of an SSH client for use by
 L<Net::CLI::Interact>.
@@ -176,7 +176,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 
