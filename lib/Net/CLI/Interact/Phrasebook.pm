@@ -211,42 +211,51 @@ sub _find_phrasebooks {
     my @libs = (ref $self->library ? @{$self->library} : ($self->library));
     my @alib = (ref $self->add_library ? @{$self->add_library} : ($self->add_library));
 
-    my @phrasebooks = $self->_gather_phrasebooks_from( @libs, @alib );
+    # first find the (relative) path for the requested personality
+    # then within each of @libs gather the files along that path
+
+    my $target = $self->_find_personality_in( @libs, @alib );
+    my @files = $self->_gather_pb_from( $target, @libs, @alib );
 
     die (sprintf "Personality [%s] contains no phrasebook files!\n",
-            $self->personality) unless scalar @phrasebooks;
-    return @phrasebooks;
+            $self->personality) unless scalar @files;
+    return @files;
 }
 
-sub _gather_phrasebooks_from {
+sub _find_personality_in {
     my ($self, @libs) = @_;
+    my $target = undef;
+
+    foreach my $lib (@libs) {
+        Path::Class::Dir->new($lib)->recurse(callback => sub {
+            return unless $_[0]->is_dir;
+            $target = Path::Class::Dir->new($_[0])->relative($lib)
+                if $_[0]->dir_list(-1) eq $self->personality
+        });
+        last if defined $target;
+    }
+    return $target;
+}
+
+sub _gather_pb_from {
+    my ($self, $target, @libs) = @_;
     my @files = ();
 
-    foreach my $l (@libs) {
-        # if there is a dir named same as personality in this lib,
-        # gather files from lib down to that dir, inclusive
+    return () unless $target->isa('Path::Class::Dir') and $target->is_relative;
 
-        my $target = undef;
-        Path::Class::Dir->new($l)->recurse(callback => sub {
-            return unless $_[0]->is_dir;
-            $target = $_[0] if $_[0]->dir_list(-1) eq $self->personality
-        });
-        next if not defined $target;
+    foreach my $lib (@libs) {
+        my $root = Path::Class::Dir->new($lib);
 
-        #$self->logger->log('phrasebook', 'debug',
-        #    sprintf 'found pb for personality [%s] at [%s] in lib [%s]',
-        #    $self->personality, $target->stringify, $l);
-
-        my $root = Path::Class::Dir->new($target->is_absolute ? '' : ());
-        foreach my $part ( $target->dir_list ) {
+        foreach my $part ($target->dir_list) {
             $root = $root->subdir($part);
-            next if $root->subsumes($l); # skip until $root is $l
+            # $self->logger->log('phrasebook', 'debug', sprintf 'searching in [%s]', $root);
+            last if not -d $root->stringify;
+
             push @files,
                 sort {$a->basename cmp $b->basename}
                 grep { not $_->is_dir } $root->children(no_hidden => 1);
         }
     }
-
     return @files;
 }
 

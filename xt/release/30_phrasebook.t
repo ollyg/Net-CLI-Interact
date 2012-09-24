@@ -42,4 +42,10 @@ ok(! eval { $pb->macro('begin_privileged_XXX') }, 'macro does not exist');
 my $m2 = $pb->macro('end_privileged');
 isa_ok($m2, 'Net::CLI::Interact::ActionSet');
 
+ok($s->set_phrasebook({ personality => 'blah' }), 'new phrasebook loaded');
+$pb = $s->phrasebook;
+
+ok(eval { $pb->prompt('blahblah') }, 'local prompt exists');
+ok(eval { $pb->prompt('err_string') }, 'remote prompt exists');
+
 done_testing;
