@@ -176,7 +176,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 

@@ -62,7 +62,10 @@ sub runtime_options {
     my $self = shift;
 
     if ($self->is_win32) {
-        return ('-serial',);
+        return (
+            '-serial',
+            $self->connect_options->device,
+        );
     }
     else {
         return (
@@ -138,7 +141,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 

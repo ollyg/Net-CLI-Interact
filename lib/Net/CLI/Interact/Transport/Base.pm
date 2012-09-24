@@ -31,7 +31,8 @@ has 'logger' => (
 
 This module provides a generic cross-platform interface with
 the purpose of interacting with a command line interface. On Windows the
-L<IPC::Run> module is used and on Unix, L<Net::Telnet>. In both cases, a
+L<IPC::Run> module is used and on Unix when L<IO::Pty> is available (it
+requires a compiler) L<Net::Telnet>, else C<IPC::Run>. In all cases, a
 program such as openssh is started and methods provided to send and receive
 data from the interactive session.
 

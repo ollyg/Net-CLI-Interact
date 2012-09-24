@@ -123,9 +123,17 @@ If you want to pass any other options to the Telnet application, then use
 this option, which should be an array reference.
 
 On Windows platforms, each item on the list will be passed to the C<plink.exe>
-application, separated by a single space character. On Unix platforms, the
-L<Net::Telnet> library is used for TELNET connections, so the list can be any
-options taken by its C<new()> constructor.
+application, separated by a single space character. On Unix platforms, if depends
+whether you have L<IO::Pty> installed (which in turn depends on a compiler).
+Typically, the L<Net::Telnet> library is used for TELNET connections, so the 
+list can be any options taken by its C<new()> constructor. Otherwise the local
+C<telnet> application is used.
+
+=item reap
+
+Only used on Unix platforms, this installs a signal handler which attempts to
+reap the C<ssh> child process. Pass a true value to enable this feature only
+if you notice zombie processes are being left behind after use.
 
 =back
 
@@ -137,7 +145,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 
