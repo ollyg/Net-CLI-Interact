@@ -98,7 +98,7 @@ sub do_action {
 
         while ($self->pump) {
             # remove control characters
-            (my $buffer = $self->buffer) =~ s/[\000-\010\013\014\016-\037]//g;
+            (my $buffer = $self->buffer) =~ s/[\000-\010\013\014\016-\032\034-\037]//g;
             $self->logger->log('dump', 'debug', "SEEN:\n". $buffer);
 
             if ($buffer =~ m/^(.*$irs_re)(.*)/s) {
