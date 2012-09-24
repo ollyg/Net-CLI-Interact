@@ -12,7 +12,7 @@ extends 'Net::CLI::Interact::Transport::Base';
 
     use Moo;
     use Sub::Quote;
-    use MooX::Types::MooseLike::Base qw(Str Bool Int);
+    use MooX::Types::MooseLike::Base qw(Str Bool Int ArrayRef Any);
 
     extends 'Net::CLI::Interact::Transport::Options';
 
@@ -40,6 +40,12 @@ extends 'Net::CLI::Interact::Transport::Base';
         isa => Int,
         default => quote_sub('9600'),
     );
+
+    has 'opts' => (
+        is => 'rw',
+        isa => ArrayRef[Any],
+        default => sub { [] },
+    );
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -64,6 +70,7 @@ sub runtime_options {
     if ($self->is_win32) {
         return (
             '-serial',
+            @{$self->connect_options->opts},
             $self->connect_options->device,
         );
     }
@@ -73,6 +80,7 @@ sub runtime_options {
             ('-l ' . $self->connect_options->device),
             ('-s ' . $self->connect_options->speed),
             ($self->connect_options->nostop ? '--nostop' : ()),
+            @{$self->connect_options->opts},
         );
     }
 }
@@ -124,6 +132,12 @@ value.
 
 You can set the speed (or I<baud rate>) of the serial line by passing a value
 to this named parameter. The default is C<9600>.
+
+=item opts
+
+If you want to pass any other options to the application, then use
+this option, which should be an array reference. Each item in the list will be
+passed to the application, separated by a single space character.
 
 =item reap
 
