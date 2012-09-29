@@ -12,6 +12,7 @@
   * Improve documentation on how to create new phrasebooks
   * Smarter log message for output matching prompt
   * Permit ASCII escape \033 in device output
+  * Added Loopback transport for testing
 
 2.122630  2012-09-19 17:21:30 Europe/London
 

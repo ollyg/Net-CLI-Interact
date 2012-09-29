@@ -1,4 +1,4 @@
-package Net::CLI::Interact::Transport::Test;
+package Net::CLI::Interact::Transport::Loopback;
 
 use Moo;
 use Sub::Quote;
@@ -8,7 +8,7 @@ extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
-        Net::CLI::Interact::Transport::Test::Options;
+        Net::CLI::Interact::Transport::Loopback::Options;
 
     use Moo;
     extends 'Net::CLI::Interact::Transport::Options';
@@ -18,10 +18,10 @@ extends 'Net::CLI::Interact::Transport::Base';
 
 has 'connect_options' => (
     is => 'ro',
-    isa => InstanceOf['Net::CLI::Interact::Transport::Test::Options'],
+    isa => InstanceOf['Net::CLI::Interact::Transport::Loopback::Options'],
     default => sub { {} },
     coerce => quote_sub(
-        q{ Net::CLI::Interact::Transport::Test::Options->new(@_) if ref '' ne ref $_[0] }),
+        q{ Net::CLI::Interact::Transport::Loopback::Options->new(@_) if ref '' ne ref $_[0] }),
     required => 1,
 );
 
