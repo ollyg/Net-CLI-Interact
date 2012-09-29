@@ -10,9 +10,10 @@
   * Support out of order entries in phrasebooks (macro/prompt refs)
   * New phrasebook for Bash shell
   * Improve documentation on how to create new phrasebooks
-  * Smarter log message for output matching prompt
   * Permit ASCII escape \033 in device output
   * Added Loopback transport for testing
+  * find_prompt now stores a full ActionSet after success
+  * debug level logging will use Data::Printer on last_actionset if it can
 
 2.122630  2012-09-19 17:21:30 Europe/London
 

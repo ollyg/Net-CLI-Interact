@@ -42,6 +42,7 @@ with 'Net::CLI::Interact::Role::Prompt';
 
 use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
+use Class::Load ();
 
 has 'last_actionset' => (
     is => 'rw',
@@ -51,9 +52,12 @@ has 'last_actionset' => (
 
 sub _trigger_last_actionset {
     my ($self, $new) = @_;
-    my $irs_re = $self->transport->irs_re;
-    $new->item_at(-1)->response =~ m/^(?:.*$irs_re)?(.*)/s;
-    $self->logger->log('prompt', 'notice', qq{output matching prompt was "$1"}) if $1;
+    $self->logger->log('prompt', 'notice',
+        sprintf ('output matching prompt was "%s"', $new->item_at(-1)->response));
+    if ($self->logger->would_log('prompt','debug')
+            and Class::Load::is_class_loaded('Data::Printer')) {
+        Data::Printer::p($new);
+    }
 }
 
 sub last_response {
