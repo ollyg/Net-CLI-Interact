@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+2.122730  2012-09-29 23:49:08 Europe/London
+
   * IMPORTANT: the prompts named "prompt" are now called "generic"
     If you have written macros depending on these, please update your phrasebooks.
 
