@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '2.122630';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '2.122730';
 }
 
 use Moo::Role;
@@ -50,6 +50,38 @@ sub prompt_looks_like {
     );
 }
 
+# create an ActionSet of one send and one match Action, for the wake_up
+sub _fabricate_actionset {
+    my $self = shift;
+
+    my $output = $self->transport->flush;
+    my $irs_re = $self->transport->irs_re;
+
+    $output =~ s/^(?:$irs_re)+//;
+    my @output_lines = split $irs_re, $output;
+    my $last_output_line = pop @output_lines;
+    my $current_match = [$self->prompt_re];
+
+    my $set = Net::CLI::Interact::ActionSet->new({
+        current_match => $current_match,
+        actions => [
+            {
+                type => 'send',
+                value => ($self->has_wake_up_msg ? $self->wake_up_msg : ''),
+                response => (join "\n", @output_lines, ''),
+            },
+            {
+                type => 'match',
+                response => $last_output_line,
+                value => $current_match,
+                prompt_hit => $current_match->[0],
+            },
+        ],
+    });
+
+    return $set;
+}
+
 # pump until any of the prompts matches the output buffer
 sub find_prompt {
     my ($self, $wake_up) = @_;
@@ -68,14 +100,8 @@ sub find_prompt {
                         $self->transport->buffer,
                         $self->phrasebook->prompt($prompt)->first->value)) {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
-                    $self->last_actionset(
-                        Net::CLI::Interact::ActionSet->new({ actions => [
-                            $self->phrasebook->prompt($prompt)->first->clone({
-                                response => $self->transport->flush,
-                            })
-                        ] })
-                    );
                     $self->set_prompt($prompt);
+                    $self->last_actionset( $self->_fabricate_actionset() );
                     last PUMPING;
                 }
                 $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
@@ -103,6 +129,7 @@ sub find_prompt {
         if (not $self->has_set_prompt) {
             # trouble... we were asked to find a prompt but failed :-(
             $self->logger->log('prompt', 'critical', 'failed to find prompt! wrong phrasebook?');
+
             # bail out with what we have...
             my $output = $self->transport->flush;
             $self->transport->disconnect;
@@ -125,7 +152,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 2.122630
+version 2.122730
 
 =head1 DESCRIPTION
 

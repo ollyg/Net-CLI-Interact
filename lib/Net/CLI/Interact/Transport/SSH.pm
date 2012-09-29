@@ -1,13 +1,13 @@
 package Net::CLI::Interact::Transport::SSH;
 {
-  $Net::CLI::Interact::Transport::SSH::VERSION = '2.122630';
+  $Net::CLI::Interact::Transport::SSH::VERSION = '2.122730';
 }
 
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
@@ -107,9 +107,9 @@ Net::CLI::Interact::Transport::SSH - SSH based CLI connection
 
 =head1 VERSION
 
-version 2.122630
+version 2.122730
 
-=head1 DECRIPTION
+=head1 DESCRIPTION
 
 This module provides a wrapped instance of an SSH client for use by
 L<Net::CLI::Interact>.
@@ -191,7 +191,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 

@@ -1,13 +1,13 @@
 package Net::CLI::Interact::Transport::Serial;
 {
-  $Net::CLI::Interact::Transport::Serial::VERSION = '2.122630';
+  $Net::CLI::Interact::Transport::Serial::VERSION = '2.122730';
 }
 
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
@@ -15,7 +15,7 @@ extends 'Net::CLI::Interact::Transport';
 
     use Moo;
     use Sub::Quote;
-    use MooX::Types::MooseLike::Base qw(Str Bool Int);
+    use MooX::Types::MooseLike::Base qw(Str Bool Int ArrayRef Any);
 
     extends 'Net::CLI::Interact::Transport::Options';
 
@@ -43,6 +43,12 @@ extends 'Net::CLI::Interact::Transport';
         isa => Int,
         default => quote_sub('9600'),
     );
+
+    has 'opts' => (
+        is => 'rw',
+        isa => ArrayRef[Any],
+        default => sub { [] },
+    );
 }
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -65,7 +71,11 @@ sub runtime_options {
     my $self = shift;
 
     if ($self->is_win32) {
-        return ('-serial',);
+        return (
+            '-serial',
+            @{$self->connect_options->opts},
+            $self->connect_options->device,
+        );
     }
     else {
         return (
@@ -73,6 +83,7 @@ sub runtime_options {
             ('-l ' . $self->connect_options->device),
             ('-s ' . $self->connect_options->speed),
             ($self->connect_options->nostop ? '--nostop' : ()),
+            @{$self->connect_options->opts},
         );
     }
 }
@@ -91,9 +102,9 @@ Net::CLI::Interact::Transport::Serial - Serial-line based CLI connection
 
 =head1 VERSION
 
-version 2.122630
+version 2.122730
 
-=head1 DECRIPTION
+=head1 DESCRIPTION
 
 This module provides a wrapped instance of a Serial-line client for use by
 L<Net::CLI::Interact>.
@@ -137,6 +148,12 @@ value.
 You can set the speed (or I<baud rate>) of the serial line by passing a value
 to this named parameter. The default is C<9600>.
 
+=item opts
+
+If you want to pass any other options to the application, then use
+this option, which should be an array reference. Each item in the list will be
+passed to the application, separated by a single space character.
+
 =item reap
 
 Only used on Unix platforms, this installs a signal handler which attempts to
@@ -153,7 +170,7 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 

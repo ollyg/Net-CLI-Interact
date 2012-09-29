@@ -4,10 +4,11 @@ author:
   - 'Oliver Gorwits <oliver@cpan.org>'
 build_requires:
   Test::More: 0.88
+  warnings: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.30
-dynamic_config: 1
-generated_by: 'Dist::Zilla version 4.200013, CPAN::Meta::Converter version 2.112150'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300024, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -30,8 +31,9 @@ requires:
   Path::Class: 0
   Sub::Quote: 0
   Time::HiRes: 0
+  strict: 0
 resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Net-CLI-Interact
   homepage: https://github.com/ollyg/Net-CLI-Interact/wiki
   repository: git://github.com/ollyg/Net-CLI-Interact.git
-version: 2.122630
+version: 2.122730

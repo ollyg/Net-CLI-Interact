@@ -11,7 +11,7 @@ However one additional step is required for you to have success:
 You B<must> download the C<plink.exe> application, and pass its filesystem
 location in the C<app> parameter to C<new()>. Do not try to use any other
 Telnet or SSH programs (for instance the Windows bundled C<telnet>) - they
-I<will not work>. Here's an example:
+I<will not work>. Here's an example, if C<plink.exe> is on your Desktop:
 
  my $s = Net::CLI::Interact->new(
      personality => "cisco",
@@ -38,68 +38,11 @@ after running your script. If this happens, set the C<reap> option, like so:
     },
  );
 
-=head1 Phrasebook Entries
-
-=head2 Prompts
-
-These are nothing more than named regular expressions:
-
- prompt configure
-     match /\(config[^)]*\)# ?$/
-
-=head2 Macros
-
-This example waits for the device to ask "[startup-config]?" and then responds
-with the text C<startup-config>.
-
- macro copy_run_start
-     send copy running-config startup-config
-     match /Destination filename \[startup-config\]\?$/
-     send startup-config
-
-To send instead a press of the Return key (I<output record separator>), use:
-
- macro write_mem
-     send copy running-config startup-config
-     match /Destination filename \[startup-config\]\?$/
-     send ''
-
-To instead allow the user to pass in the file name, use a C<sprintf> format.
-
- macro save_to_file
-     send copy running-config startup-config
-     match /Destination filename \[startup-config\]\?$/
-     send %s
-
-The user I<must> then pass a parameter to the C<macro> call, even if it's an
-empty string:
-
- $s->macro('save_to_file', { params => ['file_name'] });
- # or
- $s->macro('save_to_file', { params => [''] });
-
-=head2 Continuations
-
-These are Macros which start with a match instead of a send:
-
- macro more_pages
-     match / --More-- /
-     send ' '
-
-Note that the parameter of the C<send> is I<not> sent with a Return character
-(I<output record separator>) appended.
-
-When included in a macro, the continuation can be in-line, like this:
-
- macro show_ip_route
-     send show ip route
-     follow / --More-- / with ' '
-
 =head1 Running Commands
 
-=head2 Standalone Commands
+=head2 Simple Commands
 
-Simply send the command you wish to execute to the library. If not already
+Simply send the command you wish to execute to the session. If not already
 done, a connection to the device will be established automatically:
 
  $s->cmd('show ip int br');
@@ -113,7 +56,10 @@ It's also possible to pass in a custom prompt for this command only:
 
  $s->cmd('show ip int br', { match => qr/special prompt>$/ });
 
-=head2 Composite Macro Commands
+However be aware that a side effect of this is that the custom prompt
+becomes the new default prompt for subsequent commands or macros.
+
+=head2 Macro Commands
 
 Call a predefined Macro from the phrasebook using this method:
 
@@ -150,5 +96,91 @@ If you want to test whether the current prompt matches a diffrent named Prompt
 from the phrasebook, this method can be used:
 
  $s->prompt_looks_like('name');
+
+=head1 Phrasebook Libraries
+
+You can override or add to the device command phrasebooks which ship with this
+distribution. To start with, check the shipped dictionary for your device's
+current level of support, at L<Net::CLI::Interact::Manual::Phasebook>.
+
+If you want to add either some prompts or macros, first read the documentation
+for these systems at L<Net::CLI::Interact::Phrasebook>.
+
+All phrasebooks can inherit from others, and this is based on their location
+in a filesystem tree. See the phrasebooks bundled with the
+L<Net::CLI::Interact> distribution for an example of this in action.
+
+If you wish to override a phrasebook entry, simply set C<add_library> in your
+code, and then create a file at the same relative point beneath that library
+directory as the original version shipped with the C<Net::CLI::Interact>
+module, for example "C<< <add_library>/cisco/pixos/pixos7/my_phrases >>".
+
+The file itself (C<my_phrases>) does not have to be the same name as the
+original, and you can have more than one file if it helps. Only the directory
+is matched against your chosen C<personality> and then all files in there, and
+higher in the C<add_library> tree, and distribution C<library> tree, are
+loaded.
+
+To check what phrasebooks and prompts/macros are loaded, run your script with
+debug level set to C<notice>. The easiest way to do this is by setting the
+environment variable C<NCI_LOG_AT=notice>.
+
+=head1 Phrasebook Entries
+
+=head2 Prompts
+
+These are nothing more than named regular expressions:
+
+ prompt configure
+     match /\(config[^)]*\)# ?$/
+
+=head2 Macros
+
+This example waits for the device to ask "[startup-config]?" and then responds
+with the text C<startup-config>. Remember, there is an implicit C<match>
+statement added at the end, which is the current prompt.
+
+ macro copy_run_start
+     send copy running-config startup-config
+     match /Destination filename \[startup-config\]\?$/
+     send startup-config
+
+To send instead a "press" of the Return key (I<output record separator>), use:
+
+ macro write_mem
+     send copy running-config startup-config
+     match /Destination filename \[startup-config\]\?$/
+     send ''
+
+To instead allow the user to pass in the file name, use a C<sprintf> format.
+
+ macro save_to_file
+     send copy running-config startup-config
+     match /Destination filename \[startup-config\]\?$/
+     send %s
+
+The user I<must> then pass a parameter to the C<macro> call, even if it's an
+empty string:
+
+ $s->macro('save_to_file', { params => ['file_name'] });
+ # or
+ $s->macro('save_to_file', { params => [''] });
+
+=head2 Continuations
+
+These are Macros which start with a match instead of a send:
+
+ macro more_pages
+     match / --More-- /
+     send ' '
+
+Note that the parameter of the C<send> is I<not> sent with a Return character
+(I<output record separator>) appended.
+
+When included in a macro, the continuation can be in-line, like this:
+
+ macro show_ip_route
+     send show ip route
+     follow / --More-- / with ' '
 
 =cut

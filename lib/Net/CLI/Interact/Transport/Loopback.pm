@@ -1,26 +1,30 @@
-package Net::CLI::Interact::Transport::Test;
+package Net::CLI::Interact::Transport::Loopback;
+{
+  $Net::CLI::Interact::Transport::Loopback::VERSION = '2.122730';
+}
 
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
 
-extends 'Net::CLI::Interact::Transport';
+extends 'Net::CLI::Interact::Transport::Base';
 
 {
     package # hide from pause
-        Net::CLI::Interact::Transport::Test::Options;
+        Net::CLI::Interact::Transport::Loopback::Options;
 
     use Moo;
     extends 'Net::CLI::Interact::Transport::Options';
 }
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 has 'connect_options' => (
     is => 'ro',
-    isa => InstanceOf['Net::CLI::Interact::Transport::Test::Options'],
+    isa => InstanceOf['Net::CLI::Interact::Transport::Loopback::Options'],
     default => sub { {} },
     coerce => quote_sub(
-        q{ Net::CLI::Interact::Transport::Test::Options->new(@_) if ref '' ne ref $_[0] }),
+        q{ Net::CLI::Interact::Transport::Loopback::Options->new(@_) if ref '' ne ref $_[0] }),
     required => 1,
 );
 
@@ -42,6 +46,18 @@ sub runtime_options {
 1;
 
 # ABSTRACT: Testable CLI connection
+
+
+__END__
+=pod
+
+=head1 NAME
+
+Net::CLI::Interact::Transport::Loopback - Testable CLI connection
+
+=head1 VERSION
+
+version 2.122730
 
 =head1 DECRIPTION
 
@@ -78,8 +94,20 @@ See the following for further interface details:
 
 =item *
 
-L<Net::CLI::Interact::Transport>
+L<Net::CLI::Interact::Transport::Base>
 
 =back
 
+=head1 AUTHOR
+
+Oliver Gorwits <oliver@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Oliver Gorwits.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

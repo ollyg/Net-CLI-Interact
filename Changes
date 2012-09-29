@@ -1,3 +1,20 @@
+2.122730  2012-09-29 23:49:08 Europe/London
+
+  * IMPORTANT: the prompts named "prompt" are now called "generic"
+    If you have written macros depending on these, please update your phrasebooks.
+
+  * Make IO::Pty dependency based on compiler availability
+  * Refactor to provide unix IPC::Run support where there is no IO::Pty
+  * Add opts support to Serial Transport
+  * Fix phrasebook loading to use all library and add_library paths
+  * Support out of order entries in phrasebooks (macro/prompt refs)
+  * New phrasebook for Bash shell
+  * Improve documentation on how to create new phrasebooks
+  * Permit ASCII escape \033 in device output
+  * Added Loopback transport for testing
+  * find_prompt now stores a full ActionSet after success
+  * debug level logging will use Data::Printer on last_actionset if it can
+
 2.122630  2012-09-19 17:21:30 Europe/London
 
   * Port from Moose to Moo

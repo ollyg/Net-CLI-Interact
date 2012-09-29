@@ -1,10 +1,12 @@
 package Net::CLI::Interact::Phrasebook;
 {
-  $Net::CLI::Interact::Phrasebook::VERSION = '2.122630';
+  $Net::CLI::Interact::Phrasebook::VERSION = '2.122730';
 }
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(InstanceOf Str Any HashRef);
+
+use Path::Class;
 use Net::CLI::Interact::ActionSet;
 
 has 'logger' => (
@@ -130,6 +132,7 @@ sub BUILD {
 sub load_phrasebooks {
     my $self = shift;
     my $data = {};
+    my $stash = { prompt => [], macro => [] };
 
     foreach my $file ($self->_find_phrasebooks) {
         $self->logger->log('phrasebook', 'info', 'reading phrasebook', $file);
@@ -139,7 +142,9 @@ sub load_phrasebooks {
             next if m/^(?:#|\s*$)/;
 
             if (m{^(prompt|macro)\s+(\w+)\s*$}) {
-                $self->_bake($data);
+                if (scalar keys %$data) {
+                    push @{ $stash->{$data->{type}} }, $data;
+                }
                 $data = {type => $1, name => $2};
                 next;
             }
@@ -190,47 +195,69 @@ sub load_phrasebooks {
             die "don't know what to do with this phrasebook line:\n", $_;
         }
         # last entry in the file needs baking
-        $self->_bake($data);
+        push @{ $stash->{$data->{type}} }, $data;
         $data = {};
+    }
+
+    # bake the prompts before the macros, to allow macros to reference
+    # prompts which appear later in the same file.
+    foreach my $t (qw/prompt macro/) {
+        foreach my $d (@{ $stash->{$t} }) {
+            $self->_bake($d);
+        }
     }
 }
 
 # finds the path of Phrasebooks within the Library leading to Personality
-use Path::Class;
 sub _find_phrasebooks {
     my $self = shift;
     my @libs = (ref $self->library ? @{$self->library} : ($self->library));
     my @alib = (ref $self->add_library ? @{$self->add_library} : ($self->add_library));
 
-    my @phrasebooks =
-        ( $self->_walk_find_files(@libs), $self->_walk_find_files(@alib) );
+    # first find the (relative) path for the requested personality
+    # then within each of @libs gather the files along that path
+
+    my $target = $self->_find_personality_in( @libs, @alib );
+    my @files = $self->_gather_pb_from( $target, @libs, @alib );
 
     die (sprintf "Personality [%s] contains no phrasebook files!\n",
-            $self->personality) unless scalar @phrasebooks;
-    return @phrasebooks;
+            $self->personality) unless scalar @files;
+    return @files;
 }
 
-sub _walk_find_files {
+sub _find_personality_in {
     my ($self, @libs) = @_;
-
     my $target = undef;
-    foreach my $l (@libs) {
-        Path::Class::Dir->new($l)->recurse(callback => sub {
-            return unless $_[0]->is_dir;
-            $target = $_[0] if $_[0]->dir_list(-1) eq $self->personality
-        });
-        last if $target;
-    }
-    return () unless defined $target;
 
+    foreach my $lib (@libs) {
+        Path::Class::Dir->new($lib)->recurse(callback => sub {
+            return unless $_[0]->is_dir;
+            $target = Path::Class::Dir->new($_[0])->relative($lib)
+                if $_[0]->dir_list(-1) eq $self->personality
+        });
+        last if defined $target;
+    }
+    return $target;
+}
+
+sub _gather_pb_from {
+    my ($self, $target, @libs) = @_;
     my @files = ();
-    my $root = Path::Class::Dir->new($target->is_absolute ? '' : ());
-    foreach my $part ( $target->dir_list ) {
-        $root = $root->subdir($part);
-        next if scalar grep { $root->subsumes($_) } @libs;
-        push @files,
-            sort {$a->basename cmp $b->basename}
-            grep { not $_->is_dir } $root->children(no_hidden => 1);
+
+    return () unless $target->isa('Path::Class::Dir') and $target->is_relative;
+
+    foreach my $lib (@libs) {
+        my $root = Path::Class::Dir->new($lib);
+
+        foreach my $part ($target->dir_list) {
+            $root = $root->subdir($part);
+            # $self->logger->log('phrasebook', 'debug', sprintf 'searching in [%s]', $root);
+            last if not -d $root->stringify;
+
+            push @files,
+                sort {$a->basename cmp $b->basename}
+                grep { not $_->is_dir } $root->children(no_hidden => 1);
+        }
     }
     return @files;
 }
@@ -249,7 +276,7 @@ Net::CLI::Interact::Phrasebook - Load command phrasebooks from a Library
 
 =head1 VERSION
 
-version 2.122630
+version 2.122730
 
 =head1 DESCRIPTION
 
@@ -306,8 +333,10 @@ later definitions with the same name and type override earlier ones.
 
 When this module is loaded, a I<personality> key is required. This locates a
 directory on disk, and then the files in that directory and all its ancestors
-in the hierarchy are loaded. The directory root is specified by two I<Library>
-options.
+in the hierarchy are loaded. The directories to search are specified by two
+I<Library> options (see below). All phrasebooks matching the given
+I<personality> are loaded, allowing a user to override or augment the default,
+shipped phrasebooks.
 
 =head1 INTERFACE
 

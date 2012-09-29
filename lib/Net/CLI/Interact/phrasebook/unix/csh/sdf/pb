@@ -1,4 +1,4 @@
-prompt prompt
+prompt generic
     match /\$ $/
 
 prompt shell

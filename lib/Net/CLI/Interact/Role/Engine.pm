@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '2.122630';
+  $Net::CLI::Interact::Role::Engine::VERSION = '2.122730';
 }
 
 {
@@ -45,15 +45,23 @@ with 'Net::CLI::Interact::Role::Prompt';
 
 use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
+use Class::Load ();
 
 has 'last_actionset' => (
     is => 'rw',
     isa => InstanceOf['Net::CLI::Interact::ActionSet'],
-    trigger => sub {
-        (shift)->logger->log('prompt', 'notice',
-            sprintf ('prompt matched was "%s"', (shift)->item_at(-1)->response));
-    },
+    trigger => 1,
 );
+
+sub _trigger_last_actionset {
+    my ($self, $new) = @_;
+    $self->logger->log('prompt', 'notice',
+        sprintf ('output matching prompt was "%s"', $new->item_at(-1)->response));
+    if ($self->logger->would_log('prompt','debug')
+            and Class::Load::is_class_loaded('Data::Printer')) {
+        Data::Printer::p($new);
+    }
+}
 
 sub last_response {
     my $self = shift;
@@ -155,7 +163,7 @@ sub _execute_actions {
     $self->transport->timeout($timeout_bak);
     $self->last_actionset($set);
 
-    $self->logger->log('prompt', 'info',
+    $self->logger->log('prompt', 'debug',
         sprintf 'setting new prompt to %s',
             $self->last_actionset->last->prompt_hit || '<none>');
     $self->_prompt( $self->last_actionset->last->prompt_hit );
@@ -177,7 +185,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 2.122630
+version 2.122730
 
 =head1 DESCRIPTION
 

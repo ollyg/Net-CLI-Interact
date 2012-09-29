@@ -33,8 +33,20 @@ dictionaries it inherits.
  Nortel    # Nortel support
  ExtremeOS # Extreme Networks support
  Foundry   # Foundry/Brocade device support
+ 
+ Bash      # GNU Bourne-Again SHell (i.e. most linux systems)
 
 =head1 PERSONALITIES
+
+=head2 Bash
+
+This personality goes by the name of C<bash>.
+
+Prompts are C<prompt>, C<privileged>, C<user> and C<pass>. The C<pass>
+prompt works either for an initial SSH connection, or a C<sudo> request.
+
+Macros are C<begin_privileged>, C<end_privileged>, and C<disconnect>. The
+C<begin_privileged> macro issues a C<sudo> request to become the root user.
 
 =head2 Cisco
 
@@ -142,5 +154,89 @@ This personality goes by the name of C<fwsm3> and inherits from the C<pixos>
 dictionary.
 
 Additionally it provides the C<paging> Macro to set the terminal page size.
+
+=head1 SUPPORTING A NEW DEVICE
+
+In order to support a new device, particularly for the L<Net::Appliance::Session>
+module, there is a basic set of prompts and macros you must create.
+
+=head2 Required Prompts
+
+With SSH, no C<user> prompt is required, but for other transports you should
+include a prompt named C<user> which matches the "C<Username:>" prompt
+presented by the device.
+
+ # example only!
+ prompt user
+     match /[Uu]sername/
+
+With all transports you must provide a C<pass> prompt which matches the
+"C<password:>" prompt presented by the device.
+
+ # example only!
+ prompt pass
+     match /[Pp]assword: ?$/
+
+The last essential prompt is of course a simple command line prompt match, and
+this should be named C<generic>.
+
+ # example only!
+ prompt generic
+     match /> ?$/
+
+=head2 Desirable Prompt and Macros
+
+To cleanly disconnect from your device session, you might want to include a
+macro named C<disconnect> with the relevant command. Note there is no need for
+a C<match> statement in this macro, as the device should have detached!
+
+ # example only!
+ macro disconnect
+     send exit
+
+For paging support, include either only a C<prompt> macro, or two macros named
+C<enable_paging> and C<disable_paging>, depending on what the device requires.
+In all cases, there must be one substitution ("C<%s>") which is where the
+number of page lines will be inserted into the command.
+
+ # example only!
+ macro paging
+     send terminal length %s
+
+For privileged mode (super-user) support, include a prompt named C<privileged>
+first, and then include macros named C<begin_privileged> and C<end_privileged>
+to enter and leave the mode, respectively. Note that both macros will require
+explicit match statements, because the prompt encountered I<after> issuing the
+command will be different to that encountered before.
+
+ # example only!
+ prompt privileged
+     match /# ?$/
+ 
+ macro begin_privileged
+     send enable
+     match user or pass or privileged
+ 
+ macro end_privileged
+     send disable
+     match generic
+
+Similarly for configure mode, include a prompt named C<configure> first, and
+then include macros named C<begin_configure> and C<end_configure> to enter and
+leave the mode, respectively. Note that both macros will require explicit
+match statements, because the prompt encountered I<after> issuing the command
+will be different to that encountered before.
+
+ # example only!
+ prompt configure
+     match /\(config[^)]*\)# ?$/
+ 
+ macro begin_configure
+     send configure terminal
+     match configure
+ 
+ macro end_configure
+     send exit
+     match privileged
 
 =cut

@@ -1,29 +1,19 @@
-package Net::CLI::Interact::Transport::Base::Unix;
+package Net::CLI::Interact::Transport::Wrapper::Net_Telnet;
 {
-  $Net::CLI::Interact::Transport::Base::Unix::VERSION = '2.122630';
+  $Net::CLI::Interact::Transport::Wrapper::Net_Telnet::VERSION = '2.122730';
 }
 
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(Str InstanceOf);
 
-extends 'Net::CLI::Interact::Transport::Base';
+extends 'Net::CLI::Interact::Transport::Wrapper::Base';
 
 {
     package # hide from pause
-        Net::CLI::Interact::Transport::Platform::Options;
-
+        Net::CLI::Interact::Transport::Wrapper::Options;
     use Moo;
-    use Sub::Quote;
-    use MooX::Types::MooseLike::Base qw(Int);
-
-    extends 'Net::CLI::Interact::Transport::Base::Options';
-
-    has 'reap' => (
-        is => 'rw',
-        isa => Int,
-        default => quote_sub('0'),
-    );
+    extends 'Net::CLI::Interact::Transport::Wrapper::Base::Options';
 }
 
 sub put { (shift)->wrapper->put( join '', @_ ) }
@@ -65,6 +55,10 @@ around '_build_wrapper' => sub {
 
     with 'Net::CLI::Interact::Transport::Role::ConnectCore';
     return $self->connect_core($self->app, $self->runtime_options);
+};
+
+after 'disconnect' => sub {
+    delete $SIG{CHLD};
 };
 
 1;

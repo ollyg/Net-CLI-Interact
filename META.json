@@ -3,8 +3,8 @@
    "author" : [
       "Oliver Gorwits <oliver@cpan.org>"
    ],
-   "dynamic_config" : 1,
-   "generated_by" : "Dist::Zilla version 4.200013, CPAN::Meta::Converter version 2.112150",
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.300024, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -21,27 +21,29 @@
       },
       "runtime" : {
          "requires" : {
-            "Class::Load" : 0,
-            "Class::Mix" : 0,
-            "File::Basename" : 0,
-            "FileHandle" : 0,
-            "IPC::Run" : 0,
-            "List::Util" : 0,
-            "Log::Dispatch::Config" : 0,
-            "Log::Dispatch::Configurator::Any" : 0,
-            "Moo" : 0,
-            "Moo::Role" : 0,
-            "MooX::Types::MooseLike::Base" : 0,
-            "Net::Telnet" : 0,
-            "POSIX" : 0,
-            "Path::Class" : 0,
-            "Sub::Quote" : 0,
-            "Time::HiRes" : 0
+            "Class::Load" : "0",
+            "Class::Mix" : "0",
+            "File::Basename" : "0",
+            "FileHandle" : "0",
+            "IPC::Run" : "0",
+            "List::Util" : "0",
+            "Log::Dispatch::Config" : "0",
+            "Log::Dispatch::Configurator::Any" : "0",
+            "Moo" : "0",
+            "Moo::Role" : "0",
+            "MooX::Types::MooseLike::Base" : "0",
+            "Net::Telnet" : "0",
+            "POSIX" : "0",
+            "Path::Class" : "0",
+            "Sub::Quote" : "0",
+            "Time::HiRes" : "0",
+            "strict" : "0"
          }
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.88"
+            "Test::More" : "0.88",
+            "warnings" : "0"
          }
       }
    },
@@ -57,6 +59,6 @@
          "web" : "https://github.com/ollyg/Net-CLI-Interact"
       }
    },
-   "version" : "2.122630"
+   "version" : "2.122730"
 }
 

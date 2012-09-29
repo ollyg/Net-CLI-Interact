@@ -1,24 +1,19 @@
-
 use strict;
 use warnings;
 
-
-
 use ExtUtils::MakeMaker 6.30;
-
-
 
 my %WriteMakefileArgs = (
   'ABSTRACT' => 'Toolkit for CLI Automation',
   'AUTHOR' => 'Oliver Gorwits <oliver@cpan.org>',
   'BUILD_REQUIRES' => {
-    'Test::More' => '0.88'
+    'Test::More' => '0.88',
+    'warnings' => '0'
   },
   'CONFIGURE_REQUIRES' => {
     'ExtUtils::MakeMaker' => '6.30'
   },
   'DISTNAME' => 'Net-CLI-Interact',
-  'EXE_FILES' => [],
   'LICENSE' => 'perl',
   'NAME' => 'Net::CLI::Interact',
   'PREREQ_PM' => {
@@ -37,14 +32,14 @@ my %WriteMakefileArgs = (
     'POSIX' => '0',
     'Path::Class' => '0',
     'Sub::Quote' => '0',
-    'Time::HiRes' => '0'
+    'Time::HiRes' => '0',
+    'strict' => '0'
   },
-  'VERSION' => '2.122630',
+  'VERSION' => '2.122730',
   'test' => {
     'TESTS' => 't/*.t'
-  }
+  },
 );
-
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
   my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
@@ -63,10 +58,15 @@ delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
   unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
 
 if ( $^O =~ m/^(?!Win32)/ ) {
-  $WriteMakefileArgs{PREREQ_PM}{'IO::Pty'} = '0';
+  $WriteMakefileArgs{CONFIGURE_REQUIRES}{'ExtUtils::CBuilder'} = 0;
+
+  eval 'require ExtUtils::CBuilder;';
+  if (not $@) {
+    my $builder = ExtUtils::CBuilder->new( quiet => 1 );
+    if ($builder->have_compiler) {
+        $WriteMakefileArgs{PREREQ_PM}{'IO::Pty'} = '0';
+    }
+  }
 }
 
 WriteMakefile(%WriteMakefileArgs);
-
-
-
