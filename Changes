@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Bug fix for wrong type spec on log_at (wmdopple, closes #9)
+
 2.122730  2012-09-29 23:49:08 Europe/London
 
   * IMPORTANT: the prompts named "prompt" are now called "generic"
