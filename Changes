@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+2.122940  2012-10-20 12:39:46 Europe/London
+
   * Bug fix for wrong type spec on log_at (wmdopple, closes #9)
 
 2.122730  2012-09-29 23:49:08 Europe/London
