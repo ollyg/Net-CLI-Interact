@@ -1,12 +1,12 @@
 package Net::CLI::Interact;
 {
-  $Net::CLI::Interact::VERSION = '2.122730';
+  $Net::CLI::Interact::VERSION = '2.122940';
 }
 
 use Moo;
 use Sub::Quote;
 use Class::Load ();
-use MooX::Types::MooseLike::Base qw(InstanceOf Str HashRef);
+use MooX::Types::MooseLike::Base qw(InstanceOf Maybe Str HashRef);
 
 with 'Net::CLI::Interact::Role::Engine';
 
@@ -27,7 +27,7 @@ sub BUILDARGS {
 
 has 'log_at' => (
     is => 'rw',
-    isa => Str,
+    isa => Maybe[Str],
     default => quote_sub(q[ $ENV{'NCI_LOG_AT'} ]),
     trigger => \&set_global_log_at,
 );
@@ -116,7 +116,7 @@ Net::CLI::Interact - Toolkit for CLI Automation
 
 =head1 VERSION
 
-version 2.122730
+version 2.122940
 
 =head1 PURPOSE
 

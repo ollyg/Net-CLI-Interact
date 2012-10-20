@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '2.122730';
+  $Net::CLI::Interact::Role::Engine::VERSION = '2.122940';
 }
 
 {
@@ -185,7 +185,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 2.122730
+version 2.122940
 
 =head1 DESCRIPTION
 
