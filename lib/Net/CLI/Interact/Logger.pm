@@ -10,7 +10,7 @@ use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;
 
 has log_config => (
-    is => 'ro',
+    is => 'rw',
     isa => HashRef,
     builder => 1,
 );

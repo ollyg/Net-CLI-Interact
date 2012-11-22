@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Bug fix for wrong type spec on log_config (A. Friedrich)
+
 2.122940  2012-10-20 12:39:46 Europe/London
 
   * Bug fix for wrong type spec on log_at (wmdopple, closes #9)
