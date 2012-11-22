@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Logger;
 {
-  $Net::CLI::Interact::Logger::VERSION = '2.122940';
+  $Net::CLI::Interact::Logger::VERSION = '2.123270';
 }
 
 use Moo;
@@ -13,7 +13,7 @@ use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;
 
 has log_config => (
-    is => 'ro',
+    is => 'rw',
     isa => HashRef,
     builder => 1,
 );
@@ -124,7 +124,7 @@ Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories
 
 =head1 VERSION
 
-version 2.122940
+version 2.123270
 
 =head1 SYNOPSIS
 

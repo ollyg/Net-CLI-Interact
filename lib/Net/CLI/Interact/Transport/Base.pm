@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Base;
 {
-  $Net::CLI::Interact::Transport::Base::VERSION = '2.122940';
+  $Net::CLI::Interact::Transport::Base::VERSION = '2.123270';
 }
 
 use Moo;
@@ -42,7 +42,7 @@ Net::CLI::Interact::Transport::Base - Spawns an Interactive CLI Session
 
 =head1 VERSION
 
-version 2.122940
+version 2.123270
 
 =head1 DESCRIPTION
 

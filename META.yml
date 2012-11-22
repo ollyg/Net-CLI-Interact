@@ -36,4 +36,4 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Net-CLI-Interact
   homepage: https://github.com/ollyg/Net-CLI-Interact/wiki
   repository: git://github.com/ollyg/Net-CLI-Interact.git
-version: 2.122940
+version: 2.123270
