@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+2.123300_001 2012-11-25 13:47:15 Europe/London
+
   * Change command remove to be less greedy with whitespace (C. Bennett)
 
 2.123270  2012-11-22 20:50:30 Europe/London
