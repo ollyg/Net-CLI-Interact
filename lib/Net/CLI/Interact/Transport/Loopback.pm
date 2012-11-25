@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Loopback;
 {
-  $Net::CLI::Interact::Transport::Loopback::VERSION = '2.123270';
+  $Net::CLI::Interact::Transport::Loopback::VERSION = '2.123300_001';
 }
 
 use Moo;
@@ -57,7 +57,7 @@ Net::CLI::Interact::Transport::Loopback - Testable CLI connection
 
 =head1 VERSION
 
-version 2.123270
+version 2.123300_001
 
 =head1 DECRIPTION
 
