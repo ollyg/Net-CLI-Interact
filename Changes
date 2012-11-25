@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * Change command remove to be less greedy with whitespace (C. Bennett)
+
 2.123270  2012-11-22 20:50:30 Europe/London
 
   * Bug fix for wrong type spec on log_config (A. Friedrich)

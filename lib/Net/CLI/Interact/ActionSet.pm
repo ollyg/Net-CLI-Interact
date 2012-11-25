@@ -155,7 +155,7 @@ sub _marshall_responses {
 
         # remove echoed command from the beginning
         my $cmd = quotemeta( $send->value );
-        (my $output = $match->response_stash) =~ s/^$cmd\s*//;
+        (my $output = $match->response_stash) =~ s/^${cmd}[\t ]*[\n\f\r]*//;
         $send->response($output);
     }
 }
