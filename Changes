@@ -1,3 +1,8 @@
+2.123370_002 2012-12-02 00:24:38 Europe/London
+
+  * Change command remove to be less greedy with whitespace (C. Bennett)
+  * Fix loading of Data::Printer for last_actionset debug
+
 2.123300_001 2012-11-25 13:47:15 Europe/London
 
   * Change command remove to be less greedy with whitespace (C. Bennett)

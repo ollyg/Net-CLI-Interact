@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Iterator;
 {
-  $Net::CLI::Interact::Role::Iterator::VERSION = '2.123300_001';
+  $Net::CLI::Interact::Role::Iterator::VERSION = '2.123370_002';
 }
 
 use Moo::Role;
@@ -93,7 +93,7 @@ Net::CLI::Interact::Role::Iterator - Array-based Iterator
 
 =head1 VERSION
 
-version 2.123300_001
+version 2.123370_002
 
 =head1 SYNOPSIS
 

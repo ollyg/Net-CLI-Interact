@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '2.123300_001';
+  $Net::CLI::Interact::Role::Engine::VERSION = '2.123370_002';
 }
 
 {
@@ -46,6 +46,11 @@ with 'Net::CLI::Interact::Role::Prompt';
 use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
 use Class::Load ();
+
+# try to load Data::Printer for last_actionset debug output
+if (Class::Load::try_load_class('Data::Printer')) {
+    Data::Printer->import({class => { expand => 'all' }});
+}
 
 has 'last_actionset' => (
     is => 'rw',
@@ -185,7 +190,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 2.123300_001
+version 2.123370_002
 
 =head1 DESCRIPTION
 
