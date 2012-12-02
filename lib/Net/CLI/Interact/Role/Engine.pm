@@ -44,6 +44,11 @@ use Net::CLI::Interact::Action;
 use Net::CLI::Interact::ActionSet;
 use Class::Load ();
 
+# try to load Data::Printer for last_actionset debug output
+if (Class::Load::try_load_class('Data::Printer')) {
+    Data::Printer->import({class => { expand => 'all' }});
+}
+
 has 'last_actionset' => (
     is => 'rw',
     isa => InstanceOf['Net::CLI::Interact::ActionSet'],
