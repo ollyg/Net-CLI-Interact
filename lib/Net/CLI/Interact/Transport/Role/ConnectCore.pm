@@ -23,8 +23,6 @@ sub connect_core {
 sub _via_native {
     my $self = shift;
     my $t = Net::Telnet->new(Cmd_remove_mode => 1, @_);
-    $t->open()
-        or die "failed to open Net::Telnet connection to target device.";
     return $t;
 }
 
