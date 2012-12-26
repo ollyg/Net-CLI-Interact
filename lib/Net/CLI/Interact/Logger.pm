@@ -9,6 +9,18 @@ use Time::HiRes qw(gettimeofday tv_interval);
 use Log::Dispatch::Config; # loads Log::Dispatch
 use Log::Dispatch::Configurator::Any;
 
+sub BUILDARGS {
+    my ($class, @args) = @_;
+
+    # accept single hash ref or naked hash
+    my $params = (ref {} eq ref $args[0] ? $args[0] : {@args});
+
+    # back-compat for old attr name
+    $params->{log_stamp} = $params->{log_stamps} if exists $params->{log_stamps};
+
+    return $params;
+}
+
 has log_config => (
     is => 'rw',
     isa => HashRef,
@@ -49,7 +61,13 @@ sub _build__logger {
     return $anon_logger->instance;
 }
 
-has 'log_stamps' => (
+has 'log_stamp' => (
+    is => 'rw',
+    isa => Bool,
+    default => quote_sub('1'),
+);
+
+has 'log_category' => (
     is => 'rw',
     isa => Bool,
     default => quote_sub('1'),
@@ -98,13 +116,16 @@ sub log {
     @msgs = grep {defined} @msgs;
     return unless scalar @msgs;
 
-    my $stamp = sprintf "%13s", ($self->log_stamps
-        ? ('['. (sprintf "%.6f", (tv_interval $self->log_start, [gettimeofday])) .']')
-        : ());
+    my $prefix = '';
+    $prefix .= sprintf "[%11s] ", sprintf "%.6f", (tv_interval $self->log_start, [gettimeofday])
+        if $self->log_stamp;
+    $prefix .= (substr $category, 0, 2)
+        if $self->log_category;
 
-    $self->_logger->$level($stamp,
-        (substr $category, 0, 1), (' ' x (2 - $code_for{$level})), (join ' ', @msgs));
-    $self->_logger->$level("\n") if $msgs[-1] !~ m/\n$/;
+    my $suffix = '';
+    $suffix = "\n" if $msgs[-1] !~ m/\n$/;
+
+    $self->_logger->$level($prefix . (' ' x (2 - $code_for{$level})), (join ' ', @msgs) . $suffix);
 }
 
 1;
@@ -209,10 +230,21 @@ For example:
 Messages at or above the specified level will be passed on to the
 C<Log::Dispatch> target, which may then specify an overriding threshold.
 
-=head2 log_stamps( $boolean )
+=head2 @Net::CLI::Interact::default_log_categories
+
+Not a part of this class, but the only way to retrieve a list of the current
+log categories used in the L<Net::CLI::Interact> distribution source. Does not
+take into account any log categories added by the user.
+
+=head2 log_stamp( $boolean )
 
 Enable (the default) or disable the display of high resolution interval
 timestamps with each log message.
+
+=head2 log_category( $boolean )
+
+Enable (the default) or disable the display of the first letters of the
+category name with each log message.
 
 =head2 log_start( [$seconds, $microseconds] )
 

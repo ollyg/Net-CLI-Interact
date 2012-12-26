@@ -7,6 +7,10 @@ use MooX::Types::MooseLike::Base qw(InstanceOf Maybe Str HashRef);
 
 with 'Net::CLI::Interact::Role::Engine';
 
+our @default_log_categories = (
+    qw/dialogue dump engine object phrasebook prompt transport/,
+);
+
 has 'my_args' => (
     is => 'rwp',
     isa => HashRef,
@@ -33,7 +37,7 @@ sub set_global_log_at {
     my ($self, $level) = @_;
     return unless defined $level and length $level;
     $self->logger->log_flags({
-        map {$_ => $level} qw/dump engine phrasebook prompt transport/
+        map {$_ => $level} @default_log_categories,
     });
 }
 
