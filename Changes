@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * More logging configuration, and some Cookbook details on how to log.
+
 2.123611  2012-12-26 15:23:41 Europe/London
 
   * Remove redundant Net::Telnet->open() (closes #10, closes #11)
