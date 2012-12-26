@@ -47,7 +47,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://rt.cpan.org/Public/Dist/Display.html?Name=Net-CLI-Interact"
@@ -59,6 +59,6 @@
          "web" : "https://github.com/ollyg/Net-CLI-Interact"
       }
    },
-   "version" : "2.123370_002"
+   "version" : "2.123610"
 }
 
