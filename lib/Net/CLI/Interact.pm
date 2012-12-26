@@ -1,6 +1,6 @@
 package Net::CLI::Interact;
 {
-  $Net::CLI::Interact::VERSION = '2.123611';
+  $Net::CLI::Interact::VERSION = '2.123612';
 }
 
 use Moo;
@@ -9,6 +9,10 @@ use Class::Load ();
 use MooX::Types::MooseLike::Base qw(InstanceOf Maybe Str HashRef);
 
 with 'Net::CLI::Interact::Role::Engine';
+
+our @default_log_categories = (
+    qw/dialogue dump engine object phrasebook prompt transport/,
+);
 
 has 'my_args' => (
     is => 'rwp',
@@ -36,7 +40,7 @@ sub set_global_log_at {
     my ($self, $level) = @_;
     return unless defined $level and length $level;
     $self->logger->log_flags({
-        map {$_ => $level} qw/dump engine phrasebook prompt transport/
+        map {$_ => $level} @default_log_categories,
     });
 }
 
@@ -116,7 +120,7 @@ Net::CLI::Interact - Toolkit for CLI Automation
 
 =head1 VERSION
 
-version 2.123611
+version 2.123612
 
 =head1 PURPOSE
 

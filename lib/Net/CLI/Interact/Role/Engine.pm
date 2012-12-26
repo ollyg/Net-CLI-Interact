@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '2.123611';
+  $Net::CLI::Interact::Role::Engine::VERSION = '2.123612';
 }
 
 {
@@ -62,7 +62,7 @@ sub _trigger_last_actionset {
     my ($self, $new) = @_;
     $self->logger->log('prompt', 'notice',
         sprintf ('output matching prompt was "%s"', $new->item_at(-1)->response));
-    if ($self->logger->would_log('prompt','debug')
+    if ($self->logger->would_log('object','debug')
             and Class::Load::is_class_loaded('Data::Printer')) {
         Data::Printer::p($new);
     }
@@ -173,6 +173,8 @@ sub _execute_actions {
             $self->last_actionset->last->prompt_hit || '<none>');
     $self->_prompt( $self->last_actionset->last->prompt_hit );
 
+    $self->logger->log('dialogue', 'info',
+        "trimmed command response:\n". $self->last_response);
     return $self->last_response; # context sensitive
 }
 
@@ -190,7 +192,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 2.123611
+version 2.123612
 
 =head1 DESCRIPTION
 

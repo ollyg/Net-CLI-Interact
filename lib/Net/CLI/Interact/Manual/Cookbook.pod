@@ -97,6 +97,71 @@ from the phrasebook, this method can be used:
 
  $s->prompt_looks_like('name');
 
+=head1 Logging
+
+A generic logging service is available through the C<< $session->logger >>
+object, which is based on L<Log::Dispatch>. You can configure the logger at
+startup quite easily. See the L<Net::CLI::Interact::Logger> manual page for
+details of the interface (config for any option can simply be passed to
+C<< Net::CLI::Interact->new() >>).
+
+=head2 Destinations
+
+The default configuration sends logging messages to standard output. Let's say
+you also want to append them to a log file:
+
+ my $s = Net::CLI::Interact->new({
+     log_config => {
+         dispatchers => ['screen','file'],
+         screen => {
+             class => 'Log::Dispatch::Screen',
+             min_level => 'warning',
+         },
+         file => {
+             class => 'Log::Dispatch::File',
+             min_level => 'debug',
+             filename => '/var/log/myapp.log',
+             mode => 'append',
+             format => '[%d] %m',
+         },
+     },
+     # etc...
+ });
+
+Note that some keys are required, such as the C<class> and C<min_level> but
+others depend on the particular class being used. See L<Log::Dispatch::Config>
+for more details.
+
+=head2 Log Levels and Categories
+
+Each log message has a standard log level (C<debug>, C<warning>, etc) but also
+a I<category> which is a concept local to this module. Categories allow more
+filtering of what is logged. Each time a message is logged through C<<
+$s->logger->log(...) >> it has a level and category.
+
+Messages are only emitted if they pass the specific level set for that
+category. In this way we can suppress messages about the transport but, for
+example, show messages about prompt-matching at a debug level.
+
+You can very easily set the log level for all categories using either the
+C<set_global_log_at> option to C<new()>, or the C<NCI_LOG_AT> environment
+variable.
+
+To configure these filters, use the C<log_flags> option together with the list
+of default log categories used by C<Net::CLI::Interact>. For example:
+
+ my $s = Net::CLI::Interact->new({
+     log_flags => {
+         (map {$_ => 'notice'} @Net::CLI::Interact::default_log_categories),
+         dialogue => 'info',
+     },
+     # etc...
+ });
+
+This example would set all categories to C<notice> level except for the
+C<dialogue> category, which is set to C<info> level to get more output (on
+what is sent and received by each command).
+
 =head1 Phrasebook Libraries
 
 You can override or add to the device command phrasebooks which ship with this

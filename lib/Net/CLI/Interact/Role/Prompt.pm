@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '2.123611';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '2.123612';
 }
 
 use Moo::Role;
@@ -102,6 +102,8 @@ sub find_prompt {
                     $self->logger->log('prompt', 'info', "hit, matches prompt $prompt");
                     $self->set_prompt($prompt);
                     $self->last_actionset( $self->_fabricate_actionset() );
+                    $self->logger->log('dialogue', 'info',
+                        "trimmed command response:\n". $self->last_response);
                     last PUMPING;
                 }
                 $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
@@ -111,7 +113,7 @@ sub find_prompt {
     };
 
     if ($@ and $self->has_wake_up_msg and $wake_up) {
-        $self->logger->log('prompt', 'info',
+        $self->logger->log('prompt', 'notice',
             "failed: [$@], sending WAKE_UP and trying again");
 
         eval {
@@ -152,7 +154,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 2.123611
+version 2.123612
 
 =head1 DESCRIPTION
 
