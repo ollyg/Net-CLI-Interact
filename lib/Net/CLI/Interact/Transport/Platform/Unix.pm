@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Platform::Unix;
 {
-  $Net::CLI::Interact::Transport::Platform::Unix::VERSION = '2.123612';
+  $Net::CLI::Interact::Transport::Platform::Unix::VERSION = '2.123620';
 }
 
 use Moo;

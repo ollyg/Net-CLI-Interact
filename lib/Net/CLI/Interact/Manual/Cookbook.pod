@@ -152,7 +152,7 @@ of default log categories used by C<Net::CLI::Interact>. For example:
 
  my $s = Net::CLI::Interact->new({
      log_flags => {
-         (map {$_ => 'notice'} @Net::CLI::Interact::default_log_categories),
+         (map {$_ => 'notice'} Net::CLI::Interact->default_log_categories()),
          dialogue => 'info',
      },
      # etc...
