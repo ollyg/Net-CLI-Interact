@@ -230,7 +230,7 @@ For example:
 Messages at or above the specified level will be passed on to the
 C<Log::Dispatch> target, which may then specify an overriding threshold.
 
-=head2 @Net::CLI::Interact::default_log_categories
+=head2 C< Net::CLI::Interact->default_log_categories() >>
 
 Not a part of this class, but the only way to retrieve a list of the current
 log categories used in the L<Net::CLI::Interact> distribution source. Does not
