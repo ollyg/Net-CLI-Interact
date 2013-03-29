@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+2.130880  2013-03-29 22:12:14 Europe/London
+
   * Fix bug in debug log using native print instead of Logger (D. Thomas)
   * Fix bug in setting of log_config after session instantiation (D. Thomas)
 
