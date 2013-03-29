@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Logger;
 {
-  $Net::CLI::Interact::Logger::VERSION = '2.123620';
+  $Net::CLI::Interact::Logger::VERSION = '2.130880';
 }
 
 use Moo;
@@ -28,6 +28,7 @@ has log_config => (
     is => 'rw',
     isa => HashRef,
     builder => 1,
+    trigger => quote_sub(q{ $_[0]->_clear_logger }),
 );
 
 sub _build_log_config {
@@ -45,6 +46,7 @@ has _logger => (
     isa => quote_sub(q{ $_[0]->isa('Log::Dispatch::Config') }),
     builder => 1,
     lazy => 1,
+    clearer => 1,
 );
 
 # this allows each instance of this module to have its own
@@ -145,7 +147,7 @@ Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories
 
 =head1 VERSION
 
-version 2.123620
+version 2.130880
 
 =head1 SYNOPSIS
 
@@ -278,7 +280,7 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Oliver Gorwits.
+This software is copyright (c) 2013 by Oliver Gorwits.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

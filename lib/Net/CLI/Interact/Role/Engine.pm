@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '2.123620';
+  $Net::CLI::Interact::Role::Engine::VERSION = '2.130880';
 }
 
 {
@@ -62,9 +62,8 @@ sub _trigger_last_actionset {
     my ($self, $new) = @_;
     $self->logger->log('prompt', 'notice',
         sprintf ('output matching prompt was "%s"', $new->item_at(-1)->response));
-    if ($self->logger->would_log('object','debug')
-            and Class::Load::is_class_loaded('Data::Printer')) {
-        Data::Printer::p($new);
+    if (Class::Load::is_class_loaded('Data::Printer')) {
+        $self->logger->log('object', 'debug', Data::Printer::p($new));
     }
 }
 
@@ -192,7 +191,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 2.123620
+version 2.130880
 
 =head1 DESCRIPTION
 
@@ -312,7 +311,7 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Oliver Gorwits.
+This software is copyright (c) 2013 by Oliver Gorwits.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

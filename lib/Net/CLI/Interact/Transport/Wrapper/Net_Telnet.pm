@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Wrapper::Net_Telnet;
 {
-  $Net::CLI::Interact::Transport::Wrapper::Net_Telnet::VERSION = '2.123620';
+  $Net::CLI::Interact::Transport::Wrapper::Net_Telnet::VERSION = '2.130880';
 }
 
 use Moo;

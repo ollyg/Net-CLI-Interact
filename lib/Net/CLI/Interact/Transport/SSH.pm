@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::SSH;
 {
-  $Net::CLI::Interact::Transport::SSH::VERSION = '2.123620';
+  $Net::CLI::Interact::Transport::SSH::VERSION = '2.130880';
 }
 
 use Moo;
@@ -107,7 +107,7 @@ Net::CLI::Interact::Transport::SSH - SSH based CLI connection
 
 =head1 VERSION
 
-version 2.123620
+version 2.130880
 
 =head1 DESCRIPTION
 
@@ -201,7 +201,7 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Oliver Gorwits.
+This software is copyright (c) 2013 by Oliver Gorwits.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
