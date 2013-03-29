@@ -1,6 +1,7 @@
 {{$NEXT}}
 
   * Fix bug in debug log using native print instead of Logger (D. Thomas)
+  * Fix bug in setting of log_config after session instantiation (D. Thomas)
 
 2.123620  2012-12-27 22:52:55 Europe/London
 

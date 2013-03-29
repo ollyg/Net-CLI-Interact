@@ -25,6 +25,7 @@ has log_config => (
     is => 'rw',
     isa => HashRef,
     builder => 1,
+    trigger => quote_sub(q{ $_[0]->_clear_logger }),
 );
 
 sub _build_log_config {
@@ -42,6 +43,7 @@ has _logger => (
     isa => quote_sub(q{ $_[0]->isa('Log::Dispatch::Config') }),
     builder => 1,
     lazy => 1,
+    clearer => 1,
 );
 
 # this allows each instance of this module to have its own
