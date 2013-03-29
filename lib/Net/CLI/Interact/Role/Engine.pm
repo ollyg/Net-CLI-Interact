@@ -59,9 +59,8 @@ sub _trigger_last_actionset {
     my ($self, $new) = @_;
     $self->logger->log('prompt', 'notice',
         sprintf ('output matching prompt was "%s"', $new->item_at(-1)->response));
-    if ($self->logger->would_log('object','debug')
-            and Class::Load::is_class_loaded('Data::Printer')) {
-        Data::Printer::p($new);
+    if (Class::Load::is_class_loaded('Data::Printer')) {
+        $self->logger->log('object', 'debug', Data::Printer::p($new));
     }
 }
 
