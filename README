@@ -2,7 +2,7 @@ NAME
     Net::CLI::Interact - Toolkit for CLI Automation
 
 VERSION
-    version 2.130880
+    version 2.131260
 
 PURPOSE
     This module exists to support developers of applications and libraries
@@ -77,6 +77,13 @@ INTERFACE
         and all logging in the library will be enabled at that level. Use
         "debug" to learn about how the library is working internally. See
         Net::CLI::Interact::Logger for a list of the valid level names.
+
+    "timeout => $seconds"
+        Configures a default timeout value, in seconds, for interaction with
+        the remote device. The default is 10 seconds. You can also set
+        timeout on a per-command or per-macro call (see below).
+
+        Note that this does not (currently) apply to the initial connection.
 
   cmd( $command )
     Execute a single command statement on the connected device, and consume

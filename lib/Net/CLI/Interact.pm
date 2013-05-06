@@ -1,6 +1,6 @@
 package Net::CLI::Interact;
 {
-  $Net::CLI::Interact::VERSION = '2.130880';
+  $Net::CLI::Interact::VERSION = '2.131260';
 }
 
 use Moo;
@@ -120,7 +120,7 @@ Net::CLI::Interact - Toolkit for CLI Automation
 
 =head1 VERSION
 
-version 2.130880
+version 2.131260
 
 =head1 PURPOSE
 
@@ -218,6 +218,14 @@ name of a log I<level> (such as C<debug>, C<info>, etc) and all logging in the
 library will be enabled at that level. Use C<debug> to learn about how the
 library is working internally. See L<Net::CLI::Interact::Logger> for a list of
 the valid level names.
+
+=item C<< timeout => $seconds >>
+
+Configures a default timeout value, in seconds, for interaction with the
+remote device. The default is 10 seconds. You can also set timeout on a
+per-command or per-macro call (see below).
+
+Note that this does not (currently) apply to the initial connection.
 
 =back
 

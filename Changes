@@ -1,3 +1,7 @@
+2.131260  2013-05-06 20:29:38 Europe/London
+
+  * Fix for applying default timeout
+
 2.130880  2013-03-29 22:12:14 Europe/London
 
   * Fix bug in debug log using native print instead of Logger (D. Thomas)

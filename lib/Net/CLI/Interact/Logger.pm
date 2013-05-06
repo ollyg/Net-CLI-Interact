@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Logger;
 {
-  $Net::CLI::Interact::Logger::VERSION = '2.130880';
+  $Net::CLI::Interact::Logger::VERSION = '2.131260';
 }
 
 use Moo;
@@ -147,7 +147,7 @@ Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories
 
 =head1 VERSION
 
-version 2.130880
+version 2.131260
 
 =head1 SYNOPSIS
 
