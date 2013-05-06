@@ -208,6 +208,14 @@ library will be enabled at that level. Use C<debug> to learn about how the
 library is working internally. See L<Net::CLI::Interact::Logger> for a list of
 the valid level names.
 
+=item C<< timeout => $seconds >>
+
+Configures a default timeout value, in seconds, for interaction with the
+remote device. The default is 10 seconds. You can also set timeout on a
+per-command or per-macro call (see below).
+
+Note that this does not (currently) apply to the initial connection.
+
 =back
 
 =head2 cmd( $command )

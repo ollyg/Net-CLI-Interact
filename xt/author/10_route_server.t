@@ -11,6 +11,7 @@ my $s = Net::CLI::Interact->new(
         (app => "$ENV{HOMEPATH}\\Desktop\\plink.exe") : () ),
     connect_options => { host => "route-server.bb.pipex.net" },
     personality => "cisco",
+    timeout => 5,
 );
 
 ok( $s->cmd('show ip bgp 163.1.0.0/16'), 'ran show ip bgp 163.1.0.0/16' );

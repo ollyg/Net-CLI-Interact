@@ -34,8 +34,18 @@ sub pump {
 }
 
 has '+timeout' => (
-    trigger => quote_sub(q{(shift)->wrapper->timeout(shift) if scalar @_ > 1}),
+    trigger => 1,
 );
+
+sub _trigger_timeout {
+    my $self = shift;
+    if (scalar @_) {
+        my $timeout = shift;
+        if ($self->connect_ready) {
+            $self->wrapper->timeout($timeout);
+        }
+    }
+}
 
 has '+wrapper' => (
     isa => InstanceOf['Net::Telnet'],
