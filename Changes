@@ -1,3 +1,7 @@
+2.133420  2013-12-08 00:07:45 Europe/London
+
+  * Make command removal substitute params as well (M. Perry)
+
 2.131260  2013-05-06 20:29:38 Europe/London
 
   * Fix for applying default timeout

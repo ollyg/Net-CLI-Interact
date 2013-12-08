@@ -11,6 +11,10 @@ BEGIN {
 use strict; use warnings FATAL => 'all';
 use Test::More 0.88;
 
+BEGIN {
+  Test::More::plan(skip_all => 'SDF login not working');
+}
+
 BEGIN { use_ok( 'Net::CLI::Interact') }
 
 my $s = Net::CLI::Interact->new(

@@ -39,7 +39,10 @@ isa_ok($p4, 'Net::CLI::Interact::ActionSet');
 
 ok($p4->current_match(qr//), 'current_match method');
 ok($p4->register_callback(sub{}), 'register_callback method');
+
+$p4->apply_params(0, 1);
 ok(eval{ $p4->execute ;1}, 'execute method does not blow up');
+
 ok(eval{ $p4->apply_params ;1}, 'empty apply_params');
 ok(eval{ $p4->apply_params(qr/a b c d/) ;1}, 'method apply_params');
 
