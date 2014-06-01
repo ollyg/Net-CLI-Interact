@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * For some reason timeout not being set? Set on Net::Telnet::get.
+
 2.133420  2013-12-08 00:07:45 Europe/London
 
   * Make command removal substitute params as well (M. Perry)
