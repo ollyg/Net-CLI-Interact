@@ -35,7 +35,7 @@ my %WriteMakefileArgs = (
     'Time::HiRes' => '0',
     'strict' => '0'
   },
-  'VERSION' => '2.133420',
+  'VERSION' => '2.141520',
   'test' => {
     'TESTS' => 't/*.t'
   },

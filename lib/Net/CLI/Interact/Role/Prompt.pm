@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '2.133420';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '2.141520';
 }
 
 use Moo::Role;
@@ -154,7 +154,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 2.133420
+version 2.141520
 
 =head1 DESCRIPTION
 
@@ -258,7 +258,7 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Oliver Gorwits.
+This software is copyright (c) 2014 by Oliver Gorwits.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Wrapper::IPC_Run;
 {
-  $Net::CLI::Interact::Transport::Wrapper::IPC_Run::VERSION = '2.133420';
+  $Net::CLI::Interact::Transport::Wrapper::IPC_Run::VERSION = '2.141520';
 }
 
 use Moo;

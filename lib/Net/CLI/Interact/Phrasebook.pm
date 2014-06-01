@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Phrasebook;
 {
-  $Net::CLI::Interact::Phrasebook::VERSION = '2.133420';
+  $Net::CLI::Interact::Phrasebook::VERSION = '2.141520';
 }
 
 use Moo;
@@ -276,7 +276,7 @@ Net::CLI::Interact::Phrasebook - Load command phrasebooks from a Library
 
 =head1 VERSION
 
-version 2.133420
+version 2.141520
 
 =head1 DESCRIPTION
 
@@ -549,7 +549,7 @@ Oliver Gorwits <oliver@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Oliver Gorwits.
+This software is copyright (c) 2014 by Oliver Gorwits.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
