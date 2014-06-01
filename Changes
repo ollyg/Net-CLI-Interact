@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+2.141520  2014-06-01 16:33:00 Europe/London
+
   * For some reason timeout not being set? Set on Net::Telnet::get.
 
 2.133420  2013-12-08 00:07:45 Europe/London
