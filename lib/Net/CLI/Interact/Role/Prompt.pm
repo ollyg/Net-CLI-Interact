@@ -88,6 +88,7 @@ sub find_prompt {
     $self->transport->init if not $self->transport->connect_ready;
 
     eval {
+        my $started_pumping = time;
         PUMPING: while (1) {
             $self->transport->pump;
             $self->logger->log('dump', 'debug', "SEEN:\n". $self->transport->buffer);
@@ -106,6 +107,8 @@ sub find_prompt {
                 $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
             }
             $self->logger->log('prompt', 'debug', 'no match so far, more data?');
+            last if $self->transport->timeout
+                    and time > ($started_pumping + $self->transport->timeout);
         }
     };
 
