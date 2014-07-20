@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Platform::Win32;
 {
-  $Net::CLI::Interact::Transport::Platform::Win32::VERSION = '2.141520';
+  $Net::CLI::Interact::Transport::Platform::Win32::VERSION = '2.142010';
 }
 
 use Moo;

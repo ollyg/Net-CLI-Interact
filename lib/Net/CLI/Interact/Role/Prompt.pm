@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Prompt;
 {
-  $Net::CLI::Interact::Role::Prompt::VERSION = '2.141520';
+  $Net::CLI::Interact::Role::Prompt::VERSION = '2.142010';
 }
 
 use Moo::Role;
@@ -91,6 +91,7 @@ sub find_prompt {
     $self->transport->init if not $self->transport->connect_ready;
 
     eval {
+        my $started_pumping = time;
         PUMPING: while (1) {
             $self->transport->pump;
             $self->logger->log('dump', 'debug', "SEEN:\n". $self->transport->buffer);
@@ -109,6 +110,8 @@ sub find_prompt {
                 $self->logger->log('prompt', 'debug', "nope, doesn't (yet) match $prompt");
             }
             $self->logger->log('prompt', 'debug', 'no match so far, more data?');
+            last if $self->transport->timeout
+                    and time > ($started_pumping + $self->transport->timeout);
         }
     };
 
@@ -154,7 +157,7 @@ Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
 =head1 VERSION
 
-version 2.141520
+version 2.142010
 
 =head1 DESCRIPTION
 
