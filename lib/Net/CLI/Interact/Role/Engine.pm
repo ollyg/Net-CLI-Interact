@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Role::Engine;
 {
-  $Net::CLI::Interact::Role::Engine::VERSION = '2.142010';
+  $Net::CLI::Interact::Role::Engine::VERSION = '2.142720';
 }
 
 {
@@ -71,9 +71,10 @@ sub last_response {
     my $self = shift;
     my $irs_re = $self->transport->irs_re;
     (my $resp = $self->last_actionset->item_at(-2)->response) =~ s/$irs_re/\n/g;
+    $resp =~ s/\n+$//;
     return (wantarray
         ? (map {$_ .= "\n"} split m/\n/, $resp)
-        : $resp);
+        : ($resp ."\n"));
 }
 
 has 'default_continuation' => (
@@ -191,7 +192,7 @@ Net::CLI::Interact::Role::Engine - Statement execution engine
 
 =head1 VERSION
 
-version 2.142010
+version 2.142720
 
 =head1 DESCRIPTION
 

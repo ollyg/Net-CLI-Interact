@@ -1,3 +1,7 @@
+2.142720  2014-09-29 19:41:26 Europe/London
+
+  * [#13] Fix cmd in scalar context appends a newline
+
 2.142010  2014-07-20 21:16:26 Europe/London
 
   * Resepct timeout in find_prompt (Jørgen Elgaard Larsen)

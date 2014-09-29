@@ -1,6 +1,6 @@
 package Net::CLI::Interact::Transport::Wrapper::Base;
 {
-  $Net::CLI::Interact::Transport::Wrapper::Base::VERSION = '2.142010';
+  $Net::CLI::Interact::Transport::Wrapper::Base::VERSION = '2.142720';
 }
 
 use Moo;
