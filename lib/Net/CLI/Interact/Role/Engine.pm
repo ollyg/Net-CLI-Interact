@@ -68,9 +68,10 @@ sub last_response {
     my $self = shift;
     my $irs_re = $self->transport->irs_re;
     (my $resp = $self->last_actionset->item_at(-2)->response) =~ s/$irs_re/\n/g;
+    $resp =~ s/\n+$//;
     return (wantarray
         ? (map {$_ .= "\n"} split m/\n/, $resp)
-        : $resp);
+        : ($resp ."\n"));
 }
 
 has 'default_continuation' => (
