@@ -5,10 +5,10 @@ prompt pass
     match /password(?: for \w+)?: $/
 
 prompt generic
-    match /\w+@.+\$ $/
+    match /(?:\[)?\w+@.+(?:\])?\$ $/
 
 prompt privileged
-    match /^root@.+# $/
+    match /^(?:\[)?root@.+(?:\])?# $/
 
 macro begin_privileged
     send sudo su -
