@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  * [#15] Add phrasebook for Oracle VM Manager CLI (M. Perry)
+
 2.142720  2014-09-29 19:41:26 Europe/London
 
   * [#13] Fix cmd in scalar context appends a newline
