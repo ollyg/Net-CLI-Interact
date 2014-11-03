@@ -36,6 +36,8 @@ dictionaries it inherits.
  
  Bash      # GNU Bourne-Again SHell (i.e. most linux systems)
 
+ OVMCLI    # Oracle VM Manager CLI
+
 =head1 PERSONALITIES
 
 =head2 Bash
@@ -154,6 +156,14 @@ This personality goes by the name of C<fwsm3> and inherits from the C<pixos>
 dictionary.
 
 Additionally it provides the C<paging> Macro to set the terminal page size.
+
+=head2 OVMCLI
+
+This personality goes by the name of C<ovmcli>.
+
+Prompts are C<prompt> and C<privileged>.
+
+There is one macro named C<disconnect>.
 
 =head1 SUPPORTING A NEW DEVICE
 

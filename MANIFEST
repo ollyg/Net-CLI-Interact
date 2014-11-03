@@ -39,6 +39,7 @@ lib/Net/CLI/Interact/phrasebook/cisco/pb
 lib/Net/CLI/Interact/phrasebook/cisco/pixos/fwsm/fwsm3/pb
 lib/Net/CLI/Interact/phrasebook/cisco/pixos/pb
 lib/Net/CLI/Interact/phrasebook/cisco/pixos/pixos7/pb
+lib/Net/CLI/Interact/phrasebook/ovmcli/pb
 lib/Net/CLI/Interact/phrasebook/unix/bash/pb
 lib/Net/CLI/Interact/phrasebook/unix/csh/pb
 lib/Net/CLI/Interact/phrasebook/unix/csh/sdf/pb
