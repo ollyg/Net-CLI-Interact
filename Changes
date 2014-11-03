@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+2.143070  2014-11-03 20:43:12 Europe/London
+
   * [#14] Allow square brackets in bash prompts (M. Perry)
   * [#15] Add phrasebook for Oracle VM Manager CLI (M. Perry)
 
