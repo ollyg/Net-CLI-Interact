@@ -1,5 +1,6 @@
 {{$NEXT}}
 
+  * [#14] Allow square brackets in bash prompts (M. Perry)
   * [#15] Add phrasebook for Oracle VM Manager CLI (M. Perry)
 
 2.142720  2014-09-29 19:41:26 Europe/London
