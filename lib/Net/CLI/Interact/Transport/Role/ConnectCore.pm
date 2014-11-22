@@ -68,10 +68,11 @@ sub _spawn_command {
         if !defined $SIG{CHLD};
 
     # set up pipe to detect childs exec error
-    pipe(STAT_RDR, STAT_WTR) or die "Cannot open pipe: $!";
-    STAT_WTR->autoflush(1);
+    my ($stat_rdr, $stat_wtr);
+    pipe($stat_rdr, $stat_wtr) or die "Cannot open pipe: $!";
+    $stat_wtr->autoflush(1);
     eval {
-        fcntl(STAT_WTR, F_SETFD, FD_CLOEXEC);
+        fcntl($stat_wtr, F_SETFD, FD_CLOEXEC);
     };
 
     my $pid = fork;
@@ -84,14 +85,14 @@ sub _spawn_command {
     if($pid) { # parent
         my $errno;
 
-        CORE::close STAT_WTR;
+        CORE::close $stat_wtr;
         $pty->close_slave();
         $pty->set_raw();
 
         # now wait for child exec (eof due to close-on-exit) or exec error
-        my $errstatus = sysread(STAT_RDR, $errno, 256);
+        my $errstatus = sysread($stat_rdr, $errno, 256);
         die "Cannot sync with child: $!" if not defined $errstatus;
-        CORE::close STAT_RDR;
+        CORE::close $stat_rdr;
 
         if ($errstatus) {
             $! = $errno+0;
@@ -103,7 +104,7 @@ sub _spawn_command {
         $self->childpid( $pid );
     }
     else { # child
-        CORE::close STAT_RDR;
+        CORE::close $stat_rdr;
 
         $pty->make_slave_controlling_terminal();
         my $slv = $pty->slave()
@@ -126,7 +127,7 @@ sub _spawn_command {
             or die "Couldn't reopen STDERR for writing, $!\n";
 
         { exec(@command) };
-        print STAT_WTR $!+0;
+        print $stat_wtr $!+0;
         die "Cannot exec(@command): $!\n";
     }
 
