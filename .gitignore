@@ -1,0 +1,7 @@
+Net-CLI-Interact-*
+test.*
+*.swp
+*.pid
+MYMETA.*
+*.tar.gz
+*.komodo*
