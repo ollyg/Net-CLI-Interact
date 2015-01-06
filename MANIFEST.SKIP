@@ -41,7 +41,7 @@ logs/.*
 # Avoid Module::Build generated and utility files.
 \bBuild$
 \b_build/
-\B.build/\b
+\B\.build\b
 \bBuild.bat$
 \bBuild.COM$
 \bBUILD.COM$
