@@ -28,12 +28,12 @@ lib/Net/CLI/Interact/Role/Iterator.pm
 lib/Net/CLI/Interact/Role/Prompt.pm
 lib/Net/CLI/Interact/Transport/Base.pm
 lib/Net/CLI/Interact/Transport/Loopback.pm
+lib/Net/CLI/Interact/Transport/Net_OpenSSH.pm
 lib/Net/CLI/Interact/Transport/Platform/Unix.pm
 lib/Net/CLI/Interact/Transport/Platform/Win32.pm
 lib/Net/CLI/Interact/Transport/Role/ConnectCore.pm
 lib/Net/CLI/Interact/Transport/Serial.pm
 lib/Net/CLI/Interact/Transport/SSH.pm
-lib/Net/CLI/Interact/Transport/Net_OpenSSH.pm
 lib/Net/CLI/Interact/Transport/Telnet.pm
 lib/Net/CLI/Interact/Transport/Wrapper/Base.pm
 lib/Net/CLI/Interact/Transport/Wrapper/IPC_Run.pm
