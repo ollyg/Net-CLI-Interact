@@ -1,5 +1,6 @@
 2.200003  2015-02-13
 
+  * Fix Serial transport constructing params incompatible with cu (S. Kersley)
   * Fix spelling mistake and POD syntax issues (G. Herrmann)
 
 2.200002  2015-02-22

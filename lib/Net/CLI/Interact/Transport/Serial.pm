@@ -80,8 +80,8 @@ sub runtime_options {
     else {
         return (
             ('--parity=' . $self->connect_options->parity),
-            ('-l ' . $self->connect_options->device),
-            ('-s ' . $self->connect_options->speed),
+            ('-l', $self->connect_options->device),
+            ('-s', $self->connect_options->speed),
             ($self->connect_options->nostop ? '--nostop' : ()),
             @{$self->connect_options->opts},
         );
