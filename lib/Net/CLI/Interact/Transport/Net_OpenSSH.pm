@@ -78,6 +78,8 @@ sub runtime_options {
 __END__
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Net::CLI::Interact::Transport::Net_OpenSSH - Net::OpenSSH based CLI connection
@@ -96,7 +98,7 @@ talk to remote servers for which Net::OpenSSH one-command-per-session
 approach is not well suited (i.e. network equipment running custom
 administration shells) and still use the capability of Net::OpenSSH to
 run several sessions over one single SSH connection, including
-accesing SCP and SFTP services.
+accessing SCP and SFTP services.
 
 Note that this transport is not supported on Windows as Net::OpenSSH
 is not supported there either.
@@ -131,8 +133,6 @@ Remote command to start the shell. Can be a single string or an array reference.
 
 The default is to pass nothing which on conforming SSH implementations
 starts the shell configured for the user.
-
-=back
 
 Examples:
 

@@ -1,3 +1,7 @@
+2.200003  2015-02-13
+
+  * Fix spelling mistake and POD syntax issues (G. Herrmann)
+
 2.200002  2015-02-22
 
   * Fix MANIFEST (salva)
