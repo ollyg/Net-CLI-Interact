@@ -1,3 +1,7 @@
+2.200004  2015-02-14
+
+  * Fixes to distribution
+
 2.200003  2015-02-13
 
   * Fix Serial transport constructing params incompatible with cu (S. Kersley)
