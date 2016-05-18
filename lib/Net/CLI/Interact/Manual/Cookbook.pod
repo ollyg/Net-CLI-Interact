@@ -92,7 +92,7 @@ is known by the phrasebook:
 
  $s->set_prompt('name');
 
-If you want to test whether the current prompt matches a diffrent named Prompt
+If you want to test whether the current prompt matches a different named Prompt
 from the phrasebook, this method can be used:
 
  $s->prompt_looks_like('name');

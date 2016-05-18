@@ -127,7 +127,7 @@ the current value of C<timeout>. The default value is 10 seconds.
 
 =head2 irs_re
 
-Returns the Regular Expression reference used to split lines of reponse from
+Returns the Regular Expression reference used to split lines of response from
 the connected device. In the end, you will only receive data from this module
 separated by the C<ors> value (by default a newline character). The C<irs_re>
 is used internally by the module and is:
