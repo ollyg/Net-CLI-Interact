@@ -48,7 +48,7 @@ use Net::CLI::Interact::ActionSet;
 use Class::Load ();
 
 # try to load Data::Printer for last_actionset debug output
-if (Class::Load::try_load_class('Data::Printer')) {
+if (Class::Load::try_load_class('Data::Printer', {-version => '0.27'})) {
     Data::Printer->import({class => { expand => 'all' }});
 }
 
@@ -62,8 +62,9 @@ sub _trigger_last_actionset {
     my ($self, $new) = @_;
     $self->logger->log('prompt', 'notice',
         sprintf ('output matching prompt was "%s"', $new->item_at(-1)->response));
-    if (Class::Load::is_class_loaded('Data::Printer')) {
-        $self->logger->log('object', 'debug', Data::Printer::p($new));
+    if (Class::Load::is_class_loaded('Data::Printer', {-version => '0.27'})) {
+        Data::Printer::p($new, output => \my $debug);
+        $self->logger->log('object', 'debug', $debug);
     }
 }
 

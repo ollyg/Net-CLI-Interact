@@ -1,3 +1,7 @@
+2.200006  2016-09-30
+
+  * [#21] session debug is always output (arcanez)
+
 2.200005  2015-02-18
 
   * POD typo fixes from Debian
