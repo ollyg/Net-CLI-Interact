@@ -89,6 +89,31 @@ sub put { _abc() }
 sub pump { _abc() }
 sub buffer { _abc() }
 
+my %ansi_codes = (
+  1  => q/\x1b\[\d+;\d+H/, # code_position_cursor
+  3  => q/\x1b\[\?25h/, #code_show_cursor
+  4  => q/\x1b\x45/, #code_next_line
+  5  => q/\x1b\[2K/, #code_erase_line
+  6  => q/\x1b\[K/, #code_erase_start_line
+  7  => q/\x1b\[\d+;\d+r/, #code_enable_scroll
+  68 => q/\e\[\??\d+(;\d+)*[A-Za-z]/, #VLZ addon from ytti/oxidized
+);
+
+# https://github.com/ollyg/Net-CLI-Interact/issues/22
+around 'buffer' => sub {
+    my $orig = shift;
+    my $buffer = ($orig->(@_) || '');
+    # remove control characters
+    $buffer =~ s/[\000-\010\013\014\016-\032\034-\037]//g;
+    # strip ANSI terminal codes
+    foreach my $code (sort keys %ansi_codes) {
+        my $to = '';
+        $to = "\n" if ($code == 4); # CODE_NEXT_LINE must substitute with '\n'
+        $buffer =~ s/$ansi_codes{$code}/$to/g;
+    }
+    return $buffer;
+};
+
 sub DEMOLISH { (shift)->disconnect }
 
 sub do_action {
@@ -100,11 +125,10 @@ sub do_action {
         my $cont = $action->continuation;
 
         while ($self->pump) {
-            # remove control characters
-            (my $buffer = $self->buffer) =~ s/[\000-\010\013\014\016-\032\034-\037]//g;
-            $self->logger->log('dump', 'debug', "SEEN:\n". $buffer);
+            my $all_buffer = $self->buffer;
+            $self->logger->log('dump', 'debug', "SEEN:\n". $all_buffer);
 
-            if ($buffer =~ m/^(.*$irs_re)(.*)/s) {
+            if ($all_buffer =~ m/^(.*$irs_re)(.*)/s) {
                 $self->stash($self->stash . $1);
                 $self->buffer($2 || '');
             }
