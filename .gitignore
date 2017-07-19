@@ -1,5 +1,6 @@
 Net-CLI-Interact-*
 MANIFEST
+Makefile
 test.*
 *.swp
 *.pid
