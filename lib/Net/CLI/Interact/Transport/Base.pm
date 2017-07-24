@@ -5,6 +5,7 @@ package Net::CLI::Interact::Transport::Base;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
+with "Net::CLI::Interact::Transport::Role::EscapeANSI";
 
 BEGIN {
     sub is_win32 { return ($^O eq 'MSWin32') }
