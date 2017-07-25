@@ -1,6 +1,6 @@
 package Net::CLI::Interact;
 {
-  $Net::CLI::Interact::VERSION = '2.200007_001';
+  $Net::CLI::Interact::VERSION = '2.200009';
 }
 
 use Moo;
