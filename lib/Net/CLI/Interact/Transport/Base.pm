@@ -5,6 +5,7 @@ package Net::CLI::Interact::Transport::Base;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(InstanceOf);
+with "Net::CLI::Interact::Transport::Role::EscapeANSI";
 
 with "Net::CLI::Interact::Transport::Role::StripControlChars";
 
