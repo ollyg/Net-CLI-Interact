@@ -90,6 +90,9 @@ sub find_prompt {
     # make connection on transport if not yet done
     $self->transport->init if not $self->transport->connect_ready;
 
+		# forget the previous prompt; will set new one if successful or bail out if not
+		$self->unset_prompt;
+
     eval {
         my $started_pumping = time;
         PUMPING: while (1) {
@@ -267,4 +270,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
