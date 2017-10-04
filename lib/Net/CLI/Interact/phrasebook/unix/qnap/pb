@@ -9,10 +9,10 @@ prompt pass
 # mode - then, after generic matches, it continues to check if privileged ALSO matches...
 # line 108 in /usr/share/perl5/Net/Appliance/Session/Engine.pm
 prompt generic
-    match /\w+@.+(\$|#) $/
+    match /\[[\w~\/ ]+\] # $/
 
 prompt privileged
-    match /\[?root@.+# $/
+    match /\[[\w~\/ ]+\] # $/
 
 macro begin_privileged
     send sudo -Hi bash
