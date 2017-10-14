@@ -5,8 +5,6 @@ use Sub::Quote;
 use Class::Load ();
 use MooX::Types::MooseLike::Base qw(InstanceOf Maybe Str HashRef);
 
-our $VERSION = '2.300000';
-
 with 'Net::CLI::Interact::Role::Engine';
 
 has 'my_args' => (

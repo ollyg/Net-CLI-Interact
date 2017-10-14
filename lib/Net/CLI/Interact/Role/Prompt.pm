@@ -151,10 +151,6 @@ sub find_prompt {
 
 Net::CLI::Interact::Role::Prompt - Command-line prompt management
 
-=head1 VERSION
-
-version 2.143070
-
 =head1 DESCRIPTION
 
 This is another core component of L<Net::CLI::Interact>, and its role is to

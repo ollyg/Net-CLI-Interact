@@ -48,10 +48,6 @@ sub runtime_options {
 
 Net::CLI::Interact::Transport::Loopback - Testable CLI connection
 
-=head1 VERSION
-
-version 2.143070
-
 =head1 DECRIPTION
 
 This module provides a wrapped instance of Perl which simply echoes back any
