@@ -1,5 +1,5 @@
 package Net::CLI::Interact::Transport::SSH;
-{ $Net::CLI::Interact::Transport::SSH::VERSION = '2.300001' }
+{ $Net::CLI::Interact::Transport::SSH::VERSION = '2.300002' }
 
 use Moo;
 use Sub::Quote;
