@@ -30,6 +30,7 @@
             "Class::Mix" : "0",
             "Config::Any" : "0.27",
             "File::Basename" : "0",
+            "File::ShareDir" : "1.00",
             "FileHandle" : "0",
             "IO::Pty" : "0",
             "IPC::Run" : "0",

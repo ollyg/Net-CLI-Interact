@@ -5,6 +5,7 @@ use Moo;
 use MooX::Types::MooseLike::Base qw(InstanceOf Str Any HashRef);
 
 use Path::Class;
+use File::ShareDir 'dist_dir';
 use Net::CLI::Interact::ActionSet;
 
 has 'logger' => (
@@ -25,12 +26,8 @@ has 'library' => (
 );
 
 sub _build_library {
-    use File::Basename;
-    my (undef, $directory, undef) = fileparse(
-        $INC{ 'Net/CLI/Interact.pm' }
-    );
-    return [ Path::Class::Dir->new($directory)
-        ->subdir("Interact", "phrasebook")->stringify ];
+    return [ Path::Class::Dir->new( dist_dir('Net-CLI-Interact') )
+        ->subdir('phrasebook')->stringify ];
 }
 
 has 'add_library' => (
