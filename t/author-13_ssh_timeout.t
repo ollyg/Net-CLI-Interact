@@ -19,7 +19,7 @@ my $s = Net::CLI::Interact->new(
     ($^O eq 'MSWin32' ?
         (app => "$ENV{HOMEPATH}\\Desktop\\plink.exe") : () ),
     connect_options => {
-        host => "route-server.bb.pipex.net",
+        host => "192.0.2.1", # first address from RFC5737 TEST-NET-1
         opts => [qw/-o ConnectTimeout=4/],
     },
     personality => "cisco",
