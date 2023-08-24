@@ -1,6 +1,10 @@
   * Fix Cisco privileged prompt discovery
     when the last line of a received block ends in #, which makes it look
     like a privileged prompt, but contains spaces
+  * Improve performance of ::Wrapper::Net_Telnet
+    by reading all blocks of available data instead of only the first one
+    per pump call.
+    This also reduces the possibility of incorrect prompt matching.
 
 2.300005 2023-07-20
 
