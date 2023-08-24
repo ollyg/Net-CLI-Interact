@@ -5,6 +5,8 @@
     by reading all blocks of available data instead of only the first one
     per pump call.
     This also reduces the possibility of incorrect prompt matching.
+  * Lower CPU utilization
+    by sleeping for 10 milliseconds between each pump iteration
 
 2.300005 2023-07-20
 

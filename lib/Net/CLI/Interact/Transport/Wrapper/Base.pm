@@ -4,6 +4,7 @@ package Net::CLI::Interact::Transport::Wrapper::Base;
 use Moo;
 use Sub::Quote;
 use MooX::Types::MooseLike::Base qw(Int RegexpRef Str Object);
+use Time::HiRes qw( sleep );
 
 with 'Net::CLI::Interact::Role::FindMatch';
 
@@ -126,6 +127,8 @@ sub do_action {
                     (ref $action->value eq ref [] ? (join '|', @{$action->value})
                                                 : $action->value));
             }
+
+            sleep(0.01);
         }
     }
     if ($action->type eq 'send') {
