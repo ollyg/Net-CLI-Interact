@@ -7,6 +7,7 @@
     This also reduces the possibility of incorrect prompt matching.
   * Lower CPU utilization
     by sleeping for 10 milliseconds between each pump iteration
+  * Improve debug output by wrapping the buffer data in single quotes
 
 2.300005 2023-07-20
 
