@@ -1,5 +1,5 @@
 package Net::CLI::Interact::Transport::Wrapper::Net_Telnet;
-{ $Net::CLI::Interact::Transport::Wrapper::Net_Telnet::VERSION = '2.300005' }
+{ $Net::CLI::Interact::Transport::Wrapper::Net_Telnet::VERSION = '2.400000' }
 
 use Moo;
 use Sub::Quote;
