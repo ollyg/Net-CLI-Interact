@@ -1,3 +1,5 @@
+2.400000 2023-08-25
+
   * Fix Cisco privileged prompt discovery
     when the last line of a received block ends in #, which makes it look
     like a privileged prompt, but contains spaces
