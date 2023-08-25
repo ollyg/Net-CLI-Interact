@@ -95,7 +95,7 @@ sub find_prompt {
         my $started_pumping = time;
         PUMPING: while (1) {
             $self->transport->pump;
-            $self->logger->log('dump', 'debug', "SEEN:\n". $self->transport->buffer);
+            $self->logger->log('dump', 'debug', "SEEN:\n'". $self->transport->buffer. "'");
             foreach my $prompt ($self->phrasebook->prompt_names) {
                 # prompts consist of only one match action
                 if ($self->find_match(
