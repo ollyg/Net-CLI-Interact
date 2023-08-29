@@ -28,6 +28,6 @@ my $s = Net::CLI::Interact->new(
 
 # should fail
 eval { $s->cmd('show clock') };
-like( $@, qr/Connection timed out/, 'Timed Out' );
+like( $@, qr/(?:Operation|Connection) timed out/, 'Timed Out' );
 
 done_testing;
