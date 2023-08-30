@@ -1,5 +1,4 @@
 package Net::CLI::Interact;
-{ $Net::CLI::Interact::VERSION = '2.400000' }
 
 use Moo;
 use Sub::Quote;
@@ -120,25 +119,25 @@ must interact with a command line interface.
 =head1 SYNOPSIS
 
  use Net::CLI::Interact;
- 
+
  my $s = Net::CLI::Interact->new({
     personality => 'cisco',
     transport   => 'Telnet',
     connect_options => { host => '192.0.2.1' },
  });
- 
+
  # respond to a usename/password prompt
  $s->macro('to_user_exec', {
      params => ['my_username', 'my_password'],
  });
- 
+
  my $interfaces = $s->cmd('show ip interfaces brief');
- 
+
  $s->macro('to_priv_exec', {
      params => ['my_password'],
  });
  # matched prompt is updated automatically
- 
+
  # paged output is slurped into one response
  $s->macro('show_run');
  my $config = $s->last_response;

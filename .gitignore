@@ -1,9 +1,4 @@
-Net-CLI-Interact-*
-MANIFEST
-Makefile
-test.*
-*.swp
-*.pid
-MYMETA.*
+/.build/
+/Net-CLI-Interact-*
 *.tar.gz
 *.komodo*

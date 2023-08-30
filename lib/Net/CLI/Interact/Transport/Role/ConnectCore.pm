@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Transport::Role::ConnectCore;
-{ $Net::CLI::Interact::Transport::Role::ConnectCore::VERSION = '2.400000' }
 
 use Moo::Role;
 use MooX::Types::MooseLike::Base qw(Int);
@@ -115,7 +114,7 @@ sub _spawn_command {
         CORE::close(STDIN);
         open(STDIN,"<&". $slv->fileno())
             or die "Couldn't reopen STDIN for reading, $!\n";
- 
+
         CORE::close(STDOUT);
         open(STDOUT,">&". $slv->fileno())
             or die "Couldn't reopen STDOUT for writing, $!\n";

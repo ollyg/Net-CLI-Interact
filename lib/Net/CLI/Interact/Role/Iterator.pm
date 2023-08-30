@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Role::Iterator;
-{ $Net::CLI::Interact::Role::Iterator::VERSION = '2.400000' }
 
 use Moo::Role;
 use Sub::Quote;
@@ -88,7 +87,7 @@ Net::CLI::Interact::Role::Iterator - Array-based Iterator
 =head1 SYNOPSIS
 
  my $count = $iter->count;
-  
+
  $iter->reset;
  while ( $iter->has_next ) {
     print $iter->next;

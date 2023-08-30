@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Transport::Serial;
-{ $Net::CLI::Interact::Transport::Serial::VERSION = '2.400000' }
 
 use Moo;
 use Sub::Quote;
