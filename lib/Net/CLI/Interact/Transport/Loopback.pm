@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Transport::Loopback;
-{ $Net::CLI::Interact::Transport::Loopback::VERSION = '2.400000' }
 
 use Moo;
 use Sub::Quote;

@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Role::Prompt;
-{ $Net::CLI::Interact::Role::Prompt::VERSION = '2.400000' }
 
 use Moo::Role;
 use MooX::Types::MooseLike::Base qw(Str RegexpRef);

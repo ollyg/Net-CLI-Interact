@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Phrasebook;
-{ $Net::CLI::Interact::Phrasebook::VERSION = '2.400000' }
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(InstanceOf Str Any HashRef);
@@ -483,7 +482,7 @@ instead:
 
  prompt priv_exec
      match /# ?$/
- 
+
  macro to_priv_exec
      send enable
      match /[Pp]assword: ?$/

@@ -1,5 +1,4 @@
 package Net::CLI::Interact::Transport::Net_OpenSSH;
-{ $Net::CLI::Interact::Transport::Net_OpenSSH::VERSION = '2.400000' }
 
 use Moo;
 use Sub::Quote;
