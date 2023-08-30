@@ -5,7 +5,7 @@ prompt privileged
     match /(?m:^)\r?[\/a-zA-Z0-9._\[\]-]+ ?# ?$/
 
 prompt configure
-    match /\(config[^)]*\)# ?$/
+    match /(?m:^)\r?[\/a-zA-Z0-9._\[\]-]+ ?(?:\(config[^)]*\))? ?# ?$/
 
 prompt user
     match /[Uu]sername: ?$/
