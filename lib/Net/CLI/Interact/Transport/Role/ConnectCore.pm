@@ -9,7 +9,7 @@ sub connect_core {
     my $self = shift;
 
     if ($self->use_net_telnet_connection) {
-        my $app = shift; # unused
+        shift; # unused
         return $self->_via_native(@_);
     }
     else {
@@ -50,8 +50,7 @@ has 'childpid' => (
 
 sub REAPER {
     # http://www.perlmonks.org/?node_id=10516
-    my $stiff;
-    1 while (($stiff = waitpid(-1, &WNOHANG)) > 0);
+    1 while ((waitpid(-1, &WNOHANG)) > 0);
     $SIG{CHLD} = \&REAPER;
 }
 
