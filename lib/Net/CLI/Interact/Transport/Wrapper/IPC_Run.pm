@@ -18,7 +18,9 @@ use IPC::Run ();
 has '_in' => (
     is => 'rw',
     isa => ScalarRef,
+    ## no critic (ProhibitStringyEval)
     default => sub { \eval "''" },
+    ## use critic
 );
 
 # writer for the _in slot
@@ -27,7 +29,9 @@ sub put { ${ (shift)->_in } .= join '', @_ }
 has '_out' => (
     is => 'ro',
     isa => ScalarRef,
+    ## no critic (ProhibitStringyEval)
     default => sub { \eval "''" },
+    ## use critic
 );
 
 sub buffer {
@@ -40,7 +44,9 @@ sub buffer {
 has '_err' => (
     is => 'ro',
     isa => ScalarRef,
+    ## no critic (ProhibitStringyEval)
     default => sub { \eval "''" },
+    ## use critic
 );
 
 has '_timeout_obj' => (
