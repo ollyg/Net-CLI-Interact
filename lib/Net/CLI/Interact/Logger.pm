@@ -53,8 +53,10 @@ sub _build__logger {
 
     my $anon_logger = genpkg();
     {
+        ## no critic (ProhibitNoStrict)
         no strict 'refs';
         @{"$anon_logger\::ISA"} = 'Log::Dispatch::Config';
+        ## use critic
     }
 
     my $config = Log::Dispatch::Configurator::Any->new($self->log_config);
