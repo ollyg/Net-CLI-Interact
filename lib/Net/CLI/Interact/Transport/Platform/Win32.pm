@@ -10,4 +10,8 @@ extends 'Net::CLI::Interact::Transport::Wrapper::IPC_Run';
     extends 'Net::CLI::Interact::Transport::Wrapper::Options';
 }
 
+=pod
+
+=cut
+
 1;

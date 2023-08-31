@@ -164,6 +164,8 @@ sub _marshall_responses {
 
 =pod
 
+=for Pod::Coverage BUILDARGS has_current_match has_default_continuation
+
 =head1 NAME
 
 Net::CLI::Interact::ActionSet - Conversation of Send and Match Actions

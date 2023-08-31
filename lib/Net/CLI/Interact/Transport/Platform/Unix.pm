@@ -28,4 +28,10 @@ BEGIN {
     );
 }
 
+=pod
+
+=for Pod::Coverage can_use_pty
+
+=cut
+
 1;

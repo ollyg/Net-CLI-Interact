@@ -134,6 +134,8 @@ sub log {
 
 =pod
 
+=for Pod::Coverage BUILDARGS
+
 =head1 NAME
 
 Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories

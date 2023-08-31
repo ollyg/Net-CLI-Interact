@@ -13,4 +13,10 @@ sub find_match {
     return first { $text =~ $_ } @$matches;
 }
 
+=pod
+
+=for Pod::Coverage find_match
+
+=cut
+
 1;

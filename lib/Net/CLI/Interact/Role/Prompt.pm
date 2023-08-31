@@ -147,6 +147,8 @@ sub find_prompt {
 
 =pod
 
+=for Pod::Coverage has_wake_up_msg
+
 =head1 NAME
 
 Net::CLI::Interact::Role::Prompt - Command-line prompt management

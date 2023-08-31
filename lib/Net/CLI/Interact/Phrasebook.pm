@@ -263,6 +263,8 @@ sub _gather_pb_from {
 
 =pod
 
+=for Pod::Coverage BUILD load_phrasebooks logger
+
 =head1 NAME
 
 Net::CLI::Interact::Phrasebook - Load command phrasebooks from a Library

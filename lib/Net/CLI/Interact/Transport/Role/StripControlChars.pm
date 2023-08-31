@@ -33,4 +33,8 @@ around 'buffer' => sub {
     return $buffer;
 };
 
+=pod
+
+=cut
+
 1;
