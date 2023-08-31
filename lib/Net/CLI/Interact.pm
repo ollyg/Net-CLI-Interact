@@ -250,7 +250,7 @@ character will end all lines.
 
 =head2 transport
 
-Returns the L<Transport|Net::CLI::Interact::Transport> backend which was
+Returns the Transport backend which was
 loaded based on the C<transport> option to C<new>. See the
 L<Telnet|Net::CLI::Interact::Transport::Telnet>,
 L<SSH|Net::CLI::Interact::Transport::SSH>, or
