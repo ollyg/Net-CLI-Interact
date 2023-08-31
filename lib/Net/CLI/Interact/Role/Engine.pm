@@ -207,7 +207,7 @@ The following options are supported:
 =item C<< timeout => $seconds >> (optional)
 
 Sets a value of C<timeout> for the
-L<Transport|Net::CLI::Interact::Transport> local to this call of C<cmd>, that
+Transport local to this call of C<cmd>, that
 overrides whatever is set in the Transport, or the default of 10 seconds.
 
 =item C<< no_ors => 1 >> (optional)
@@ -250,7 +250,7 @@ if there are insufficient parameters.
 =item C<< timeout => $seconds >> (optional)
 
 Sets a value of C<timeout> for the
-L<Transport|Net::CLI::Interact::Transport> local to this call of C<macro>,
+Transport local to this call of C<macro>,
 that overrides whatever is set in the Transport, or the default of 10 seconds.
 
 =back

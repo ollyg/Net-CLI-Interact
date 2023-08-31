@@ -236,7 +236,7 @@ repeated up to "C<$wake_up>" times.
 
 Text sent to a device within the C<find_prompt> method if no output has so far
 matched any known named Prompt. Default is the value of the I<output record
-separator> from the L<Transport|Net::CLI::Interact::Transport> (one newline).
+separator> from the Transport (one newline).
 
 =head2 last_prompt
 

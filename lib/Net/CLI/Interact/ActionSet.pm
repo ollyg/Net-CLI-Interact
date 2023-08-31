@@ -220,7 +220,7 @@ with the Action(s) according to how many are required.
 
 =head2 register_callback
 
-Allows the L<Transport|Net::CLI::Interact::Transport> to be registered
+Allows the Transport to be registered
 such that when the ActionSet is executed, commands are sent to the registered
 callback subroutine. May be called more than once, and on execution each of
 the callbacks will be run, in turn and in order.
