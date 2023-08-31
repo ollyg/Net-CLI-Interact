@@ -80,6 +80,9 @@ sub reset { (shift)->_position(-1) }
 
 =pod
 
+=for test_synopsis
+  my $iter;
+
 =head1 NAME
 
 Net::CLI::Interact::Role::Iterator - Array-based Iterator
