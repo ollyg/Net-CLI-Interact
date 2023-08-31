@@ -181,7 +181,9 @@ sub load_phrasebooks {
                 $send =~ s/^["']//; $send =~ s/["']$//;
                 $data->{actions}->[-1]->{continuation} = [
                     {type => 'match', value => [qr/$match/]},
+                    ## no critic (ProhibitStringyEval)
                     {type => 'send',  value => eval "qq{$send}", no_ors => 1}
+                    ## use critic
                 ];
                 next;
             }
