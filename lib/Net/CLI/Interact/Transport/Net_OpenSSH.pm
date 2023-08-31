@@ -71,6 +71,8 @@ sub runtime_options {
 
 =pod
 
+=for Pod::Coverage runtime_options
+
 =encoding UTF-8
 
 =head1 NAME

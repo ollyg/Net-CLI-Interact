@@ -137,4 +137,24 @@ sub do_action {
     }
 }
 
+=pod
+
+=begin Pod::Coverage
+
+  DEMOLISH
+  buffer
+  connect_ready
+  disconnect
+  do_action
+  flush
+  has_app
+  init
+  irs_re
+  pump
+  put
+
+=end Pod::Coverage
+
+=cut
+
 1;

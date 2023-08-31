@@ -90,6 +90,8 @@ sub num_params {
 
 =pod
 
+=for Pod::Coverage BUILDARGS
+
 =head1 NAME
 
 Net::CLI::Interact::Action - Sent data or matched response from connected device

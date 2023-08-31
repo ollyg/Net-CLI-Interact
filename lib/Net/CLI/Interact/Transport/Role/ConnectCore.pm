@@ -130,4 +130,10 @@ sub _spawn_command {
     return $pty;
 }
 
+=pod
+
+=for Pod::Coverage REAPER connect_core
+
+=cut
+
 1;

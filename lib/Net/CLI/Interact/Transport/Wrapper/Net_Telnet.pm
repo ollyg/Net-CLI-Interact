@@ -95,4 +95,18 @@ after 'disconnect' => sub {
     delete $SIG{CHLD};
 };
 
+=pod
+
+=begin Pod::Coverage
+
+  buffer
+  connect_ready
+  disconnect
+  pump
+  put
+
+=end Pod::Coverage
+
+=cut
+
 1;

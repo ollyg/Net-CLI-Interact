@@ -79,4 +79,17 @@ before 'disconnect' => sub {
     $self->wrapper->kill_kill(grace => 1);
 };
 
+=pod
+
+=begin Pod::Coverage
+
+  buffer
+  connect_ready
+  disconnect
+  put
+
+=end Pod::Coverage
+
+=cut
+
 1;

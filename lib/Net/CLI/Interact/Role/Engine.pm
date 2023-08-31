@@ -180,6 +180,8 @@ sub _execute_actions {
 
 =pod
 
+=for Pod::Coverage has_default_continuation set_default_continuation
+
 =head1 NAME
 
 Net::CLI::Interact::Role::Engine - Statement execution engine

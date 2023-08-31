@@ -107,6 +107,9 @@ sub _build_transport {
 
 =pod
 
+=for Pod::Coverage BUILD BUILDARGS
+=for Pod::Coverage default_log_categories has_logger has_phrasebook has_transport my_args
+
 =head1 NAME
 
 Net::CLI::Interact - Toolkit for CLI Automation
