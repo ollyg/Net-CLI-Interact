@@ -136,6 +136,9 @@ sub log {
 
 =for Pod::Coverage BUILDARGS
 
+=for test_synopsis
+  my ($logger, $category, $level, @message);
+
 =head1 NAME
 
 Net::CLI::Interact::Logger - Per-instance multi-target logging, with categories
