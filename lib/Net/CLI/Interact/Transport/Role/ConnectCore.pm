@@ -75,7 +75,7 @@ sub _spawn_command {
 
     if (! defined ($pid)) {
         die "Cannot fork: $!" if $^W;
-        return undef;
+        return;
     }
 
     if($pid) { # parent
@@ -93,7 +93,7 @@ sub _spawn_command {
         if ($errstatus) {
             $! = $errno+0;
             die "Cannot exec(@command): $!\n" if $^W;
-            return undef;
+            return;
         }
 
         # store pid for killing if we're in cygwin
@@ -110,6 +110,8 @@ sub _spawn_command {
 
         CORE::close($pty);
 
+        ## no critic (ProhibitTwoArgOpen)
+
         CORE::close(STDIN);
         open(STDIN,"<&". $slv->fileno())
             or die "Couldn't reopen STDIN for reading, $!\n";
@@ -121,6 +123,8 @@ sub _spawn_command {
         CORE::close(STDERR);
         open(STDERR,">&". $slv->fileno())
             or die "Couldn't reopen STDERR for writing, $!\n";
+
+        ## use critic
 
         { exec(@command) };
         print $stat_wtr $!+0;
