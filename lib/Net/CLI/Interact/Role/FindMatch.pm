@@ -6,7 +6,7 @@ use Moo::Role;
 sub find_match {
     my ($self, $text, $matches) = @_;
     $matches = ((ref $matches eq ref qr//) ? [$matches] : $matches);
-    return undef unless
+    return unless
         (scalar grep {ref $_ eq ref qr//} @$matches) == scalar @$matches;
 
     use List::Util 'first';
