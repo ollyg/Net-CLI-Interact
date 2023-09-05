@@ -9,29 +9,31 @@ must interact with a command line interface.
 
 # SYNOPSIS
 
-    use Net::CLI::Interact;
-    
-    my $s = Net::CLI::Interact->new({
-       personality => 'cisco',
-       transport   => 'Telnet',
-       connect_options => { host => '192.0.2.1' },
-    });
-    
-    # respond to a usename/password prompt
-    $s->macro('to_user_exec', {
-        params => ['my_username', 'my_password'],
-    });
-    
-    my $interfaces = $s->cmd('show ip interfaces brief');
-    
-    $s->macro('to_priv_exec', {
-        params => ['my_password'],
-    });
-    # matched prompt is updated automatically
-    
-    # paged output is slurped into one response
-    $s->macro('show_run');
-    my $config = $s->last_response;
+```perl
+use Net::CLI::Interact;
+
+my $s = Net::CLI::Interact->new({
+   personality => 'cisco',
+   transport   => 'Telnet',
+   connect_options => { host => '192.0.2.1' },
+});
+
+# respond to a usename/password prompt
+$s->macro('to_user_exec', {
+    params => ['my_username', 'my_password'],
+});
+
+my $interfaces = $s->cmd('show ip interfaces brief');
+
+$s->macro('to_priv_exec', {
+    params => ['my_password'],
+});
+# matched prompt is updated automatically
+
+# paged output is slurped into one response
+$s->macro('show_run');
+my $config = $s->last_response;
+```
 
 # DESCRIPTION
 
@@ -122,7 +124,7 @@ character will end all lines.
 
 ## transport
 
-Returns the [Transport](https://metacpan.org/pod/Net%3A%3ACLI%3A%3AInteract%3A%3ATransport) backend which was
+Returns the Transport backend which was
 loaded based on the `transport` option to `new`. See the
 [Telnet](https://metacpan.org/pod/Net%3A%3ACLI%3A%3AInteract%3A%3ATransport%3A%3ATelnet),
 [SSH](https://metacpan.org/pod/Net%3A%3ACLI%3A%3AInteract%3A%3ATransport%3A%3ASSH), or
