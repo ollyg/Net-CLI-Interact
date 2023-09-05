@@ -71,7 +71,7 @@ sub last_response {
     (my $resp = $self->last_actionset->item_at(-2)->response) =~ s/$irs_re/\n/g;
     $resp =~ s/\n+$//;
     return (wantarray
-        ? (map {$_ .= "\n"} split m/\n/, $resp)
+        ? (split m/^/, $resp)
         : ($resp ."\n"));
 }
 
