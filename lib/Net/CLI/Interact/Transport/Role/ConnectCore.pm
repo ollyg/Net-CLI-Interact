@@ -110,21 +110,17 @@ sub _spawn_command {
 
         CORE::close($pty);
 
-        ## no critic (ProhibitTwoArgOpen)
-
         CORE::close(STDIN);
-        open(STDIN,"<&". $slv->fileno())
+        open(STDIN, '<&', $slv->fileno())
             or die "Couldn't reopen STDIN for reading, $!\n";
 
         CORE::close(STDOUT);
-        open(STDOUT,">&". $slv->fileno())
+        open(STDOUT, '>&', $slv->fileno())
             or die "Couldn't reopen STDOUT for writing, $!\n";
 
         CORE::close(STDERR);
-        open(STDERR,">&". $slv->fileno())
+        open(STDERR, '>&', $slv->fileno())
             or die "Couldn't reopen STDERR for writing, $!\n";
-
-        ## use critic
 
         { exec(@command) };
         print $stat_wtr $!+0;
