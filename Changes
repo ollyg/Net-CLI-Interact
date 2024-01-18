@@ -1,4 +1,7 @@
 {{$NEXT}}
+  * Change prompt_names to return them alphabetically sorted
+    this fixes sporadic failures when a command changes the prompt and
+    no macro is used that expects that
 
 2.400002  2023-09-07 14:07:36+02:00 Europe/Vienna
 

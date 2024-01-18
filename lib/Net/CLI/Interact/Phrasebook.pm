@@ -47,7 +47,10 @@ sub prompt {
     return $self->_prompt->{$name};
 }
 
-sub prompt_names { return keys %{ (shift)->_prompt } }
+sub prompt_names {
+    my @prompt_names = sort keys %{ (shift)->_prompt };
+    return @prompt_names;
+}
 
 sub has_prompt {
     my ($self, $name) = @_;
@@ -373,7 +376,7 @@ Returns true if a prompt of the given C<$name> exists in the loaded phrasebooks.
 
 =head2 prompt_names
 
-Returns a list of the names of the current loaded Prompts.
+Returns a alphabetically sorted list of the names of the current loaded Prompts.
 
 =head2 macro( $name )
 
